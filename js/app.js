@@ -1,10 +1,17 @@
-import React from 'react';  
+import React from 'react';
 
-let App = React.createClass({  
+import GameState from './gamestate';
+import GameView from './gameview';
+
+let App = React.createClass({
+  getInitialState() {
+    return new GameState();
+  },
+
   render() {
     return (
       <div className="app">
-        Hello world
+        <GameView state={this.state} />
       </div>
     );
   }

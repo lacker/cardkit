@@ -60,3 +60,5 @@ class GameState {
     console.log("It is player " + this.turn + "'s turn'")
   }
 }
+
+module.exports = GameState;
