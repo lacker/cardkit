@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 
-import GameState from './gamestate';
-import GameView from './gameview';
+import GameState from "./gamestate";
+import GameView from "./gameview";
 
 let App = React.createClass({
   getInitialState() {
