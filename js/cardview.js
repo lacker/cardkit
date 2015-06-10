@@ -1,5 +1,6 @@
 // React view of a card
 import React from "react";
+import GameStyle from "./style";
 
 let Card = React.createClass({
   render() {
@@ -14,13 +15,14 @@ let Card = React.createClass({
   },
 
   getStyle() {
-    return { display: "inline",
-             float: "left",
-             padding: 5,
+    var gameStyle = new GameStyle();
+    return { display: "inline-block",
              backgroundColor: "gray", 
-             width: 100, 
-             height: 100, 
-             border: "solid",
+             border: "1px solid",
+             borderRadius: "6px",
+             padding: gameStyle.paddingCSS(),
+             width: gameStyle.cardWidth, 
+             height: gameStyle.cardHeight, 
            };
   },
 });
