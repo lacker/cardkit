@@ -79,6 +79,24 @@ class GameState {
     clearDead()
   }
 
+  // Plays a card from the hand. For now assumes it's a creature.
+  // from is an index of the hand
+  play(from) {
+    let player = this.players[this.turn]
+    player.board.push(player.hand[from])
+    player.hand.splice(from, 1)
+  }
+
+  // Attacks face
+  face(from) {
+    let attacker = this.players[this.turn].board[from]
+    this.players[this.opponent()].life -= attacker.attack
+  }
+
+  endTurn() {
+    this.turn = this.opponent()
+  }
+
   log() {
     console.log("It is player " + this.turn + "'s turn'")
   }
