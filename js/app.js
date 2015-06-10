@@ -5,7 +5,10 @@ import GameView from "./gameview";
 
 let App = React.createClass({
   getInitialState() {
-    return new GameState();
+    // Stash it here for easy debugging
+    window.game = new GameState()
+
+    return window.game
   },
 
   render() {
