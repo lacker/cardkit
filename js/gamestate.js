@@ -47,13 +47,36 @@ class PlayerState {
   constructor(goingFirst) {
     this.hand = [randomCard(), randomCard(), randomCard()]
     this.board = []
+    this.life = 30
   }
 }
 
 class GameState {
   constructor() {
+    // Index of whose turn it is
     this.turn = 0
+
     this.players = [new PlayerState(true), new PlayerState(false)]
+  }
+
+  // Index of whose turn it isn't
+  opponent() {
+    return 1 - this.turn
+  }
+
+  clearDead() {
+    for (let player of this.players) {
+      player.board = player.board.filter(card => card.defense > 0)
+    }
+  }
+
+  // from and to are indices into board
+  attack(from, to) {
+    let attacker = this.players[this.turn].board[from]
+    let defender = this.players[this.opponent()].board[to]
+    attacker.defense -= defender.attack
+    defender.defense -= attacker.attack
+    clearDead()
   }
 
   log() {
