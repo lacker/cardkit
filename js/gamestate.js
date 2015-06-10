@@ -102,7 +102,8 @@ class GameState {
   }
 
   log() {
-    console.log("It is player " + this.turn + "'s turn'")
+    console.log("It is player " + this.turn + "'s turn")
+    console.log(this.players)
   }
 }
 
