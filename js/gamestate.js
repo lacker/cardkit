@@ -44,10 +44,27 @@ function randomCard() {
 
 // The state of a single player.
 class PlayerState {
-  constructor(goingFirst) {
+  constructor(name, goingFirst) {
+    this.name = name
     this.hand = [randomCard(), randomCard(), randomCard()]
     this.board = []
     this.life = 30
+  }
+
+  // Throws if the index is bad
+  getHand(index) {
+    if (index >= this.hand.length) {
+      throw (this.name + "'s hand has no card at index " + index)
+    }
+    return this.hand[index]
+  }
+
+  // Throws if the index is bad
+  getBoard(index) {
+    if (index >= this.board.length) {
+      throw (this.name + "'s board has no card at index " + index)
+    }
+    return this.board[index]
   }
 }
 
@@ -56,12 +73,18 @@ class GameState {
     // Index of whose turn it is
     this.turn = 0
 
-    this.players = [new PlayerState(true), new PlayerState(false)]
+    this.players = [new PlayerState("Alice", true),
+                    new PlayerState("Bob", false)]
   }
 
-  // Index of whose turn it isn't
+  // The player whose turn it is
+  current() {
+    return this.players[this.turn]
+  }
+
+  // The player whose turn it isn't
   opponent() {
-    return 1 - this.turn
+    return this.players[1 - this.turn]
   }
 
   clearDead() {
@@ -72,8 +95,8 @@ class GameState {
 
   // from and to are indices into board
   attack(from, to) {
-    let attacker = this.players[this.turn].board[from]
-    let defender = this.players[this.opponent()].board[to]
+    let attacker = this.current().getBoard(from)
+    let defender = this.opponent().getBoard(to)
     attacker.defense -= defender.attack
     defender.defense -= attacker.attack
     clearDead()
@@ -82,23 +105,23 @@ class GameState {
   // Plays a card from the hand. For now assumes it's a creature.
   // from is an index of the hand
   play(from) {
-    let player = this.players[this.turn]
-    player.board.push(player.hand[from])
+    let player = this.current()
+    player.board.push(player.getHand(from))
     player.hand.splice(from, 1)
   }
 
   // Attacks face
   face(from) {
-    let attacker = this.players[this.turn].board[from]
-    this.players[this.opponent()].life -= attacker.attack
+    let attacker = this.current().getBoard(from)
+    this.opponent().life -= attacker.attack
   }
 
   draw() {
-    this.players[this.turn].hand.push(randomCard())
+    this.current().hand.push(randomCard())
   }
 
   endTurn() {
-    this.turn = this.opponent()
+    this.turn = 1 - this.turn
   }
 
   log() {
