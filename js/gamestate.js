@@ -93,6 +93,10 @@ class GameState {
     this.players[this.opponent()].life -= attacker.attack
   }
 
+  draw() {
+    this.players[this.turn].hand.push(randomCard())
+  }
+
   endTurn() {
     this.turn = this.opponent()
   }
