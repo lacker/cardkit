@@ -77,6 +77,10 @@ class PlayerState {
   }
 }
 
+// A turn goes like
+// beginTurn
+// Some number of attack, face, and play
+// endTurn
 class GameState {
   constructor() {
     // Index of whose turn it is
