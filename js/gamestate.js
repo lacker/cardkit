@@ -4,37 +4,44 @@ const CARDS = [
   {
     name: "Twobot",
     attack: 2,
-    defense: 2
+    defense: 2,
+    cost: 2
   },
   {
     name: "Threebot",
     attack: 3,
-    defense: 3
+    defense: 3,
+    cost: 3
   },
   {
     name: "Fourbot",
     attack: 4,
-    defense: 4
+    defense: 4,
+    cost: 4
   },
   {
     name: "Fivebot",
     attack: 5,
-    defense: 5
+    defense: 5,
+    cost: 5
   },
   {
     name: "Sixbot",
     attack: 6,
-    defense: 6
+    defense: 6,
+    cost: 6
   },
   {
     name: "Sevenbot",
     attack: 7,
-    defense: 7
+    defense: 7,
+    cost: 7
   },
   {
     name: "Eightbot",
     attack: 8,
-    defense: 8
+    defense: 8,
+    cost: 8
   },
 ]
 
@@ -49,6 +56,8 @@ class PlayerState {
     this.hand = [randomCard(), randomCard(), randomCard()]
     this.board = []
     this.life = 30
+    this.mana = 0
+    this.maxMana = 0
   }
 
   // Throws if the index is bad
@@ -103,11 +112,17 @@ class GameState {
   }
 
   // Plays a card from the hand. For now assumes it's a creature.
+  // Throws if there's not enough mana.
   // from is an index of the hand
   play(from) {
     let player = this.current()
-    player.board.push(player.getHand(from))
+    let card = player.getHand(from)
+    if (player.mana < card.cost) {
+      throw `need ${card.cost} mana but only have ${player.mana}`
+    }
+    player.board.push(card)
     player.hand.splice(from, 1)
+    player.mana -= card.cost
   }
 
   // Attacks face
@@ -118,6 +133,12 @@ class GameState {
 
   draw() {
     this.current().hand.push(randomCard())
+  }
+
+  beginTurn() {
+    this.current().maxMana = Math.min(1 + this.current().maxMana, 10)
+    this.current().mana = this.current().maxMana()
+    this.draw()
   }
 
   endTurn() {
