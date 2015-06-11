@@ -3,11 +3,37 @@
 
 class Client {
   constructor() {
-    this.ws = new WebSocket("ws://localhost:9090")
+    this.makeSocket()
+  }
 
-    this.ws.onmessage = function(event) {
-      console.log("received: " + event.data)
-    }
+  makeSocket() {
+    let url = "ws://localhost:9090"
+    console.log(`connecting to ${url}`)
+
+    // TODO: needs a more aggressive timeout
+    this.ws = new WebSocket(url)
+
+    this.ws.onmessage = (event => this.receive(event.data))
+    this.ws.onerror = (event => this.handleError())
+    this.ws.onclose = (event => this.handleClose())
+  }
+
+  // When data is received from the server
+  receive(data) {
+    console.log("received: " + data)
+  }
+
+  handleError() {
+    console.log("socket error. closing dirty socket")
+    this.ws.close()
+  }
+
+  // Whenever the socket closes we just make a new one
+  handleClose() {
+    console.log("the socket closed")
+    
+    // Wait 2 seconds to reconnect
+    setTimeout(() => this.makeSocket(), 2000)
   }
 }
 
