@@ -4,19 +4,22 @@ require("../scss/style.scss");
 
 let Card = React.createClass({
   render() {
-    var cardState = this.props.active ? 'playing-card active-card' : 'playing-card';
-    console.log(cardState)
+    
+    var cssClassForCard = this.props.hasFocus ? 'playing-card active-card' : 'playing-card';
+    
     return (
-        <div className={cardState} onClick={this.handleClick}>
+        <div className={cssClassForCard} onClick={this.clickCard}>
         {this.props.state.name}
         <br />
         {this.props.state.attack}/{this.props.state.defense}
       </div>
-
     );
+  
   },
-  handleClick: function() {
-    this.props.active = !this.props.active;
+
+  // highlight a card when clicked
+  clickCard: function() {
+    this.props.hasFocus = !this.props.hasFocus;
     this.forceUpdate();
   },
 
