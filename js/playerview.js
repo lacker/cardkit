@@ -5,7 +5,7 @@ import Card from "./cardview.js"
 
 let Player = React.createClass({
   render() {
-    var handCards = this.props.playerState.hand.map(function (card, i) {
+    let handCards = this.props.playerState.hand.map(function (card, i) {
       return (
           <Card state={card} key={i} />
       );

@@ -28,8 +28,8 @@ let GameView = React.createClass({
 
   // highlight the active player
   avatarStyle(playerNumber) {
-    var color = "lightgray";
-    var fontWeight = 400;  
+    let color = "lightgray";
+    let fontWeight = 400;  
     if (playerNumber == this.props.state.turn) {
       color = "black";        
       fontWeight =  800;        
