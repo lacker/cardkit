@@ -4,15 +4,21 @@ require("../scss/style.scss");
 
 let Card = React.createClass({
   render() {
+    var cardState = this.props.active ? 'playing-card active-card' : 'playing-card';
+    console.log(cardState)
     return (
-        <div className="playing-card">
+        <div className={cardState} onClick={this.handleClick}>
         {this.props.state.name}
         <br />
         {this.props.state.attack}/{this.props.state.defense}
       </div>
 
     );
-  }
+  },
+  handleClick: function() {
+    this.props.active = !this.props.active;
+    this.forceUpdate();
+  },
 
 });
 

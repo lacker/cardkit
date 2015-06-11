@@ -17,7 +17,12 @@ $default-corner-radius: 6px;
   border-radius: $default-corner-radius;
   display: inline-block;
   border: 1px solid;
- }
+	border-color:black;
+}
+
+.active-card {
+  background-color: yellow; 
+}
 
 // the representation of the player
 // \todo pics
