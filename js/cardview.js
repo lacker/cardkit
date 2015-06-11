@@ -5,7 +5,7 @@ require("../scss/style.scss");
 let Card = React.createClass({
   render() {
     
-    var cssClassForCard = this.props.hasFocus ? 'playing-card active-card' : 'playing-card';
+    let cssClassForCard = this.props.hasFocus ? 'playing-card active-card' : 'playing-card';
     
     return (
         <div className={cssClassForCard} onClick={this.clickCard}>
