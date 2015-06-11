@@ -141,7 +141,7 @@ class GameState {
 
   beginTurn() {
     this.current().maxMana = Math.min(1 + this.current().maxMana, 10)
-    this.current().mana = this.current().maxMana()
+    this.current().mana = this.current().maxMana
     this.draw()
   }
 
