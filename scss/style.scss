@@ -1,0 +1,14 @@
+$palette-gray: gray;
+$default-padding: 20px;
+$card-width: 100px;
+$card-height: 120px;
+
+.playing-card {
+  background-color: $palette-gray; 
+  padding:$default-padding;
+  width: $card-width;
+  height: $card-height;
+  display: inline-block;
+  border: 1px solid;
+  border-radius: 6px;
+ }
