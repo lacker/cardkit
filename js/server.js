@@ -1,3 +1,5 @@
+// This server just broadcasts all messages to all clients.
+
 const WebSocketServer = require("ws").Server
 
 let wss = new WebSocketServer({port: 9090})
