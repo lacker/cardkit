@@ -1,7 +1,8 @@
-import React from "react";
+import React from "react"
 
-import GameState from "./gamestate";
-import GameView from "./gameview";
+import Client from "./client"
+import GameState from "./gamestate"
+import GameView from "./gameview"
 
 let App = React.createClass({
   getInitialState() {
@@ -20,4 +21,7 @@ let App = React.createClass({
   }
 });
 
-React.render(<App/>, document.body);
+React.render(<App/>, document.body)
+
+window.client = new Client()
+
