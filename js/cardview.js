@@ -1,11 +1,13 @@
 // React view of a card
 import React from "react";
-import GameStyle from "./style";
+require("../scss/style.scss");
 
 let Card = React.createClass({
   render() {
+    var cardState = this.props.active ? 'playing-card active-card' : 'playing-card';
+    console.log(cardState)
     return (
-        <div style={this.getStyle()}>
+        <div className={cardState} onClick={this.handleClick}>
         {this.props.state.name}
         <br />
         {this.props.state.attack}/{this.props.state.defense}
@@ -13,18 +15,11 @@ let Card = React.createClass({
 
     );
   },
-
-  getStyle() {
-    var gameStyle = new GameStyle();
-    return { display: "inline-block",
-             backgroundColor: "gray", 
-             border: "1px solid",
-             borderRadius: "6px",
-             padding: gameStyle.paddingCSS(),
-             width: gameStyle.cardWidth, 
-             height: gameStyle.cardHeight, 
-           };
+  handleClick: function() {
+    this.props.active = !this.props.active;
+    this.forceUpdate();
   },
+
 });
 
 module.exports = Card;

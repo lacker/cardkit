@@ -12,16 +12,13 @@ let Player = React.createClass({
     });
 
     return (
-        <div style={this.getStyle()}>
-        {handCards}
-      </div>
+        <div>
+          {handCards}
+        </div>
 
     );
-  },
-
-  getStyle() {
-    return {clear:"both"};
   }
+
 });
 
 module.exports = Player;

@@ -1,0 +1,52 @@
+$palette-gray: gray;
+$default-padding: 20px;
+$card-height: 100px;
+$card-width: 80px;
+$in-play-width: 680px; // card-width*8 + paddiing*2
+$in-play-height: 240px; // card-height*2 + paddiing*2
+$avatar-width: 140px;
+$default-corner-radius: 6px;
+
+// cards in play and in hand
+// \todo simplified avatar for cards in play
+.playing-card {
+  background-color: $palette-gray; 
+  padding: $default-padding;
+  width: $card-width;
+  height: $card-height;
+  border-radius: $default-corner-radius;
+  display: inline-block;
+  border: 1px solid;
+	border-color:black;
+}
+
+.active-card {
+  background-color: yellow; 
+}
+
+// the representation of the player
+// \todo pics
+.player-avatar {
+  padding:$default-padding;
+  margin: $default-padding auto;
+  width: $avatar-width;
+  font-weight: fontWeight; 
+  border-radius: $default-corner-radius;
+  background-color: white;
+}
+
+// the overall container with all elements
+.game-container {
+  text-align: center; 
+  background-color: green; 
+  width: 1024px;
+}
+
+// area for cards to be played in center
+.in-play-area {
+  text-align: center; 
+  background-color: black; 
+  height: $in-play-height;
+  width: $in-play-width;
+  margin: 0 auto;
+}
