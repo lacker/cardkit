@@ -19,12 +19,13 @@ let Card = React.createClass({
   // highlight a card when clicked
   clickCard: function() {
     // card can only be highlighted and played if player has enough mana
-    if (this.props.cardInfo.cost <= this.props.player.mana) {
-      this.props.hasFocus = !this.props.hasFocus;
-      // play card on 2nd click
-      if (!this.props.hasFocus) {
-        window.game.play(this.props.player.hand.indexOf(this.props.cardInfo));
-      }
+    if (this.props.cardInfo.cost > this.props.player.mana) {
+      return;
+    }
+    this.props.hasFocus = !this.props.hasFocus;
+    // play card on 2nd click
+    if (!this.props.hasFocus) {
+      window.game.play(this.props.player.hand.indexOf(this.props.cardInfo));
     }
     this.forceUpdate();
   },
