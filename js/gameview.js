@@ -16,6 +16,8 @@ let GameView = React.createClass({
           <div className="in-play-area">
           </div>
           
+          <div className="end-turn-button">End Turn</div>
+
           <div className="player-avatar " style={this.avatarStyle(0)}>
             Me
           </div>
