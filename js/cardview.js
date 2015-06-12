@@ -22,7 +22,7 @@ let Card = React.createClass({
     if (this.props.cardInfo.cost <= this.props.player.mana) {
       this.props.hasFocus = !this.props.hasFocus;
       // play card on 2nd click
-      if (this.props.hasFocus) {
+      if (!this.props.hasFocus) {
         window.game.play(this.props.player.hand.indexOf(this.props.cardInfo));
       }
     }
