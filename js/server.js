@@ -9,6 +9,12 @@ class Connection {
     this.ws = ws
 
     console.log(`hello ${this.clientName()}`)
+
+    // Connection.all maps client names to connected clients
+    if (Connection.all === undefined) {
+      Connection.all = {}
+    }
+    Connection.all[this.clientName()] = this
   }
 
   clientName() {
@@ -17,6 +23,7 @@ class Connection {
 
   close() {
     console.log(`goodbye ${this.clientName()}`)
+    delete Connection.all[this.clientName()]
   }
 }
 
