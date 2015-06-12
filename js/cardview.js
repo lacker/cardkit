@@ -22,6 +22,7 @@ let Card = React.createClass({
     if (this.props.cardInfo.cost > this.props.player.mana) {
       return;
     }
+    
     this.props.hasFocus = !this.props.hasFocus;
     // play card on 2nd click
     if (!this.props.hasFocus) {
