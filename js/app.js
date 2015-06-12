@@ -8,7 +8,7 @@ let App = React.createClass({
   getInitialState() {
     // Stash it here for easy debugging
     window.game = new GameState()
-
+    window.game.beginTurn()
     return window.game
   },
 
@@ -24,4 +24,3 @@ let App = React.createClass({
 React.render(<App/>, document.body)
 
 window.client = new Client()
-
