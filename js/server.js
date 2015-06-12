@@ -2,7 +2,7 @@
 
 // Client protocol:
 // To sign up for a game:
-// { "op": "register", "me": "yourPlayerName"}
+// { "op": "register", "name": "yourPlayerName"}
 
 // Server protocol:
 // The server bounces any client messages to all clients.
@@ -39,7 +39,9 @@ class Connection {
 
   // Message should be JSON
   broadcast(message) {
-
+    for (let conn of Connection.all.values()) {
+      conn.ws.send(JSON.stringify(message))
+    }
   }
 
   receive(messageData) {
@@ -54,7 +56,9 @@ class Connection {
 
     // Consider starting a new game
     if (Connection.waiting.size == 2) {
-      let start = { op: "start", players: Connection.waiting.keys() }
+      let players = Array.from(Connection.waiting.keys())
+      console.log(`starting ${players[0]} vs ${players[1]}`)
+      let start = { op: "start", players: players }
       this.broadcast(start)
       Connection.waiting.clear()
     }

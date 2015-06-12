@@ -3,6 +3,7 @@
 
 class Client {
   constructor() {
+    this.name = `Guest ${Math.floor(Math.random() * 100)}`
     this.makeSocket()
   }
 
@@ -19,8 +20,36 @@ class Client {
   }
 
   // When data is received from the server
-  receive(data) {
-    console.log("received: " + data)
+  receive(messageData) {
+    console.log("received: " + messageData)
+    let message = JSON.parse(messageData)
+
+    if (message.op == "hello") {
+      // First thing we do when the server says hi is we register for
+      // a game
+      this.register()
+    } else if (message.op == "start") {
+      this.handleStart(message.players)
+    } else {
+      console.log("don't know how to handle this message. dropping it")
+    }
+  }
+  
+  // Sends a message object upstream.
+  send(message) {
+    this.ws.send(JSON.stringify(message))
+  }
+
+  // Send a looking-for-game message.
+  register() {
+    console.log("registering as " + this.name)
+    this.send({op: "register", name: this.name})
+  }
+
+  // This is called locally when the server decides remotely that a
+  // game should start.
+  handleStart(players) {
+    console.log(`${players[0]} should start versus ${players[1]}`)
   }
 
   handleError() {
