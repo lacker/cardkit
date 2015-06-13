@@ -53,10 +53,10 @@ class Connection {
     if (message.op == "register") {
       this.name = message.name
       Connection.waiting.set(this.name, this)
+    } else {
+      // Bounce anything but registers
+      this.broadcast(message)
     }
-
-    // Bounce it
-    this.broadcast(message)
 
     // Consider starting a new game
     if (Connection.waiting.size == 2) {

@@ -141,20 +141,20 @@ class GameState {
   }
 
   startGame(players) {
-    if (players[0].name == this.name) {
+    if (players[0] == this.name) {
       // We go first
       console.log(`we, ${this.name}, go first`)
       this.turn = 0
 
-      this.players[1].name = players[1].name
-    } else if (players[1].name == this.name) {
+      this.players[1].name = players[1]
+    } else if (players[1] == this.name) {
       // We go second
       console.log(`we, ${this.name}, go second`)
       this.turn = 1
 
-      this.players[1].name = players[0].name
+      this.players[1].name = players[0]
     } else {
-      console.log("a game started that doesn't involve me")
+      console.log(`a game started that doesn't involve me, ${this.name}`)
       return
     }
 
