@@ -10,7 +10,7 @@ class Client {
 
   makeSocket() {
     let url = "ws://localhost:9090"
-    console.server_log(`connecting to ${url}`)
+    console.log_verbose(`connecting to ${url}`)
 
     // TODO: needs a more aggressive timeout
     this.ws = new WebSocket(url)
@@ -22,7 +22,7 @@ class Client {
 
   // When data is received from the server
   receive(messageData) {
-    console.server_log("received: " + messageData)
+    console.log_verbose("received: " + messageData)
 
     if (messageData == "hello") {
       // First thing we do when the server says hi is we register for
@@ -35,7 +35,7 @@ class Client {
       } else if (this.handleRemoteMove(message)) {
         // It was a remote move
       } else {
-        console.server_log("don't know how to handle this message. dropping it")
+        console.log_verbose("don't know how to handle this message. dropping it")
       }
     }
 
@@ -48,7 +48,7 @@ class Client {
 
   // Send a looking-for-game message.
   register() {
-    console.server_log("registering as " + this.name)
+    console.log_verbose("registering as " + this.name)
     this.send({op: "register", name: this.name})
   }
 
@@ -71,28 +71,28 @@ class Client {
     move.player = this.name
 
     if (!this.game.makeMove(move)) {
-      console.server_log("invalid local move: " + JSON.stringify(move))
+      console.log_verbose("invalid local move: " + JSON.stringify(move))
       return
     }
 
     this.send(move)
-    console.server_log("sending upstream: " + JSON.stringify(move))
+    console.log_verbose("sending upstream: " + JSON.stringify(move))
   }
 
   // This is called locally when the server decides remotely that a
   // game should start.
   handleStart(players) {
-    console.server_log(`${players[0]} should start versus ${players[1]}`)
+    console.log_verbose(`${players[0]} should start versus ${players[1]}`)
   }
 
   handleError() {
-    console.server_log("socket error. closing dirty socket")
+    console.log_verbose("socket error. closing dirty socket")
     this.ws.close()
   }
 
   // Whenever the socket closes we just make a new one
   handleClose() {
-    console.server_log("the socket closed")
+    console.log_verbose("the socket closed")
     
     // Wait 2 seconds to reconnect
     setTimeout(() => this.makeSocket(), 2000)
