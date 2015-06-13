@@ -1,4 +1,10 @@
-$palette-gray: gray;
+// http://coolors.co/app/00ffc5-fe5f55-adf5ff-0075a2-481620
+$palette-one: #00FFC5;
+$palette-two: #FE5F55;
+$palette-three: #ADF5FF;
+$palette-four: #0075A2;
+$palette-five: #481620;
+
 $default-padding: 20px;
 $card-height: 100px;
 $card-width: 80px;
@@ -10,7 +16,7 @@ $default-corner-radius: 6px;
 // cards in play and in hand
 // \todo simplified avatar for cards in play
 .playing-card {
-  background-color: $palette-gray; 
+  background-color: $palette-three; 
   width: $card-width;
   height: $card-height;
   border-radius: $default-corner-radius;
@@ -20,7 +26,7 @@ $default-corner-radius: 6px;
 }
 
 .active-card {
-  background-color: yellow; 
+  background-color: $palette-two; 
 }
 
 // the representation of the player
@@ -37,14 +43,14 @@ $default-corner-radius: 6px;
 // the overall container with all elements
 .game-container {
   text-align: center; 
-  background-color: green; 
+  background-color: $palette-four; 
   width: 1024px;
 }
 
 // area for cards to be played in center
 .in-play-area {
   text-align: center; 
-  background-color: rgba(225,225,225,1); 
+  background-color:$palette-three; 
   height: $in-play-height;
   width: $in-play-width;
   margin: 0 auto;
@@ -53,7 +59,7 @@ $default-corner-radius: 6px;
 .end-turn-button {
   width: 90px;
   padding:$default-padding;
-  background-color: yellow;
+  background-color: $palette-two;
   border-radius:6px;
   border: 1px solid;
   float:right;
