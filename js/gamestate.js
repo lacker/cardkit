@@ -123,6 +123,8 @@ class GameState {
     console.log("makeMove: " + JSON.stringify(move))
     if (move.op == "beginTurn") {
       this.beginTurn()
+    } else if (move.op == "hover") {
+      this.hover(move.from, move.active)
     } else if (move.op == "attack") {
       this.attack(move.from, move.to)
     } else if (move.op == "face") {
@@ -167,6 +169,15 @@ class GameState {
     }
   }
 
+  // Track whether the given card is being hovered.
+  // active is a bool
+  hover(from, active) {
+    // TODO: need to also pass the player whose card is being hovered, instead of just
+    // hovering the cards of whoever's turn it is.
+    let card = this.current().getHand(from)
+    card.hover = active
+  }
+
   // from and to are indices into board
   attack(from, to) {
     let attacker = this.current().getBoard(from)
@@ -203,7 +214,7 @@ class GameState {
     for (let key in card) {
       copy[key] = card[key]
     }
-
+    copy.hover = false;
     this.current().hand.push(copy)
   }
 

@@ -6,14 +6,43 @@ let Card = React.createClass({
   render() {
     
     let cssClassForCard = this.props.hasFocus ? 'playing-card active-card' : 'playing-card';
+
+    if (this.props.cardInfo.hover) {
+      cssClassForCard += ' hovered-card';
+    }
+
     return (
-        <div className={cssClassForCard} onClick={this.clickCard}>
+        <div className={cssClassForCard} 
+             onClick={this.clickCard}
+             onMouseOver={this.mouseOver}
+             onMouseOut={this.mouseOut}
+        >
         {this.props.cardInfo.name}
         <br />
         {this.props.cardInfo.attack}/{this.props.cardInfo.defense}
       </div>
     );
   
+  },
+
+  getInitialState: function() {
+    return {};
+  },
+
+  // Highlight a card onMouseOver if it has any legal plays
+  mouseOver: function() {
+    var move = {"op":"hover", 
+                "from":this.props.fromIndex,
+                "active": true,
+                 };
+    window.client.makeLocalMove(move);
+  },
+  mouseOut: function() {
+    var move = {"op":"hover", 
+                "from":this.props.fromIndex,
+                "active": false,
+                 };
+    window.client.makeLocalMove(move);
   },
 
   // highlight a card when clicked
@@ -26,11 +55,8 @@ let Card = React.createClass({
     this.props.hasFocus = !this.props.hasFocus;
     // play card on 2nd click
     if (!this.props.hasFocus) {
-      var fromIndex = window.game.current().hand.indexOf(this.props.cardInfo);
-      console.log(fromIndex);
-      console.log(window.game.current().hand);
       var move = {"op":"play", 
-                  "from":fromIndex
+                  "from":this.props.fromIndex,
                  };
       window.client.makeLocalMove(move);
     } else {

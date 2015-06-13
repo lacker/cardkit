@@ -23,6 +23,10 @@ $default-corner-radius: 6px;
   background-color: yellow; 
 }
 
+.hovered-card {
+  border-color: red;
+}
+
 // the representation of the player
 // \todo pics
 .player-avatar {
