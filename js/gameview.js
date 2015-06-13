@@ -7,6 +7,9 @@ import Card from "./cardview.js"
 let GameView = React.createClass({
     render() {
     window.client.forceUpdate = (() => this.forceUpdate())
+    console.log(window.game);
+    let cssEndTurn = window.game.turn == 0 ? 'active-player' : '';
+    cssEndTurn = 'end-turn-button'  + ' ' + cssEndTurn;
 
     let opponent = this.props.state.players[1];
     let homePlayer = this.props.state.players[0];
@@ -34,7 +37,7 @@ let GameView = React.createClass({
             </div>
           </div>
           
-          <div className="end-turn-button" onClick={this.endTurn}>End Turn</div>
+          <div className={cssEndTurn} onClick={this.endTurn}>End Turn</div>
 
           <div className="player-avatar " style={this.avatarStyle(0)}>
             Me
