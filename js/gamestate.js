@@ -120,7 +120,6 @@ class GameState {
   //
   // Returns whether the move was understood.
   makeMove(move) {
-    console.log("makeMove: " + JSON.stringify(move))
     if (move.op == "beginTurn") {
       this.beginTurn()
     } else if (move.op == "attack") {
@@ -140,7 +139,6 @@ class GameState {
 
   startGame(players, seed) {
     this.rng = new Math.seedrandom(seed)
-
     if (players[0] == this.name) {
       // We go first
       console.log(`we, ${this.name}, go first`)
@@ -173,7 +171,7 @@ class GameState {
     let defender = this.opponent().getBoard(to)
     attacker.defense -= defender.attack
     defender.defense -= attacker.attack
-    clearDead()
+    this.clearDead()
   }
 
   // Plays a card from the hand. For now assumes it's a creature.
