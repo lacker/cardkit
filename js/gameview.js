@@ -6,18 +6,8 @@ import Card from "./cardview.js"
 
 let GameView = React.createClass({
     render() {
-      window.client.forceUpdate = (() => this.forceUpdate())
 
-      let opponentBoardCards = this.props.state.players[1].board.map(function (cardInfo, i) {
-        return (
-            <Card cardInfo={cardInfo} player={this.props.state.players[1]} key={i} />
-        );
-      }.bind(this));
-      let homePlayerBoardCards = this.props.state.players[0].board.map(function (cardInfo, i) {
-        return (
-            <Card cardInfo={cardInfo} player={this.props.state.players[0]} key={i} />
-        );
-      }.bind(this));
+    window.client.gameView = this; 
 
     let opponent = this.props.state.players[1];
     let homePlayer = this.props.state.players[0];
@@ -26,7 +16,7 @@ let GameView = React.createClass({
     let homePlayerBoardCards = homePlayer.board.map((cardInfo, i) =>
           <Card cardInfo={cardInfo} player={homePlayer} key={i} />);
 
-      return (
+    return (
         <div className="game-container">
           
           <Player playerState={this.props.state.players[1]} />
@@ -59,6 +49,7 @@ let GameView = React.createClass({
   endTurn() {
     window.client.makeLocalMove({"op":"endTurn"});
     window.client.makeLocalMove({"op":"beginTurn"});
+    this.forceUpdate();
   },
 
   // highlight the active player
