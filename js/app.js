@@ -7,12 +7,10 @@ import GameView from "./gameview"
 let App = React.createClass({
   getInitialState() {
     // Stash things in window for easy debugging
-    window.game = new GameState()
+    window.name = `Guest ${Math.floor(Math.random() * 100)}`
+    window.game = new GameState(window.name)
+    window.client = new Client(window.name, window.game)
 
-    // TODO: only beginTurn after matchmaking
-    window.game.beginTurn()
-
-    window.client = new Client(window.game)
     return window.game
   },
 

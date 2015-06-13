@@ -40,7 +40,11 @@ class Connection {
   // Message should be JSON
   broadcast(message) {
     for (let conn of Connection.all.values()) {
-      conn.ws.send(JSON.stringify(message))
+      try {
+        conn.ws.send(JSON.stringify(message))
+      } catch(err) {
+        console.log("caught websocket send error: " + err)
+      }
     }
   }
 
