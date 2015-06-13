@@ -28,7 +28,6 @@ let Card = React.createClass({
     var fromAttackIndex = 0;
     var attackingCard;
     for (var card of window.game.current().board) {
-        console.log(card);
       if (card.hasFocus) {
         attackingCard = card;
         hasActiveCard = true;

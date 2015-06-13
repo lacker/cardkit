@@ -120,7 +120,6 @@ class GameState {
   //
   // Returns whether the move was understood.
   makeMove(move) {
-    console.log("makeMove: " + JSON.stringify(move))
     if (move.op == "beginTurn") {
       this.beginTurn()
     } else if (move.op == "attack") {
@@ -140,7 +139,6 @@ class GameState {
 
   startGame(players, seed) {
     this.rng = new Math.seedrandom(seed)
-    console.log(this.rng)
     if (players[0] == this.name) {
       // We go first
       console.log(`we, ${this.name}, go first`)
