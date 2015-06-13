@@ -18,9 +18,11 @@ let GameView = React.createClass({
     return (
         <div className="game-container">
           
-          <Player playerState={this.props.state.players[1]} />
+          <Player playerState={opponent} />
           <div className="player-avatar" style={this.avatarStyle(1)}>
             Computer
+            <div className="vital-stats-container">Life: {opponent.life}</div>
+            <div className="vital-stats-container">Mana: {opponent.mana} / {opponent.maxMana}</div>
           </div>
           
           <div className="in-play-area">
@@ -36,8 +38,10 @@ let GameView = React.createClass({
 
           <div className="player-avatar " style={this.avatarStyle(0)}>
             Me
+            <div className="vital-stats-container">Life: {homePlayer.life}</div>
+            <div className="vital-stats-container">Mana: {homePlayer.mana} / {homePlayer.maxMana}</div>
           </div>
-          <Player playerState={this.props.state.players[0]} />
+          <Player playerState={homePlayer} />
         
         </div>
         

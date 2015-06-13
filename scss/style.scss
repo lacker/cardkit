@@ -9,7 +9,7 @@ $default-padding: 20px;
 $card-height: 100px;
 $card-width: 80px;
 $in-play-width: 680px; // card-width*8 + padding*2
-$in-play-height: 240px; // card-height*2 + padding*2
+$in-play-height: 220px; // card-height*2 + padding/2
 $avatar-width: 140px;
 $default-corner-radius: 6px;
 
@@ -23,7 +23,15 @@ $default-corner-radius: 6px;
   display: inline-block;
   border: 1px solid;
 	border-color:black;
+  box-shadow: 5px 5px 12px 0px rgba(22,22,22,1);
+  cursor: pointer;
 }
+
+// pop up a bit on hover
+.playing-card:hover {
+  box-shadow: 7px 7px 17px 0px rgba(22,22,22,1);
+}
+
 
 .active-card {
   background-color: $palette-two; 
@@ -50,10 +58,11 @@ $default-corner-radius: 6px;
 // area for cards to be played in center
 .in-play-area {
   text-align: center; 
-  background-color:$palette-three; 
+  background-color:$palette-four; 
   height: $in-play-height;
   width: $in-play-width;
   margin: 0 auto;
+  border-radius: $default-corner-radius;
 }
 
 .end-turn-button {
@@ -67,26 +76,41 @@ $default-corner-radius: 6px;
   bottom:$in-play-height/2 + 40px;
   right:$default-padding;
   box-shadow: 5px 5px 12px 0px rgba(22,22,22,1);
+  cursor: pointer;
 }
+
+
+// pop up a bit on hover
+.end-turn-button:hover {
+  box-shadow: 7px 7px 17px 0px rgba(22,22,22,1);
+}
+
 
 .player-board {
 	clear:both;
 	width:100%;
   border: 1px solid;
   background-color: rgba(245,245,245,1);
-  height: $in-play-height/2 - 20;
+  height: $in-play-height/2 - 5;
+  border-radius: $default-corner-radius;
 }
 
 .home-player-board {
 	position: relative;
-	bottom: -40px;
+	bottom: -10px;
 }
 
-.life-container {
-	background-color: rgba(235,235,255,1);
-	width: 100px;
+.vital-stats-container {
+	background-color: $palette-three;
+	color:black;
+	padding:5px;
+	margin-top:10px;
 }
 
 .just-played-card, .has-attacked-card {
 	opacity: .5;
+}
+
+.hand-container {
+	height:$card-height + $default-padding;
 }
