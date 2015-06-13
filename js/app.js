@@ -6,9 +6,14 @@ import GameView from "./gameview"
 
 let App = React.createClass({
   getInitialState() {
-    // Stash it here for easy debugging
+    // Stash things in window for easy debugging
     window.game = new GameState()
+
+    // TODO: only beginTurn after matchmaking
     window.game.beginTurn()
+
+    window.client = new Client(window.game)
+
     return window.game
   },
 
@@ -23,4 +28,3 @@ let App = React.createClass({
 
 React.render(<App/>, document.body)
 
-window.client = new Client()

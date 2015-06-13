@@ -1,8 +1,9 @@
 // This websocket client runs in the browser and talks to the
 // websocket server that's defined in server.js.
-
 class Client {
-  constructor() {
+  // game is a GameState and should start at the beginning of the game.
+  constructor(game) {
+    this.game = game
     this.name = `Guest ${Math.floor(Math.random() * 100)}`
     this.makeSocket()
   }
@@ -30,6 +31,8 @@ class Client {
       this.register()
     } else if (message.op == "start") {
       this.handleStart(message.players)
+    } else if (this.game.makeMove(message)) {
+      // It was a remote move
     } else {
       console.log("don't know how to handle this message. dropping it")
     }
@@ -44,6 +47,17 @@ class Client {
   register() {
     console.log("registering as " + this.name)
     this.send({op: "register", name: this.name})
+  }
+
+  // Makes a move locally then communicates it to the server.
+  makeLocalMove(move) {
+    if (!this.game.makeMove(move)) {
+      console.log("invalid local move: " + JSON.stringify(move))
+      return
+    }
+
+    this.send(move)
+    console.log("sending upstream: " + JSON.stringify(move))
   }
 
   // This is called locally when the server decides remotely that a

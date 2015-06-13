@@ -111,6 +111,8 @@ class GameState {
   // makeMove makes a move that is provided via a JSON representation.
   //
   // In typical operation, only the Client should call makeMove.
+  //
+  // Returns whether the move was understood.
   makeMove(move) {
     console.log("makeMove: " + JSON.stringify(move))
     if (move.op == "beginTurn") {
@@ -125,7 +127,9 @@ class GameState {
       this.endTurn()
     } else {
       console.log("ignoring op: " + move.op)
+      return false
     }
+    return true
   }
 
   clearDead() {
