@@ -62,8 +62,8 @@ class Connection {
     // Consider starting a new game
     if (Connection.waiting.size == 2) {
       let players = Array.from(Connection.waiting.keys())
-      console.log(`starting ${players[0]} vs ${players[1]}`)
-      let seed = 1337
+      let seed = Math.floor(Math.random() * 1000000)
+      console.log(`starting ${players[0]} vs ${players[1]}. seed: ${seed}`)
       let start = { op: "start", players, seed }
       this.broadcast(start)
       Connection.waiting.clear()
