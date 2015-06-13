@@ -6,12 +6,8 @@ let Player = React.createClass({
   render() {
     let mana = this.props.playerState.mana;  
     let maxMana = this.props.playerState.maxMana;  
-    let handCards = this.props.playerState.hand.map(function (cardInfo, i) {
-      return (
-          <Card cardInfo={cardInfo} player={this.props.playerState} key={i} />
-      );
-    }.bind(this));
-
+    let handCards = this.props.playerState.hand.map((cardInfo, i) =>
+      <Card cardInfo={cardInfo} player={this.props.playerState} key={i} />);
     return (
         <div>
           {handCards}

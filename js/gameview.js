@@ -19,6 +19,13 @@ let GameView = React.createClass({
         );
       }.bind(this));
 
+    let opponent = this.props.state.players[1];
+    let homePlayer = this.props.state.players[0];
+    let opponentBoardCards = opponent.board.map((cardInfo, i) =>
+          <Card cardInfo={cardInfo} player={opponent} key={i} />);
+    let homePlayerBoardCards = homePlayer.board.map((cardInfo, i) =>
+          <Card cardInfo={cardInfo} player={homePlayer} key={i} />);
+
       return (
         <div className="game-container">
           
