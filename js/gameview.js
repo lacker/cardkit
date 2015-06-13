@@ -1,11 +1,22 @@
 // React view of a GameState
 import React from 'react';
 import Player from './playerview.js';
+import Card from "./cardview.js"
 
 
 let GameView = React.createClass({
     render() {
     window.client.gameView = this; 
+    let opponentBoardCards = this.props.state.players[1].board.map(function (cardInfo, i) {
+      return (
+          <Card cardInfo={cardInfo} player={this.props.state.players[1]} key={i} />
+      );
+    }.bind(this));
+    let homePlayerBoardCards = this.props.state.players[0].board.map(function (cardInfo, i) {
+      return (
+          <Card cardInfo={cardInfo} player={this.props.state.players[0]} key={i} />
+      );
+    }.bind(this));
     return (
         <div className="game-container">
           
@@ -15,8 +26,12 @@ let GameView = React.createClass({
           </div>
           
           <div className="in-play-area">
-            {this.props.state.players[1].board}
-            {this.props.state.players[0].board}
+            <div className="player-board">
+              {opponentBoardCards}
+            </div>
+            <div className="player-board home-player-board">
+              {homePlayerBoardCards}
+            </div>
           </div>
           
           <div className="end-turn-button" onClick={this.endTurn}>End Turn</div>
