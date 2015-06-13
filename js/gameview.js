@@ -7,9 +7,6 @@ import Card from "./cardview.js"
 let GameView = React.createClass({
     render() {
     window.client.forceUpdate = (() => this.forceUpdate())
-    console.log(window.game);
-    let cssEndTurn = window.game.turn == 0 ? 'active-player' : '';
-    cssEndTurn = 'end-turn-button'  + ' ' + cssEndTurn;
 
     let opponent = this.props.state.players[1];
     let homePlayer = this.props.state.players[0];
@@ -17,6 +14,9 @@ let GameView = React.createClass({
           <Card cardInfo={cardInfo} player={opponent} key={i} />);
     let homePlayerBoardCards = homePlayer.board.map((cardInfo, i) =>
           <Card cardInfo={cardInfo} player={homePlayer} key={i} />);
+
+    let cssEndTurn = window.game.turn == 0 ? 'active-player' : '';
+    cssEndTurn = 'end-turn-button'  + ' ' + cssEndTurn;
 
     return (
         <div className="game-container">
