@@ -31,7 +31,7 @@ class Client {
       this.register()
     } else if (message.op == "start") {
       this.handleStart(message.players)
-    } else if (this.game.makeMove(message)) {
+    } else if (this.handleRemoteMove(message)) {
       // It was a remote move
     } else {
       console.log("don't know how to handle this message. dropping it")
@@ -49,8 +49,24 @@ class Client {
     this.send({op: "register", name: this.name})
   }
 
+  // Handles a move being reported from the server.
+  // Returns whether it could be handled.
+  handleRemoteMove(move) {
+    if (!move.op || !move.player) {
+      return false
+    }
+    if (move.player == this.name) {
+      // This is a bounce of a move we made.
+      return true
+    }
+
+    return this.game.makeMove(move)
+  }
+
   // Makes a move locally then communicates it to the server.
   makeLocalMove(move) {
+    move.player = this.name
+
     if (!this.game.makeMove(move)) {
       console.log("invalid local move: " + JSON.stringify(move))
       return
