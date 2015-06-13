@@ -19,7 +19,8 @@ class Connection {
   constructor(ws) {
     this.ws = ws
     this.name = null
-    console.log(`hello ${this.address()}`)
+    this.address = `${ws._socket.remoteAddress}:${ws._socket.remotePort}`
+    console.log(`hello ${this.address}`)
 
     if (Connection.all === undefined) {
       // Connection.all maps client addresses to connected clients
@@ -29,13 +30,8 @@ class Connection {
       // register operation, keyed by name.
       Connection.waiting = new Map()
     }
-    Connection.all.set(this.address(), this)
+    Connection.all.set(this.address, this)
   }
-
-  address() {
-    return `${this.ws._socket.remoteAddress}:${this.ws._socket.remotePort}`
-  }
-    
 
   // Message should be JSON
   broadcast(message) {
@@ -70,8 +66,8 @@ class Connection {
   }
 
   close() {
-    console.log(`goodbye ${this.address()}`)
-    Connection.all.delete(this.address())
+    console.log(`goodbye ${this.address}`)
+    Connection.all.delete(this.address)
     if (this.name != null && Connection.waiting.has(this.name)) {
       Connection.waiting.delete(this.name)
     }
