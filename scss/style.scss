@@ -6,10 +6,10 @@ $palette-four: #0075A2;
 $palette-five: #481620;
 
 $default-padding: 20px;
-$card-height: 100px;
-$card-width: 80px;
-$in-play-width: 600px; // card-width*7 + padding*2
-$in-play-height: 220px; // card-height*2 + padding/2
+$card-height: 120px;
+$card-width: 110px;
+$in-play-width: $card-width*7 + $default-padding*2; 
+$in-play-height: $card-height*2 + $default-padding/2; 
 $avatar-width: 140px;
 $default-corner-radius: 6px;
 
@@ -42,6 +42,29 @@ body {
   background-color: $palette-two; 
 }
 
+$end-turn-button-width: 90px;
+
+// the main End Turn button that always shows in the game
+.end-turn-button {
+  width: $end-turn-button-width;
+  padding:$default-padding;
+  background-color: $palette-four;
+  color:gray;
+  border-radius:6px;
+  border: 1px solid;
+  float:right;
+  position:relative;
+  bottom:$in-play-height/2 + 40px;
+  right:$default-padding;
+  pointer-events:none;
+  margin-right: $default-padding;
+}
+
+// pop up end turn button a bit on hover
+.active-player:hover {
+  box-shadow: 7px 7px 17px 0px rgba(22,22,22,1);
+}
+
 // the representation of the player
 // \todo pics
 .player-avatar {
@@ -51,6 +74,8 @@ body {
   font-weight: fontWeight; 
   border-radius: $default-corner-radius;
   background-color: white;
+  position: relative;
+  right: $end-turn-button-width/2;
 }
 
 // the overall container with all elements
@@ -67,28 +92,8 @@ body {
   background-color:$palette-four; 
   height: $in-play-height;
   width: $in-play-width;
-  margin: 0 auto;
   border-radius: $default-corner-radius;
-}
-
-// the main End Turn button that always shows in the game
-.end-turn-button {
-  width: 90px;
-  padding:$default-padding;
-  background-color: $palette-four;
-  color:gray;
-  border-radius:6px;
-  border: 1px solid;
-  float:right;
-  position:relative;
-  bottom:$in-play-height/2 + 40px;
-  right:$default-padding;
-  pointer-events:none;
-}
-
-// pop up a bit on hover
-.active-player:hover {
-  box-shadow: 7px 7px 17px 0px rgba(22,22,22,1);
+  margin-left:$default-padding;
 }
 
 .active-player {
@@ -98,7 +103,6 @@ body {
   cursor: pointer;
   pointer-events:auto;
 }
-
 
 
 // a player';'s in play cards
@@ -138,4 +142,6 @@ body {
 // where a player's unplayed cards go
 .hand-container {
 	height:$card-height + $default-padding;
+  position: relative;
+  right: $end-turn-button-width/2;
 }
