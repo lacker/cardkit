@@ -78,9 +78,11 @@ class PlayerState {
 }
 
 // A turn goes like
+//
 // beginTurn
 // Some number of attack, face, and play
 // endTurn
+//
 class GameState {
   constructor() {
     // Index of whose turn it is
@@ -98,6 +100,32 @@ class GameState {
   // The player whose turn it isn't
   opponent() {
     return this.players[1 - this.turn]
+  }
+
+  // Each type of move has a JSON representation.
+  //
+  // The keys are:
+  // op: the method name. beginTurn, attack, face, play, endTurn
+  // from: the index a card is coming from
+  // to: the index a card is going to
+  // makeMove makes a move that is provided via a JSON representation.
+  //
+  // In typical operation, only the Client should call makeMove.
+  makeMove(move) {
+    console.log("makeMove: " + JSON.stringify(move))
+    if (move.op == "beginTurn") {
+      this.beginTurn()
+    } else if (move.op == "attack") {
+      this.attack(move.from, move.to)
+    } else if (move.op == "face") {
+      this.face(move.from)
+    } else if (move.op == "play") {
+      this.play(move.from)
+    } else if (move.op == "endTurn") {
+      this.endTurn()
+    } else {
+      console.log("ignoring op: " + move.op)
+    }
   }
 
   clearDead() {
