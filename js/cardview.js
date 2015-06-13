@@ -10,10 +10,16 @@ let Card = React.createClass({
       cssClassCanPlay = "too-expensive";
     }
 
-    let cssClass = this.props.cardInfo.hasFocus ? 'playing-card active-card' : 'playing-card';
-    let cssClassAttacked = this.props.cardInfo.hasAttacked ? 'has-attacked-card' : '';
-    let cssClassJustPlayed = this.props.cardInfo.enteredPlayThisTurn ? 'just-played-card' : '';
-    let combinedCSS = cssClass + ' ' + cssClassCanPlay + ' ' + cssClassAttacked + ' ' + cssClassJustPlayed; 
+    let cssClass = this.props.cardInfo.hasFocus ? 
+                   'playing-card active-card' : 'playing-card';
+    let cssClassAttacked = this.props.cardInfo.hasAttacked ? 
+                           'has-attacked-card' : '';
+    let cssClassJustPlayed = this.props.cardInfo.enteredPlayThisTurn ? 
+                             'just-played-card' : '';
+    let combinedCSS = cssClass + ' ' + 
+                      cssClassCanPlay + ' ' + 
+                      cssClassAttacked + ' ' + 
+                      cssClassJustPlayed; 
     return (
         <div className={combinedCSS} onClick={this.clickCard}>
         {this.props.cardInfo.name}
@@ -84,36 +90,36 @@ let Card = React.createClass({
   // highlight a card when clicked, play when double clicked
   playFromHand: function(fromIndex, card) {
     // card can only be highlighted and played if player has enough mana
-    if (this.props.cardInfo.cost > this.props.player.mana) {
-      return;
-    }
-    
-    this.props.cardInfo.hasFocus = !this.props.cardInfo.hasFocus;
-    // play card on 2nd click
-    if (!this.props.cardInfo.hasFocus) {
-      var move = {"op":"play", 
-                  "from":fromIndex
-                 };
-      window.client.makeLocalMove(move);
-      window.client.gameView.forceUpdate();
-      card.enteredPlayThisTurn = true;
-    } else {
-      this.forceUpdate();
+    if (this.props.cardInfo.cost < this.props.player.mana) {
+      let moveClosure = function() {
+        var move = {"op":"play", 
+                    "from":fromIndex
+                   };
+        window.client.makeLocalMove(move);
+        card.enteredPlayThisTurn = true;
+      }
+      this.highlightOrPlayMove(moveClosure);    
     }
   },
 
-  // highlight a card when clicked, play when double clicked
+  // highlight a card when clicked, attack face when double clicked
   clickCardInPlay: function(fromIndex, card) {
-    
-    this.props.cardInfo.hasFocus = !this.props.cardInfo.hasFocus;
-    // attack face on second click
-    if (!this.props.cardInfo.hasFocus) {
+    let moveClosure = function() {
       var move = {"op":"face", 
                   "from":fromIndex
                  };
       window.client.makeLocalMove(move);
+      card.hasAttacked = true;      
+    }
+    this.highlightOrPlayMove(moveClosure);
+  },
+
+  // when a card is clicked, highlight it, play it, or attack with it
+  highlightOrPlayMove: function(moveClosure) {
+    this.props.cardInfo.hasFocus = !this.props.cardInfo.hasFocus;
+    if (!this.props.cardInfo.hasFocus) {
+      moveClosure();
       window.client.gameView.forceUpdate();
-      card.hasAttacked = true;
     } else {
       this.forceUpdate();
     }
