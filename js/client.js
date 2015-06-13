@@ -6,6 +6,17 @@ class Client {
     this.name = name
     this.game = game
     this.makeSocket()
+
+    // Each game-move has an id on it.
+    // The convention is that once you process a move with a certain
+    // id, if you see it again in the future you just won't process
+    // it. That means that for error-resistance we can just repeatedly
+    // resend our past moves.
+    this.processed = new Set()
+
+    // Past moves that we can re-send.
+    // Here we keep all moves that happened since any opponent move.
+    this.buffer = []
   }
 
   makeSocket() {
@@ -22,7 +33,6 @@ class Client {
 
   // When data is received from the server
   receive(messageData) {
-    console.log("received: " + messageData)
     let message = JSON.parse(messageData)
 
     if (message.op == "hello") {
@@ -36,10 +46,18 @@ class Client {
       console.log("don't know how to handle this message. dropping it")
     }
   }
+
+  // Sends all pending message objects upstream.
+  flush() {
+    for (var message of this.buffer) {
+      this.ws.send(JSON.stringify(message))
+    }
+  }
   
   // Sends a message object upstream.
   send(message) {
-    this.ws.send(JSON.stringify(message))
+    this.buffer.push(message)
+    this.flush()
   }
 
   // Send a looking-for-game message.
@@ -53,7 +71,7 @@ class Client {
   }
 
   // Handles a move being reported from the server.
-  // Returns whether it could be handled.
+  // Returns whether we knew what to do with it.
   handleRemoteMove(move) {
     if (!move.op || !move.player) {
       return false
@@ -62,8 +80,15 @@ class Client {
       // This is a bounce of a move we made.
       return true
     }
+    if (move.id && this.processed.has(move.id)) {
+      // This is a move we have already processed.
+      return true
+    }
 
+    console.log("making remote move: " + JSON.stringify(move))
     if (this.game.makeMove(move)) {
+      this.processed.add(move.id)
+      this.buffer = []
       this.forceUpdate()
       return true
     }
@@ -73,31 +98,32 @@ class Client {
   // Makes a move locally then communicates it to the server.
   makeLocalMove(move) {
     move.player = this.name
+    move.id = "m" + Math.floor(Math.random() * 1000000000000)
 
+    console.log("making local move: " + JSON.stringify(move))
     if (!this.game.makeMove(move)) {
-      console.log("invalid local move: " + JSON.stringify(move))
+      console.log("invalid!")
       return
     }
 
     this.forceUpdate()
     this.send(move)
-    console.log("sending upstream: " + JSON.stringify(move))
   }
 
   // This is called locally when the server decides remotely that a
   // game should start.
   handleStart(message) {
+    this.buffer = []
     let players = message.players
     let seed = message.seed
 
-    console.log(`${players[0]} should start versus ${players[1]}`)
+    console.log(`starting game: ${players[0]} vs ${players[1]}`)
     
     this.game.startGame(players, seed)
     this.forceUpdate()
   }
 
   handleError() {
-    console.log("socket error. closing dirty socket")
     this.ws.close()
   }
 
