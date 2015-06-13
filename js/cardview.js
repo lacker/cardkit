@@ -44,10 +44,8 @@ let Card = React.createClass({
     let fromAttackIndex = 0;
     let attackingCard;
     for (let card of window.game.current().board) {
-      console.log(card)
       if (card.hasFocus) {
         attackingCard = card;
-        console.log("has active card")
         break;
       }
       fromAttackIndex++;
@@ -55,7 +53,6 @@ let Card = React.createClass({
     
 
     let toIndex = window.game.opponent().board.indexOf(this.props.cardInfo);
-    console.log("to index: " + toIndex);
     if (toIndex != -1 && attackingCard) {
       this.attackCreature(fromAttackIndex, toIndex, attackingCard);
       this.unhighlightAllCards();
@@ -86,11 +83,7 @@ let Card = React.createClass({
   },
   
   unhighlightAllCards: function(currentCard) {
-    console.log("currentCard")
-    console.log(currentCard)
     for (let card of window.game.current().board) {
-    console.log("boardCard")
-     console.log(card)
       if (card != currentCard) {
         card.hasFocus = false;
       }
