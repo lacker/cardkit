@@ -111,6 +111,12 @@ $default-corner-radius: 6px;
 	opacity: .5;
 }
 
+.too-expensive {
+	opacity: .9;
+	color:gray;
+  box-shadow: 5px 5px 12px 0px rgba(22,22,22,0);
+}
+
 .hand-container {
 	height:$card-height + $default-padding;
 }
