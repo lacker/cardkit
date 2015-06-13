@@ -45,7 +45,7 @@ body {
 // the representation of the player
 // \todo pics
 .player-avatar {
-  padding:$default-padding;
+  padding:$default-padding/2;
   margin: $default-padding auto;
   width: $avatar-width;
   font-weight: fontWeight; 
@@ -75,21 +75,29 @@ body {
 .end-turn-button {
   width: 90px;
   padding:$default-padding;
-  background-color: $palette-two;
+  background-color: $palette-four;
+  color:gray;
   border-radius:6px;
   border: 1px solid;
   float:right;
   position:relative;
   bottom:$in-play-height/2 + 40px;
   right:$default-padding;
-  box-shadow: 5px 5px 12px 0px rgba(22,22,22,1);
-  cursor: pointer;
 }
 
 // pop up a bit on hover
-.end-turn-button:hover {
+.active-player:hover {
   box-shadow: 7px 7px 17px 0px rgba(22,22,22,1);
 }
+
+.active-player {
+  background-color: $palette-two;
+  box-shadow: 5px 5px 12px 0px rgba(22,22,22,1);
+  color:white;
+  cursor: pointer;
+}
+
+
 
 // a player';'s in play cards
 .player-board {
