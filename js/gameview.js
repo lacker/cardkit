@@ -8,17 +8,6 @@ let GameView = React.createClass({
     render() {
       window.client.forceUpdate = (() => this.forceUpdate())
 
-      let opponentBoardCards = this.props.state.players[1].board.map(function (cardInfo, i) {
-        return (
-            <Card cardInfo={cardInfo} player={this.props.state.players[1]} key={i} />
-        );
-      }.bind(this));
-      let homePlayerBoardCards = this.props.state.players[0].board.map(function (cardInfo, i) {
-        return (
-            <Card cardInfo={cardInfo} player={this.props.state.players[0]} key={i} />
-        );
-      }.bind(this));
-
     let opponent = this.props.state.players[1];
     let homePlayer = this.props.state.players[0];
     let opponentBoardCards = opponent.board.map((cardInfo, i) =>

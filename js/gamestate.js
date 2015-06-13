@@ -1,5 +1,7 @@
 // The state of a ccg type card game.
 
+require("seedrandom")
+
 const CARDS = [
   {
     name: "Twobot",
@@ -44,10 +46,6 @@ const CARDS = [
     cost: 8
   },
 ]
-
-function randomCard() {
-  return CARDS[Math.floor(Math.random() * CARDS.length)]
-}
 
 // The state of a single player.
 class PlayerState {
@@ -140,7 +138,9 @@ class GameState {
     return true
   }
 
-  startGame(players) {
+  startGame(players, seed) {
+    this.rng = new Math.seedrandom(seed)
+
     if (players[0] == this.name) {
       // We go first
       console.log(`we, ${this.name}, go first`)
@@ -154,7 +154,7 @@ class GameState {
 
       this.players[1].name = players[0]
     } else {
-      console.log(`a game started that doesn't involve me, ${this.name}`)
+      console.log(`a game started without me, ${this.name}`)
       return
     }
 
@@ -197,7 +197,8 @@ class GameState {
   }
 
   draw() {
-    this.current().hand.push(randomCard())
+    let card = CARDS[Math.floor(this.rng() * CARDS.length)]
+    this.current().hand.push(card)
   }
 
   beginTurn() {

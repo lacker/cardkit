@@ -62,7 +62,8 @@ class Connection {
     if (Connection.waiting.size == 2) {
       let players = Array.from(Connection.waiting.keys())
       console.log(`starting ${players[0]} vs ${players[1]}`)
-      let start = { op: "start", players: players }
+      let seed = 1337
+      let start = { op: "start", players: players, seed: seed }
       this.broadcast(start)
       Connection.waiting.clear()
     }
