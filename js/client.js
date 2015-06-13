@@ -1,3 +1,7 @@
+// turn of some logging
+// console.logVerbose = console.log;
+console.logVerbose = function(){};
+
 
 // This websocket client runs in the browser and talks to the
 // websocket server that's defined in server.js.
@@ -41,7 +45,7 @@ class Client {
     }
 
   }
-  
+
   // Sends a message object upstream.
   send(message) {
     this.ws.send(JSON.stringify(message))

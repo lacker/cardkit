@@ -19,7 +19,7 @@ class Connection {
   constructor(ws) {
     this.ws = ws
     this.name = null
-    console.server_log(`hello ${this.address()}`)
+    console.logVerbose(`hello ${this.address()}`)
 
     if (Connection.all === undefined) {
       // Connection.all maps client addresses to connected clients
@@ -43,7 +43,7 @@ class Connection {
       try {
         conn.ws.send(JSON.stringify(message))
       } catch(err) {
-        console.server_log("caught websocket send error: " + err)
+        console.logVerbose("caught websocket send error: " + err)
       }
     }
   }
@@ -61,7 +61,7 @@ class Connection {
     // Consider starting a new game
     if (Connection.waiting.size == 2) {
       let players = Array.from(Connection.waiting.keys())
-      console.server_log(`starting ${players[0]} vs ${players[1]}`)
+      console.logVerbose(`starting ${players[0]} vs ${players[1]}`)
       let seed = 1337
       let start = { op: "start", players, seed }
       this.broadcast(start)
@@ -70,7 +70,7 @@ class Connection {
   }
 
   close() {
-    console.server_log(`goodbye ${this.address()}`)
+    console.logVerbose(`goodbye ${this.address()}`)
     Connection.all.delete(this.address())
     if (this.name != null && Connection.waiting.has(this.name)) {
       Connection.waiting.delete(this.name)
@@ -90,4 +90,4 @@ wss.on("connection", function(ws) {
   ws.send(JSON.stringify({op: "hello"}))
 })
 
-console.server_log("server running...")
+console.logVerbose("server running...")

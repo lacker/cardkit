@@ -4,11 +4,6 @@ import Client from "./client"
 import GameState from "./gamestate"
 import GameView from "./gameview"
 
-// turn of some logging
-//console.logVerbose = console.log;
-console.logVerbose = function(){};
-
-
 let App = React.createClass({
   getInitialState() {
     // Stash things in window for easy debugging
