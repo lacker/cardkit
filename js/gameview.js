@@ -6,7 +6,6 @@ import Card from "./cardview.js"
 
 let GameView = React.createClass({
     render() {
-
     window.client.gameView = this; 
 
     let opponent = this.props.state.players[1];
@@ -49,6 +48,11 @@ let GameView = React.createClass({
   endTurn() {
     window.client.makeLocalMove({"op":"endTurn"});
     window.client.makeLocalMove({"op":"beginTurn"});
+
+    for (var card of window.game.current().board) {
+      card.hasAttacked = false;
+      card.enteredPlayThisTurn = false;
+    }
     this.forceUpdate();
   },
 

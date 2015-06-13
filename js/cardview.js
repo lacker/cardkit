@@ -18,15 +18,21 @@ let Card = React.createClass({
 
   // click cards in current player's hand or board
   clickCard: function() {
+
+    // can click to play cards in hand
     var fromIndex = window.game.current().hand.indexOf(this.props.cardInfo);
     if (fromIndex != -1) {
-      playFromHand(fromIndex);
+      this.playFromHand(fromIndex, this.props.cardInfo);
       return;
     }
     
+    // can click a card in play if it's in the player's board
+    // and it's not summoning sick or already attacked
     fromIndex = window.game.current().board.indexOf(this.props.cardInfo);
-    if (fromIndex != -1) {
-      clickCardInPlay(fromIndex);
+    if (fromIndex != -1 && 
+        !this.props.cardInfo.enteredPlayThisTurn &&
+        !this.props.cardInfo.hasAttacked) {
+      this.clickCardInPlay(fromIndex, this.props.cardInfo);
       return;
     }
 
@@ -35,7 +41,7 @@ let Card = React.createClass({
   },
 
   // highlight a card when clicked, play when double clicked
-  playFromHand: function(fromIndex) {
+  playFromHand: function(fromIndex, card) {
     // card can only be highlighted and played if player has enough mana
     if (this.props.cardInfo.cost > this.props.player.mana) {
       return;
@@ -48,13 +54,15 @@ let Card = React.createClass({
                   "from":fromIndex
                  };
       window.client.makeLocalMove(move);
+      window.client.gameView.forceUpdate();
+      card.enteredPlayThisTurn = true;
     } else {
       this.forceUpdate();
     }
   },
 
   // highlight a card when clicked, play when double clicked
-  clickCardInPlay: function(fromIndex) {
+  clickCardInPlay: function(fromIndex, card) {
     
     this.props.hasFocus = !this.props.hasFocus;
     // attack face on second click
@@ -63,6 +71,8 @@ let Card = React.createClass({
                   "from":fromIndex
                  };
       window.client.makeLocalMove(move);
+      window.client.gameView.forceUpdate();
+      card.hasAttacked = true;
     } else {
       this.forceUpdate();
     }

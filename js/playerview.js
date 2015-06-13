@@ -4,6 +4,7 @@ import Card from "./cardview.js"
 
 let Player = React.createClass({
   render() {
+    let life = this.props.playerState.life;  
     let mana = this.props.playerState.mana;  
     let maxMana = this.props.playerState.maxMana;  
     let handCards = this.props.playerState.hand.map((cardInfo, i) =>
@@ -11,7 +12,8 @@ let Player = React.createClass({
     return (
         <div>
           {handCards}
-          Mana: {mana} / {maxMana}
+          <div className="life-container">Life: {life}</div>
+          <div className="life-container">Mana: {mana} / {maxMana}</div>
         </div> 
 
     );

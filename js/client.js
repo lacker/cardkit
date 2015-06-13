@@ -30,7 +30,7 @@ class Client {
       // a game
       this.register()
     } else if (message.op == "start") {
-      this.handleStart(message.players)
+      this.handleStart(message)
     } else if (this.handleRemoteMove(message)) {
       // It was a remote move
     } else {
@@ -87,10 +87,13 @@ class Client {
 
   // This is called locally when the server decides remotely that a
   // game should start.
-  handleStart(players) {
+  handleStart(message) {
+    let players = message.players
+    let seed = message.seed
+
     console.log(`${players[0]} should start versus ${players[1]}`)
     
-    this.game.startGame(players)
+    this.game.startGame(players, seed)
     this.forceUpdate()
   }
 
