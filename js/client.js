@@ -2,9 +2,9 @@
 // websocket server that's defined in server.js.
 class Client {
   // game is a GameState and should start at the beginning of the game.
-  constructor(game) {
+  constructor(name, game) {
+    this.name = name
     this.game = game
-    this.name = `Guest ${Math.floor(Math.random() * 100)}`
     this.makeSocket()
   }
 
@@ -49,6 +49,10 @@ class Client {
     this.send({op: "register", name: this.name})
   }
 
+  forceUpdate() {
+    console.log("forceUpdate on the client was not overridden")
+  }
+
   // Handles a move being reported from the server.
   // Returns whether it could be handled.
   handleRemoteMove(move) {
@@ -60,7 +64,11 @@ class Client {
       return true
     }
 
-    return this.game.makeMove(move)
+    if (this.game.makeMove(move)) {
+      this.forceUpdate()
+      return true
+    }
+    return false
   }
 
   // Makes a move locally then communicates it to the server.
@@ -72,6 +80,7 @@ class Client {
       return
     }
 
+    this.forceUpdate()
     this.send(move)
     console.log("sending upstream: " + JSON.stringify(move))
   }
@@ -80,6 +89,9 @@ class Client {
   // game should start.
   handleStart(players) {
     console.log(`${players[0]} should start versus ${players[1]}`)
+    
+    this.game.startGame(players)
+    this.forceUpdate()
   }
 
   handleError() {

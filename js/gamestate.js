@@ -51,9 +51,9 @@ function randomCard() {
 
 // The state of a single player.
 class PlayerState {
-  constructor(name, goingFirst) {
+  constructor(name) {
     this.name = name
-    this.hand = [randomCard(), randomCard(), randomCard()]
+    this.hand = []
     this.board = []
     this.life = 30
     this.mana = 0
@@ -84,12 +84,20 @@ class PlayerState {
 // endTurn
 //
 class GameState {
-  constructor() {
-    // Index of whose turn it is
-    this.turn = 0
 
-    this.players = [new PlayerState("Alice", true),
-                    new PlayerState("Bob", false)]
+  // name is the name of the human at the controls.
+  constructor(name) {
+    this.name = name
+
+    // Index of whose turn it is.
+    // The human at the controls is always 0 here.
+    // We just start off with it not being our turn so that the UI
+    // will be disabled - when we actually start the game it may or
+    // may not be our turn.
+    this.turn = 1
+
+    this.players = [new PlayerState("You", true),
+                    new PlayerState("waiting for opponent...", false)]
   }
 
   // The player whose turn it is
@@ -130,6 +138,27 @@ class GameState {
       return false
     }
     return true
+  }
+
+  startGame(players) {
+    if (players[0].name == this.name) {
+      // We go first
+      console.log(`we, ${this.name}, go first`)
+      this.turn = 0
+
+      this.players[1].name = players[1].name
+    } else if (players[1].name == this.name) {
+      // We go second
+      console.log(`we, ${this.name}, go second`)
+      this.turn = 1
+
+      this.players[1].name = players[0].name
+    } else {
+      console.log("a game started that doesn't involve me")
+      return
+    }
+
+    this.beginTurn()
   }
 
   clearDead() {

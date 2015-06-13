@@ -5,8 +5,8 @@ import Player from './playerview.js';
 
 let GameView = React.createClass({
     render() {
-    window.client.gameView = this; 
-    return (
+      window.client.forceUpdate = (() => this.forceUpdate())
+      return (
         <div className="game-container">
           
           <Player playerState={this.props.state.players[1]} />
@@ -35,7 +35,6 @@ let GameView = React.createClass({
   endTurn() {
     window.client.makeLocalMove({"op":"endTurn"});
     window.client.makeLocalMove({"op":"beginTurn"});
-    this.forceUpdate();
   },
 
   // highlight the active player

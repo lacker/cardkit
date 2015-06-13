@@ -33,7 +33,6 @@ let Card = React.createClass({
                   "from":fromIndex
                  };
       window.client.makeLocalMove(move);
-      window.client.gameView.forceUpdate();
     } else {
       this.forceUpdate();
     }
