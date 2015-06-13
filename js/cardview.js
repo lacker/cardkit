@@ -117,10 +117,10 @@ let Card = React.createClass({
   // when a card is clicked, highlight it, play it, or attack with it
   highlightOrPlayMove: function(moveClosure) {
     this.props.cardInfo.hasFocus = !this.props.cardInfo.hasFocus;
-    if (!this.props.cardInfo.hasFocus) {
+    if (!this.props.cardInfo.hasFocus) { // play or attack with card
       moveClosure();
       window.client.gameView.forceUpdate();
-    } else {
+    } else { // just highlight the card
       this.forceUpdate();
     }
   }
