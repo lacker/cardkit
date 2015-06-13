@@ -6,10 +6,10 @@ $palette-four: #0075A2;
 $palette-five: #481620;
 
 $default-padding: 20px;
-$card-height: 140px;
+$card-height: 120px;
 $card-width: 110px;
-$in-play-width: $card-width*7 + $default-padding*2; //
-$in-play-height: 220px; // card-height*2 + padding/2
+$in-play-width: $card-width*7 + $default-padding*2; 
+$in-play-height: $card-height*2 + $default-padding/2; 
 $avatar-width: 140px;
 $default-corner-radius: 6px;
 
