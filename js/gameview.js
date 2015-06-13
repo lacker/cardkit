@@ -55,13 +55,11 @@ let GameView = React.createClass({
       card.enteredPlayThisTurn = false;
       card.hasFocus = false;
     }
-    for (var card of window.game.current().hand) {
+    for (let card of window.game.current().hand) {
       card.hasFocus = false;
     }
     window.client.makeLocalMove({"op":"endTurn"});
     window.client.makeLocalMove({"op":"beginTurn"});
-
-    this.forceUpdate();
   },
 
   // highlight the active player

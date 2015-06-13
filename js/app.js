@@ -4,13 +4,9 @@ import Client from "./client"
 import GameState from "./gamestate"
 import GameView from "./gameview"
 
-
-// toggle verbose logging
-let LOG_VERBOSE = true;
-console.log_verbose = console.log;
-if(!LOG_VERBOSE) {
-  console.log_verbose = function(){};
-}
+// turn of some logging
+//console.logVerbose = console.log;
+console.logVerbose = function(){};
 
 
 let App = React.createClass({

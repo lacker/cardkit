@@ -1,16 +1,17 @@
+
 // This websocket client runs in the browser and talks to the
 // websocket server that's defined in server.js.
 class Client {
   // game is a GameState and should start at the beginning of the game.
-  constructor(game) {
+  constructor(name, game) {
+    this.name = name
     this.game = game
-    this.name = `Guest ${Math.floor(Math.random() * 100)}`
     this.makeSocket()
   }
 
   makeSocket() {
     let url = "ws://localhost:9090"
-    console.log_verbose(`connecting to ${url}`)
+    console.logVerbose(`connecting to ${url}`)
 
     // TODO: needs a more aggressive timeout
     this.ws = new WebSocket(url)
@@ -22,7 +23,7 @@ class Client {
 
   // When data is received from the server
   receive(messageData) {
-    console.log_verbose("received: " + messageData)
+    console.logVerbose("received: " + messageData)
 
     if (messageData == "hello") {
       // First thing we do when the server says hi is we register for
@@ -35,7 +36,7 @@ class Client {
       } else if (this.handleRemoteMove(message)) {
         // It was a remote move
       } else {
-        console.log_verbose("don't know how to handle this message. dropping it")
+        console.logVerbose("don't know how to handle this message. dropping it")
       }
     }
 
@@ -48,8 +49,13 @@ class Client {
 
   // Send a looking-for-game message.
   register() {
-    console.log_verbose("registering as " + this.name)
+    console.logVerbose("registering as " + this.name)
     this.send({op: "register", name: this.name})
+  }
+
+  forceUpdate() {
+    window.client.gameView.forceUpdate();
+    console.logVerbose("forceUpdate on the client was not overridden")
   }
 
   // Handles a move being reported from the server.
@@ -63,36 +69,47 @@ class Client {
       return true
     }
 
-    return this.game.makeMove(move)
+    if (this.game.makeMove(move)) {
+      this.forceUpdate()
+      return true
+    }
+    return false
   }
 
   // Makes a move locally then communicates it to the server.
   makeLocalMove(move) {
     move.player = this.name
 
-    if (!window.game.makeMove(move)) {
-      console.log_verbose("invalid local move: " + JSON.stringify(move))
+    if (!this.game.makeMove(move)) {
+      console.logVerbose("invalid local move: " + JSON.stringify(move))
       return
     }
 
+    this.forceUpdate()
     this.send(move)
-    console.log_verbose("sending upstream: " + JSON.stringify(move))
+    console.logVerbose("sending upstream: " + JSON.stringify(move))
   }
 
   // This is called locally when the server decides remotely that a
   // game should start.
-  handleStart(players) {
-    console.log_verbose(`${players[0]} should start versus ${players[1]}`)
+  handleStart(message) {
+    let players = message.players
+    let seed = message.seed
+
+    console.logVerbose(`${players[0]} should start versus ${players[1]}`)
+    
+    this.game.startGame(players, seed)
+    this.forceUpdate()
   }
 
   handleError() {
-    console.log_verbose("socket error. closing dirty socket")
+    console.logVerbose("socket error. closing dirty socket")
     this.ws.close()
   }
 
   // Whenever the socket closes we just make a new one
   handleClose() {
-    console.log_verbose("the socket closed")
+    console.logVerbose("the socket closed")
     
     // Wait 2 seconds to reconnect
     setTimeout(() => this.makeSocket(), 2000)

@@ -41,10 +41,10 @@ let Card = React.createClass({
     // ATTACK
     // can click opponent's in play cards
     // after player has clicked his own in play card to attack
-    var hasActiveCard = false;
-    var fromAttackIndex = 0;
-    var attackingCard;
-    for (var card of window.game.current().board) {
+    let hasActiveCard = false;
+    let fromAttackIndex = 0;
+    let attackingCard;
+    for (let card of window.game.current().board) {
       if (card.hasFocus) {
         attackingCard = card;
         hasActiveCard = true;
@@ -52,15 +52,15 @@ let Card = React.createClass({
       }
       fromAttackIndex++;
     }
-    var toIndex = window.game.opponent().board.indexOf(this.props.cardInfo);
+    let toIndex = window.game.opponent().board.indexOf(this.props.cardInfo);
     if (toIndex != -1 && hasActiveCard) {
-      this.attack(fromAttackIndex, toIndex, attackingCard)
+      this.attack(fromAttackIndex, toIndex, attackingCard);
       return;      
     }
 
     // PLAY CARD FROM HAND
     // can click to play cards in hand
-    var fromIndex = window.game.current().hand.indexOf(this.props.cardInfo);
+    let fromIndex = window.game.current().hand.indexOf(this.props.cardInfo);
     if (fromIndex != -1) {
       this.playFromHand(fromIndex, this.props.cardInfo);
       return;
@@ -83,12 +83,11 @@ let Card = React.createClass({
   
   // smash creature's face
   attackCreature: function(fromAttackIndex, toIndex, attackingCard) {
-    var move = {"op":"attack", 
+    let move = {"op":"attack", 
                 "from":fromAttackIndex,
                 "to": toIndex
                };
     window.client.makeLocalMove(move);
-    window.client.gameView.forceUpdate();
     attackingCard.hasAttacked = true;
   },
 
@@ -97,7 +96,7 @@ let Card = React.createClass({
     // card can only be highlighted and played if player has enough mana
     if (this.props.cardInfo.cost < this.props.player.mana) {
       let moveClosure = function() {
-        var move = {"op":"play", 
+        let move = {"op":"play", 
                     "from":fromIndex
                    };
         window.client.makeLocalMove(move);
@@ -110,7 +109,7 @@ let Card = React.createClass({
   // highlight a card when clicked, attack face when double clicked
   clickCardInPlay: function(fromIndex, card) {
     let moveClosure = function() {
-      var move = {"op":"face", 
+      let move = {"op":"face", 
                   "from":fromIndex
                  };
       window.client.makeLocalMove(move);
@@ -124,7 +123,6 @@ let Card = React.createClass({
     this.props.cardInfo.hasFocus = !this.props.cardInfo.hasFocus;
     if (!this.props.cardInfo.hasFocus) { // play or attack with card
       moveClosure();
-      window.client.gameView.forceUpdate();
     } else { // just highlight the card
       this.forceUpdate();
     }
