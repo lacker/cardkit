@@ -66,7 +66,7 @@ let Card = React.createClass({
       return;
     }
     
-    // HIGHLIGHT CARD, OR SMASH FACE IF ALREADY HIIGHLIGHTED
+    // HIGHLIGHT CARD, OR SMASH FACE IF ALREADY HIGHLIGHTED
     // can click a card in play if it's in the player's board
     // and it's not summoning sick or already attacked
     fromIndex = window.game.current().board.indexOf(this.props.cardInfo);
@@ -94,7 +94,7 @@ let Card = React.createClass({
   // highlight a card when clicked, play when double clicked
   playFromHand: function(fromIndex, card) {
     // card can only be highlighted and played if player has enough mana
-    if (this.props.cardInfo.cost < this.props.player.mana) {
+    if (this.props.cardInfo.cost <= this.props.player.mana) {
       let moveClosure = function() {
         let move = {"op":"play", 
                     "from":fromIndex
