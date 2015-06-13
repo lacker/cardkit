@@ -4,7 +4,8 @@ import Player from './playerview.js';
 
 
 let GameView = React.createClass({
-  render() {
+    render() {
+    window.client.gameView = this; 
     return (
         <div className="game-container">
           
@@ -14,6 +15,8 @@ let GameView = React.createClass({
           </div>
           
           <div className="in-play-area">
+            {this.props.state.players[1].board}
+            {this.props.state.players[0].board}
           </div>
           
           <div className="end-turn-button" onClick={this.endTurn}>End Turn</div>

@@ -13,7 +13,6 @@ let App = React.createClass({
     window.game.beginTurn()
 
     window.client = new Client(window.game)
-
     return window.game
   },
 
