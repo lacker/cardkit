@@ -173,7 +173,7 @@ class GameState {
     let defender = this.opponent().getBoard(to)
     attacker.defense -= defender.attack
     defender.defense -= attacker.attack
-    clearDead()
+    this.clearDead()
   }
 
   // Plays a card from the hand. For now assumes it's a creature.

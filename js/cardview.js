@@ -5,7 +5,7 @@ require("../scss/style.scss");
 let Card = React.createClass({
   render() {
     
-    let cssClass = this.props.hasFocus ? 'playing-card active-card' : 'playing-card';
+    let cssClass = this.props.cardInfo.hasFocus ? 'playing-card active-card' : 'playing-card';
     let cssClassAttacked = this.props.cardInfo.hasAttacked ? 'has-attacked-card' : '';
     let cssClassJustPlayed = this.props.cardInfo.enteredPlayThisTurn ? 'just-played-card' : '';
     let combinedCSS = cssClass + ' ' + cssClassAttacked + ' ' + cssClassJustPlayed; 
@@ -21,6 +21,32 @@ let Card = React.createClass({
 
   // click cards in current player's hand or board
   clickCard: function() {
+
+    // can click opponent's in play cards i
+    // after player has clicked his own in play card to attack
+    var hasActiveCard = false;
+    var fromAttackIndex = 0;
+    var attackingCard;
+    for (var card of window.game.current().board) {
+        console.log(card);
+      if (card.hasFocus) {
+        attackingCard = card;
+        hasActiveCard = true;
+        break;
+      }
+      fromAttackIndex++;
+    }
+    var toIndex = window.game.opponent().board.indexOf(this.props.cardInfo);
+    if (toIndex != -1 && hasActiveCard) {
+      var move = {"op":"attack", 
+                  "from":fromAttackIndex,
+                  "to": toIndex
+                 };
+      window.client.makeLocalMove(move);
+      window.client.gameView.forceUpdate();
+      card.hasAttacked = true;
+      return;      
+    }
 
     // can click to play cards in hand
     var fromIndex = window.game.current().hand.indexOf(this.props.cardInfo);
@@ -50,9 +76,9 @@ let Card = React.createClass({
       return;
     }
     
-    this.props.hasFocus = !this.props.hasFocus;
+    this.props.cardInfo.hasFocus = !this.props.cardInfo.hasFocus;
     // play card on 2nd click
-    if (!this.props.hasFocus) {
+    if (!this.props.cardInfo.hasFocus) {
       var move = {"op":"play", 
                   "from":fromIndex
                  };
@@ -67,9 +93,9 @@ let Card = React.createClass({
   // highlight a card when clicked, play when double clicked
   clickCardInPlay: function(fromIndex, card) {
     
-    this.props.hasFocus = !this.props.hasFocus;
+    this.props.cardInfo.hasFocus = !this.props.cardInfo.hasFocus;
     // attack face on second click
-    if (!this.props.hasFocus) {
+    if (!this.props.cardInfo.hasFocus) {
       var move = {"op":"face", 
                   "from":fromIndex
                  };
