@@ -2,10 +2,11 @@
 
 // Client protocol:
 // To sign up for a game:
-// { "op": "register", "name": "yourPlayerName"}
+// { "op": "register", "name": "yourPlayerName", "seeking": true }
+// To reconnect when already in a game, just say seeking = false.
 
 // Server protocol:
-// The server bounces any client messages to all clients.
+// The server bounces client messages to all clients, except registers.
 // When a client connects, the server sends it
 // { "op": "hello" }
 // When a game starts, the server sends out
@@ -20,7 +21,7 @@ class Connection {
     this.ws = ws
     this.name = null
     this.address = `${ws._socket.remoteAddress}:${ws._socket.remotePort}`
-    console.log(`hello ${this.address}`)
+    console.log(`connected to ${this.address}`)
 
     if (Connection.all === undefined) {
       // Connection.all maps client addresses to connected clients
@@ -45,10 +46,14 @@ class Connection {
   }
 
   receive(messageData) {
+    console.log("received: " + messageData)
+
     let message = JSON.parse(messageData)
     if (message.op == "register") {
       this.name = message.name
-      Connection.waiting.set(this.name, this)
+      if (message.seeking) {
+        Connection.waiting.set(this.name, this)
+      }
     } else {
       // Bounce anything but registers
       this.broadcast(message)
@@ -66,7 +71,7 @@ class Connection {
   }
 
   close() {
-    console.log(`goodbye ${this.address}`)
+    console.log(`disconnected from ${this.address}`)
     Connection.all.delete(this.address)
     if (this.name != null && Connection.waiting.has(this.name)) {
       Connection.waiting.delete(this.name)

@@ -26,8 +26,7 @@ class Client {
     let message = JSON.parse(messageData)
 
     if (message.op == "hello") {
-      // First thing we do when the server says hi is we register for
-      // a game
+      // We always need to register what our name is
       this.register()
     } else if (message.op == "start") {
       this.handleStart(message)
@@ -46,7 +45,7 @@ class Client {
   // Send a looking-for-game message.
   register() {
     console.log("registering as " + this.name)
-    this.send({op: "register", name: this.name})
+    this.send({op: "register", name: this.name, seeking: !this.game.started()})
   }
 
   forceUpdate() {

@@ -86,6 +86,7 @@ class GameState {
   // name is the name of the human at the controls.
   constructor(name) {
     this.name = name
+    this._started = false
 
     // Index of whose turn it is.
     // The human at the controls is always 0 here.
@@ -156,6 +157,7 @@ class GameState {
       return
     }
 
+    this._started = true
     this.beginTurn()
   }
 
@@ -186,6 +188,11 @@ class GameState {
     player.board.push(card)
     player.hand.splice(from, 1)
     player.mana -= card.cost
+  }
+
+  // Whether the game has started
+  started() {
+    return this._started
   }
 
   // Attacks face
