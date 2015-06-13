@@ -50,7 +50,7 @@ let GameView = React.createClass({
 
   // end and start a new turn when button is clicked
   endTurn() {
-    for (var card of window.game.current().board) {
+    for (let card of window.game.current().board) {
       card.hasAttacked = false;
       card.enteredPlayThisTurn = false;
       card.hasFocus = false;

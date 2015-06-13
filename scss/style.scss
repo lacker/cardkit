@@ -8,10 +8,15 @@ $palette-five: #481620;
 $default-padding: 20px;
 $card-height: 100px;
 $card-width: 80px;
-$in-play-width: 680px; // card-width*8 + padding*2
+$in-play-width: 600px; // card-width*7 + padding*2
 $in-play-height: 220px; // card-height*2 + padding/2
 $avatar-width: 140px;
 $default-corner-radius: 6px;
+
+body {
+	padding:0;
+	margin:0;
+}
 
 // cards in play and in hand
 // \todo simplified avatar for cards in play
@@ -53,6 +58,7 @@ $default-corner-radius: 6px;
   text-align: center; 
   background-color: $palette-four; 
   width: 1024px;
+  height:768px;
 }
 
 // area for cards to be played in center
@@ -105,7 +111,7 @@ $default-corner-radius: 6px;
 .vital-stats-container {
 	color:black;
 	padding:5px;
-	margin-top:10px;
+	margin-top:5px;
 }
 
 // fade out used cards

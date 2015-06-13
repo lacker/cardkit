@@ -19,7 +19,8 @@ class Connection {
   constructor(ws) {
     this.ws = ws
     this.name = null
-    console.logVerbose(`hello ${this.address()}`)
+    this.address = `${ws._socket.remoteAddress}:${ws._socket.remotePort}`
+    console.log(`hello ${this.address}`)
 
     if (Connection.all === undefined) {
       // Connection.all maps client addresses to connected clients
@@ -29,13 +30,8 @@ class Connection {
       // register operation, keyed by name.
       Connection.waiting = new Map()
     }
-    Connection.all.set(this.address(), this)
+    Connection.all.set(this.address, this)
   }
-
-  address() {
-    return `${this.ws._socket.remoteAddress}:${this.ws._socket.remotePort}`
-  }
-    
 
   // Message should be JSON
   broadcast(message) {
@@ -43,7 +39,7 @@ class Connection {
       try {
         conn.ws.send(JSON.stringify(message))
       } catch(err) {
-        console.logVerbose("caught websocket send error: " + err)
+        console.log("caught websocket send error: " + err)
       }
     }
   }
@@ -61,7 +57,7 @@ class Connection {
     // Consider starting a new game
     if (Connection.waiting.size == 2) {
       let players = Array.from(Connection.waiting.keys())
-      console.logVerbose(`starting ${players[0]} vs ${players[1]}`)
+      console.log(`starting ${players[0]} vs ${players[1]}`)
       let seed = 1337
       let start = { op: "start", players, seed }
       this.broadcast(start)
@@ -70,8 +66,8 @@ class Connection {
   }
 
   close() {
-    console.logVerbose(`goodbye ${this.address()}`)
-    Connection.all.delete(this.address())
+    console.log(`goodbye ${this.address}`)
+    Connection.all.delete(this.address)
     if (this.name != null && Connection.waiting.has(this.name)) {
       Connection.waiting.delete(this.name)
     }
@@ -90,4 +86,4 @@ wss.on("connection", function(ws) {
   ws.send(JSON.stringify({op: "hello"}))
 })
 
-console.logVerbose("server running...")
+console.log("server running...")
