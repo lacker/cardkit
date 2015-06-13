@@ -72,11 +72,15 @@ $default-corner-radius: 6px;
 }
 
 .home-player-board {
-	position:relative;
-	bottom:-40px;
+	position: relative;
+	bottom: -40px;
 }
 
 .life-container {
-	background-color:rgba(235,235,255,1);
-	width:100px;
+	background-color: rgba(235,235,255,1);
+	width: 100px;
+}
+
+.just-played-card, .has-attacked-card {
+	opacity: .5;
 }
