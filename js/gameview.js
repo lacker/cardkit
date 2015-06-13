@@ -6,17 +6,16 @@ import Card from "./cardview.js"
 
 let GameView = React.createClass({
     render() {
+
     window.client.gameView = this; 
-    let opponentBoardCards = this.props.state.players[1].board.map(function (cardInfo, i) {
-      return (
-          <Card cardInfo={cardInfo} player={this.props.state.players[1]} key={i} />
-      );
-    }.bind(this));
-    let homePlayerBoardCards = this.props.state.players[0].board.map(function (cardInfo, i) {
-      return (
-          <Card cardInfo={cardInfo} player={this.props.state.players[0]} key={i} />
-      );
-    }.bind(this));
+
+    let opponent = this.props.state.players[1];
+    let homePlayer = this.props.state.players[0];
+    let opponentBoardCards = opponent.board.map((cardInfo, i) =>
+          <Card cardInfo={cardInfo} player={opponent} key={i} />);
+    let homePlayerBoardCards = homePlayer.board.map((cardInfo, i) =>
+          <Card cardInfo={cardInfo} player={homePlayer} key={i} />);
+
     return (
         <div className="game-container">
           
