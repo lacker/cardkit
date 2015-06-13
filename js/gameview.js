@@ -6,7 +6,7 @@ import Card from "./cardview.js"
 
 let GameView = React.createClass({
     render() {
-      window.client.forceUpdate = (() => this.forceUpdate())
+    window.client.forceUpdate = (() => this.forceUpdate())
 
     let opponent = this.props.state.players[1];
     let homePlayer = this.props.state.players[0];
@@ -15,12 +15,14 @@ let GameView = React.createClass({
     let homePlayerBoardCards = homePlayer.board.map((cardInfo, i) =>
           <Card cardInfo={cardInfo} player={homePlayer} key={i} />);
 
-      return (
+    return (
         <div className="game-container">
           
-          <Player playerState={this.props.state.players[1]} />
+          <Player playerState={opponent} />
           <div className="player-avatar" style={this.avatarStyle(1)}>
             Computer
+            <div className="vital-stats-container">Life: {opponent.life}</div>
+            <div className="vital-stats-container">Mana: {opponent.mana} / {opponent.maxMana}</div>
           </div>
           
           <div className="in-play-area">
@@ -36,8 +38,10 @@ let GameView = React.createClass({
 
           <div className="player-avatar " style={this.avatarStyle(0)}>
             Me
+            <div className="vital-stats-container">Life: {homePlayer.life}</div>
+            <div className="vital-stats-container">Mana: {homePlayer.mana} / {homePlayer.maxMana}</div>
           </div>
-          <Player playerState={this.props.state.players[0]} />
+          <Player playerState={homePlayer} />
         
         </div>
         
@@ -46,6 +50,14 @@ let GameView = React.createClass({
 
   // end and start a new turn when button is clicked
   endTurn() {
+    for (let card of window.game.current().board) {
+      card.hasAttacked = false;
+      card.enteredPlayThisTurn = false;
+      card.hasFocus = false;
+    }
+    for (let card of window.game.current().hand) {
+      card.hasFocus = false;
+    }
     window.client.makeLocalMove({"op":"endTurn"});
     window.client.makeLocalMove({"op":"beginTurn"});
   },
