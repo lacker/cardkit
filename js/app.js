@@ -6,7 +6,7 @@ import GameView from "./gameview"
 
 
 // toggle verbose logging
-let LOG_VERBOSE = false;
+let LOG_VERBOSE = true;
 console.log_verbose = console.log;
 if(!LOG_VERBOSE) {
   console.log_verbose = function(){};

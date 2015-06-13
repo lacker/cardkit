@@ -70,7 +70,7 @@ class Client {
   makeLocalMove(move) {
     move.player = this.name
 
-    if (!this.game.makeMove(move)) {
+    if (!window.game.makeMove(move)) {
       console.log_verbose("invalid local move: " + JSON.stringify(move))
       return
     }
