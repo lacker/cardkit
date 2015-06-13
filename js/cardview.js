@@ -5,11 +5,23 @@ require("../scss/style.scss");
 let Card = React.createClass({
   render() {
 
+    let combinedCSS = this.cssClassesForCard(this.props.cardInfo);
+    return (
+        <div className={combinedCSS} onClick={this.clickCard}>
+        {this.props.cardInfo.name}
+        <br />
+        {this.props.cardInfo.attack}/{this.props.cardInfo.defense}
+      </div>
+    );
+  
+  },
+
+  // style the card based on if it has attacked, is castable, etc
+  cssClassesForCard: function(card) {
     let cssClassCanPlay = '';
     if (this.props.cardInfo.cost > this.props.player.mana) {
       cssClassCanPlay = "too-expensive";
     }
-
     let cssClass = this.props.cardInfo.hasFocus ? 
                    'playing-card active-card' : 'playing-card';
     let cssClassAttacked = this.props.cardInfo.hasAttacked ? 
@@ -20,14 +32,7 @@ let Card = React.createClass({
                       cssClassCanPlay + ' ' + 
                       cssClassAttacked + ' ' + 
                       cssClassJustPlayed; 
-    return (
-        <div className={combinedCSS} onClick={this.clickCard}>
-        {this.props.cardInfo.name}
-        <br />
-        {this.props.cardInfo.attack}/{this.props.cardInfo.defense}
-      </div>
-    );
-  
+    return combinedCSS;
   },
 
   // click cards in current player's hand or board
