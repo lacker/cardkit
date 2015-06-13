@@ -22,11 +22,11 @@ let Card = React.createClass({
     if (this.props.cardInfo.cost > this.props.player.mana) {
       cssClassCanPlay = "too-expensive";
     }
-    let cssClass = this.props.cardInfo.hasFocus ? 
+    let cssClass = this.hasFocus ? 
                    'playing-card active-card' : 'playing-card';
-    let cssClassAttacked = this.props.cardInfo.hasAttacked ? 
+    let cssClassAttacked = this.hasAttacked ? 
                            'has-attacked-card' : '';
-    let cssClassJustPlayed = this.props.cardInfo.enteredPlayThisTurn ? 
+    let cssClassJustPlayed = this.enteredPlayThisTurn ? 
                              'just-played-card' : '';
     let combinedCSS = cssClass + ' ' + 
                       cssClassCanPlay + ' ' + 
@@ -137,12 +137,12 @@ let Card = React.createClass({
 
   // when a card is clicked, highlight it, play it, or attack with it
   highlightOrPlayMove: function(moveClosure) {
-    this.props.cardInfo.hasFocus = !this.props.cardInfo.hasFocus;
-    if (!this.props.cardInfo.hasFocus) { // play or attack with card
+    this.hasFocus = !this.hasFocus;
+    if (!this.hasFocus) { // play or attack with card
       moveClosure();
       this.unhighlightAllCards();
     } else { // just highlight the card
-      this.unhighlightAllCards(this.props.cardInfo);
+      this.unhighlightAllCards(this);
       window.client.forceUpdate();
     }
   }
