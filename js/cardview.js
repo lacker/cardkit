@@ -84,12 +84,16 @@ let Card = React.createClass({
 
   },
   
-  unhighlightAllCards: function() {
+  unhighlightAllCards: function(currentCard) {
     for (let card of window.game.current().board) {
-      card.hasFocus = false;
+      if (card != currentCard) {
+        card.hasFocus = false;
+      }
     }
     for (let card of window.game.current().hand) {
-      card.hasFocus = false;
+      if (card != currentCard) {
+        card.hasFocus = false;
+      }
     }
 
   },
@@ -138,7 +142,8 @@ let Card = React.createClass({
       moveClosure();
       this.unhighlightAllCards();
     } else { // just highlight the card
-      this.forceUpdate();
+      this.unhighlightAllCards(this.props.cardInfo);
+      window.client.forceUpdate();
     }
   }
 
