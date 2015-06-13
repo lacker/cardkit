@@ -32,7 +32,7 @@ $default-corner-radius: 6px;
   box-shadow: 7px 7px 17px 0px rgba(22,22,22,1);
 }
 
-
+// when a card has been clicked
 .active-card {
   background-color: $palette-two; 
 }
@@ -65,6 +65,7 @@ $default-corner-radius: 6px;
   border-radius: $default-corner-radius;
 }
 
+// the main End Turn button that always shows in the game
 .end-turn-button {
   width: 90px;
   padding:$default-padding;
@@ -79,13 +80,12 @@ $default-corner-radius: 6px;
   cursor: pointer;
 }
 
-
 // pop up a bit on hover
 .end-turn-button:hover {
   box-shadow: 7px 7px 17px 0px rgba(22,22,22,1);
 }
 
-
+// a player';'s in play cards
 .player-board {
 	clear:both;
 	width:100%;
@@ -95,27 +95,32 @@ $default-corner-radius: 6px;
   border-radius: $default-corner-radius;
 }
 
+// the player's board who is on bottom
 .home-player-board {
 	position: relative;
 	bottom: -10px;
 }
 
+// life and mana
 .vital-stats-container {
 	color:black;
 	padding:5px;
 	margin-top:10px;
 }
 
+// fade out used cards
 .just-played-card, .has-attacked-card {
 	opacity: .5;
 }
 
+// fade out cards in hand a tiny bit, if they can't be played
 .too-expensive {
 	opacity: .9;
 	color:gray;
   box-shadow: 5px 5px 12px 0px rgba(22,22,22,0);
 }
 
+// where a player's unplayed cards go
 .hand-container {
 	height:$card-height + $default-padding;
 }
