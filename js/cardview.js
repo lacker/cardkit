@@ -19,14 +19,14 @@ let Card = React.createClass({
   // style the card based on if it has attacked, is castable, etc
   cssClassesForCard: function(card) {
     let cssClassCanPlay = '';
-    if (this.props.cardInfo.cost > this.props.player.mana) {
+    if (card.cost > this.props.player.mana) {
       cssClassCanPlay = "too-expensive";
     }
-    let cssClass = this.props.cardInfo.hasFocus ? 
+    let cssClass = card.hasFocus ? 
                    'playing-card active-card' : 'playing-card';
-    let cssClassAttacked = this.props.cardInfo.hasAttacked ? 
+    let cssClassAttacked = card.hasAttacked ? 
                            'has-attacked-card' : '';
-    let cssClassJustPlayed = this.props.cardInfo.enteredPlayThisTurn ? 
+    let cssClassJustPlayed = card.enteredPlayThisTurn ? 
                              'just-played-card' : '';
     let combinedCSS = cssClass + ' ' + 
                       cssClassCanPlay + ' ' + 
@@ -41,13 +41,11 @@ let Card = React.createClass({
     // ATTACK
     // can click opponent's in play cards
     // after player has clicked his own in play card to attack
-    let hasActiveCard = false;
     let fromAttackIndex = 0;
     let attackingCard;
     for (let card of window.game.current().board) {
       if (card.hasFocus) {
         attackingCard = card;
-        hasActiveCard = true;
         break;
       }
       fromAttackIndex++;
@@ -55,7 +53,7 @@ let Card = React.createClass({
     
 
     let toIndex = window.game.opponent().board.indexOf(this.props.cardInfo);
-    if (toIndex != -1 && hasActiveCard) {
+    if (toIndex != -1 && attackingCard) {
       this.attackCreature(fromAttackIndex, toIndex, attackingCard);
       this.unhighlightAllCards();
       return;      
@@ -111,7 +109,7 @@ let Card = React.createClass({
   // highlight a card when clicked, play when double clicked
   playFromHand: function(fromIndex, card) {
     // card can only be highlighted and played if player has enough mana
-    if (this.props.cardInfo.cost <= this.props.player.mana) {
+    if (card.cost <= this.props.player.mana) {
       let moveClosure = function() {
         let move = {"op":"play", 
                     "from":fromIndex
@@ -119,7 +117,7 @@ let Card = React.createClass({
         window.client.makeLocalMove(move);
         card.enteredPlayThisTurn = true;
       }
-      this.highlightOrPlayMove(moveClosure);    
+      this.highlightOrPlayMove(moveClosure, card);    
     }
   },
 
@@ -132,17 +130,17 @@ let Card = React.createClass({
       window.client.makeLocalMove(move);
       card.hasAttacked = true;      
     }
-    this.highlightOrPlayMove(moveClosure);
+    this.highlightOrPlayMove(moveClosure, card);
   },
 
   // when a card is clicked, highlight it, play it, or attack with it
-  highlightOrPlayMove: function(moveClosure) {
-    this.props.cardInfo.hasFocus = !this.props.cardInfo.hasFocus;
-    if (!this.props.cardInfo.hasFocus) { // play or attack with card
+  highlightOrPlayMove: function(moveClosure, card) {
+    card.hasFocus = !card.hasFocus;
+    if (!card.hasFocus) { // play or attack with card
       moveClosure();
       this.unhighlightAllCards();
     } else { // just highlight the card
-      this.unhighlightAllCards(this.props.cardInfo);
+      this.unhighlightAllCards(card);
       window.client.forceUpdate();
     }
   }
