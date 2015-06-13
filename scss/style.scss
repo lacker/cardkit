@@ -83,6 +83,7 @@ body {
   position:relative;
   bottom:$in-play-height/2 + 40px;
   right:$default-padding;
+  pointer-events:none;
 }
 
 // pop up a bit on hover
@@ -95,6 +96,7 @@ body {
   box-shadow: 5px 5px 12px 0px rgba(22,22,22,1);
   color:white;
   cursor: pointer;
+  pointer-events:auto;
 }
 
 

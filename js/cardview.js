@@ -52,9 +52,12 @@ let Card = React.createClass({
       }
       fromAttackIndex++;
     }
+    
+
     let toIndex = window.game.opponent().board.indexOf(this.props.cardInfo);
     if (toIndex != -1 && hasActiveCard) {
       this.attackCreature(fromAttackIndex, toIndex, attackingCard);
+      this.unhighlightAllCards();
       return;      
     }
 
@@ -81,6 +84,16 @@ let Card = React.createClass({
 
   },
   
+  unhighlightAllCards: function() {
+    for (let card of window.game.current().board) {
+      card.hasFocus = false;
+    }
+    for (let card of window.game.current().hand) {
+      card.hasFocus = false;
+    }
+
+  },
+
   // smash creature's face
   attackCreature: function(fromAttackIndex, toIndex, attackingCard) {
     let move = {"op":"attack", 
@@ -123,6 +136,7 @@ let Card = React.createClass({
     this.props.cardInfo.hasFocus = !this.props.cardInfo.hasFocus;
     if (!this.props.cardInfo.hasFocus) { // play or attack with card
       moveClosure();
+      this.unhighlightAllCards();
     } else { // just highlight the card
       this.forceUpdate();
     }
