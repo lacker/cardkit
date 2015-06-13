@@ -197,8 +197,14 @@ class GameState {
   }
 
   draw() {
+    // Make a copy so that we can edit this card
     let card = CARDS[Math.floor(this.rng() * CARDS.length)]
-    this.current().hand.push(card)
+    let copy = {}
+    for (let key in card) {
+      copy[key] = card[key]
+    }
+
+    this.current().hand.push(copy)
   }
 
   beginTurn() {
