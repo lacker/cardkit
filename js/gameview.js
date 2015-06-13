@@ -6,7 +6,7 @@ import Card from "./cardview.js"
 
 let GameView = React.createClass({
     render() {
-    window.client.gameView = this; 
+    window.client.forceUpdate = (() => this.forceUpdate())
 
     let opponent = this.props.state.players[1];
     let homePlayer = this.props.state.players[0];

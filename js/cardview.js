@@ -54,7 +54,7 @@ let Card = React.createClass({
     }
     let toIndex = window.game.opponent().board.indexOf(this.props.cardInfo);
     if (toIndex != -1 && hasActiveCard) {
-      this.attack(fromAttackIndex, toIndex, attackingCard);
+      this.attackCreature(fromAttackIndex, toIndex, attackingCard);
       return;      
     }
 
