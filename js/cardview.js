@@ -26,7 +26,11 @@ let Card = React.createClass({
     this.props.hasFocus = !this.props.hasFocus;
     // play card on 2nd click
     if (!this.props.hasFocus) {
-      window.game.play(this.props.player.hand.indexOf(this.props.cardInfo));
+      var move = {"op":"play", 
+                  "from":this.props.player.hand.indexOf(this.props.cardInfo)
+                 };
+      window.client.makeLocalMove(move);
+      this.forceUpdate();
     }
     this.forceUpdate();
   },

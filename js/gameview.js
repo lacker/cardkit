@@ -30,9 +30,8 @@ let GameView = React.createClass({
 
   // end and start a new turn when button is clicked
   endTurn() {
-    console.log("end turn");
-    window.game.endTurn();
-    window.game.beginTurn();
+    window.client.makeLocalMove({"op":"endTurn"});
+    window.client.makeLocalMove({"op":"beginTurn"});
     this.forceUpdate();
   },
 
