@@ -16,6 +16,8 @@ let GameView = React.createClass({
           <div className="in-play-area">
           </div>
           
+          <div className="end-turn-button" onClick={this.endTurn}>End Turn</div>
+
           <div className="player-avatar " style={this.avatarStyle(0)}>
             Me
           </div>
@@ -24,6 +26,13 @@ let GameView = React.createClass({
         </div>
         
     );
+  },
+
+  // end and start a new turn when button is clicked
+  endTurn() {
+    window.client.makeLocalMove({"op":"endTurn"});
+    window.client.makeLocalMove({"op":"beginTurn"});
+    this.forceUpdate();
   },
 
   // highlight the active player

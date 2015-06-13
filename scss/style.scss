@@ -50,3 +50,16 @@ $default-corner-radius: 6px;
   width: $in-play-width;
   margin: 0 auto;
 }
+
+.end-turn-button {
+  width: 90px;
+  padding:$default-padding;
+  background-color: yellow;
+  border-radius:6px;
+  border: 1px solid;
+  float:right;
+  position:relative;
+  bottom:$in-play-height/2 + 40px;
+  right:$default-padding;
+  box-shadow: 5px 5px 12px 0px rgba(22,22,22,1);
+}
