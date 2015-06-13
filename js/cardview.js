@@ -89,6 +89,7 @@ let Card = React.createClass({
                };
     window.client.makeLocalMove(move);
     attackingCard.hasAttacked = true;
+    attackingCard.hasFocus = false;
   },
 
   // highlight a card when clicked, play when double clicked
