@@ -97,6 +97,9 @@ class GameState {
 
     this.players = [new PlayerState(this.name, true),
                     new PlayerState("waiting for opponent...", false)]
+
+    // The name of the winner
+    this.winner = null
   }
 
   // The player whose turn it is
@@ -121,6 +124,11 @@ class GameState {
   //
   // Returns whether the move was understood.
   makeMove(move) {
+    if (this.winner != null) {
+      // You can't make normal moves when the game is over
+      return false
+    }
+
     if (move.op == "beginTurn") {
       this.beginTurn()
     } else if (move.op == "attack") {
@@ -161,9 +169,17 @@ class GameState {
     this.beginTurn()
   }
 
-  clearDead() {
+  resolveDamage() {
     for (let player of this.players) {
       player.board = player.board.filter(card => card.defense > 0)
+    }
+    if (this.current().life <= 0) {
+      this.winner = this.opponent().name
+    } else if (this.opponent().life <= 0) {
+      this.winner = this.current().name
+    }
+    if (this.winner != null) {
+      console.log(this.winner + " wins!")
     }
   }
 
@@ -173,7 +189,7 @@ class GameState {
     let defender = this.opponent().getBoard(to)
     attacker.defense -= defender.attack
     defender.defense -= attacker.attack
-    this.clearDead()
+    this.resolveDamage()
   }
 
   // Plays a card from the hand. For now assumes it's a creature.
@@ -199,6 +215,7 @@ class GameState {
   face(from) {
     let attacker = this.current().getBoard(from)
     this.opponent().life -= attacker.attack
+    this.resolveDamage()
   }
 
   draw() {
