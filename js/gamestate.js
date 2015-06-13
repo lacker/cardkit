@@ -196,9 +196,6 @@ class GameState {
 
   draw() {
     // Make a copy so that we can edit this card
-    if (!this.rng) {
-      this.rng = new Math.seedrandom(7)
-    }
     let card = CARDS[Math.floor(this.rng() * CARDS.length)]
     let copy = {}
     for (let key in card) {
