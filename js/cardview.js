@@ -118,7 +118,7 @@ let Card = React.createClass({
         window.client.makeLocalMove(move);
         card.enteredPlayThisTurn = true;
       }
-      this.highlightOrPlayMove(moveClosure, card);    
+      this.highlightOrPlayMove(moveClosure);    
     }
   },
 
@@ -131,17 +131,17 @@ let Card = React.createClass({
       window.client.makeLocalMove(move);
       card.hasAttacked = true;      
     }
-    this.highlightOrPlayMove(moveClosure, card);
+    this.highlightOrPlayMove(moveClosure);
   },
 
   // when a card is clicked, highlight it, play it, or attack with it
-  highlightOrPlayMove: function(moveClosure, card) {
-    card.setState({hasFocus: !card.hasFocus});
-    if (!card.hasFocus) { // play or attack with card
+  highlightOrPlayMove: function(moveClosure) {
+    this.setState({hasFocus: !this.hasFocus});
+    if (!this.hasFocus) { // play or attack with card
       moveClosure();
       this.unhighlightAllCards();
     } else { // just highlight the card
-      this.unhighlightAllCards(card);
+      this.unhighlightAllCards(this);
     }
   }
 
