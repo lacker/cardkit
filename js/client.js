@@ -100,7 +100,7 @@ class Client {
   }
 
   // Makes a move locally then communicates it to the server.
-  makeLocalMove(move) {
+  makeLocalMove(move, card) {
     move.player = this.name
     move.id = "m" + Math.floor(Math.random() * 1000000000000)
 
@@ -110,7 +110,7 @@ class Client {
       return
     }
 
-    this.forceUpdate()
+    this.forceUpdate();
     this.send(move)
   }
 
