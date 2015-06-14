@@ -6,7 +6,7 @@ let Card = React.createClass({
   getInitialState: function() {
     return {  hasFocus: false, 
               hasAttacked: false, 
-              enteredPlayThisTurn:false
+              enteredPlayThisTurn:true
            };
   },
   
@@ -96,6 +96,13 @@ let Card = React.createClass({
 
   componentDidMount: function() {
     window.addEventListener('unhighlight', this.unhighlight);
+    window.addEventListener('turnEnded', this.turnEnded);
+  },
+
+  turnEnded: function() {
+    this.setState({hasAttacked:false});
+    this.setState({enteredPlayThisTurn:false});
+    this.setState({hasFocus:false});
   },
 
   unhighlight: function() {
@@ -154,7 +161,6 @@ let Card = React.createClass({
   // when a card is clicked, highlight it, play it, or attack with it
   highlightOrPlayMove: function(moveClosure) {
     let hasFocus = !this.state.hasFocus;
-    this.setState({hasFocus});
     if (!hasFocus) { // play or attack with card
       moveClosure();
       this.unhighlightAllCards();
