@@ -34,6 +34,18 @@ let Card = React.createClass({
   // layout and style the card
   render() {
     let combinedCSS = this.cssClassesForCard();
+
+    let handIndex = window.game.current().hand.indexOf(this.props.cardInfo);
+    let boardIndex = window.game.current().board.indexOf(this.props.cardInfo);
+    let oponnentBoard = window.game.opponent().board.indexOf(this.props.cardInfo);
+    // not this player's card or in play
+    if (handIndex + boardIndex + oponnentBoard == -3) {
+      return (
+        <div className={combinedCSS}>
+        </div>
+      );
+    }
+
     return (
       <div className={combinedCSS} onClick={this.clickCard}>
         {this.props.cardInfo.name}
