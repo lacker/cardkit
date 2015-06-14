@@ -4,15 +4,48 @@ require("../scss/style.scss");
 
 let Card = React.createClass({
 
+  // it's a little weird that enteredPlayThisTurn is true
+  // even for cards in your hand
+  // this is maybe because I don't understand setState well
   getInitialState: function() {
-    return {  hasFocus: false, 
+    return {  
+              hasFocus: false, 
               hasAttacked: false, 
               enteredPlayThisTurn:true
            };
   },
+
+  // cards blank their state at end of turn  
+  componentDidMount: function() {
+    var self = this;
+    window.addEventListener('turnEnded', function() {
+      // #hax
+      if (self.isMounted()) {
+        self.setState({ 
+                        hasAttacked:false, 
+                        enteredPlayThisTurn:false, 
+                        hasFocus:false
+                     });        
+      }
+
+    });
+  },
   
+  // layout and style the card
   render() {
     let combinedCSS = this.cssClassesForCard();
+
+    let handIndex = window.game.current().hand.indexOf(this.props.cardInfo);
+    let boardIndex = window.game.current().board.indexOf(this.props.cardInfo);
+    let oponnentBoard = window.game.opponent().board.indexOf(this.props.cardInfo);
+    // not this player's card or in play
+    if (handIndex + boardIndex + oponnentBoard == -3) {
+      return (
+        <div className={combinedCSS}>
+        </div>
+      );
+    }
+
     return (
       <div className={combinedCSS} onClick={this.clickCard}>
         {this.props.cardInfo.name}
@@ -70,6 +103,17 @@ let Card = React.createClass({
     }
     return false;
   },
+  
+  // smash creature's face
+  attackCreatureFromIndex: function(fromAttackIndex, toIndex, attackingCard) {
+    let move = {
+                  "op":"attack", 
+                  "from":fromAttackIndex,
+                  "to": toIndex
+               };
+    window.client.makeLocalMove(move);
+    attackingCard.setState({"hasAttacked": true});
+  },
 
   // returns true and plays card if click is a play from hand
   playFromHand: function() {
@@ -81,27 +125,6 @@ let Card = React.createClass({
     return false;
   },
   
-  componentDidMount: function() {
-    window.addEventListener('turnEnded', this.turnEnded);
-  },
-
-  turnEnded: function() {
-    this.setState({hasAttacked:false, 
-                   enteredPlayThisTurn:false, 
-                   hasFocus:false});
-  },
-
-
-  // smash creature's face
-  attackCreatureFromIndex: function(fromAttackIndex, toIndex, attackingCard) {
-    let move = {"op":"attack", 
-                "from":fromAttackIndex,
-                "to": toIndex
-               };
-    window.client.makeLocalMove(move);
-    attackingCard.setState({"hasAttacked": true});
-  },
-
   // highlight a card when clicked, play when double clicked
   playFromHandIndex: function(fromIndex) {
     // card can only be highlighted and played if player has enough mana
@@ -131,10 +154,10 @@ let Card = React.createClass({
  // highlight a card when clicked, attack face when double clicked
   clickCardInPlayFromIndex: function(fromIndex) {
     let hasFocus = !this.state.hasFocus;
-    if (!hasFocus) { // play or attack with card
+    if (!hasFocus) {  // play or attack with card
       this.setState({hasFocus: false, hasAttacked: true});
       window.client.makeLocalMove({"op":"face", "from":fromIndex});
-    } else { // just highlight the card
+    } else {  // just highlight the card
       this.setState({hasFocus: true});
       window.game.activeCard = this;
     }
