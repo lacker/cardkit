@@ -6,6 +6,6 @@ ssh in there, cd to cardkit
 
 `git pull` to update the code
 
-`./prod/fileserver` to run the static file server
+`npm run build` to update the static files for nginx
 
-`./prod/socketserver` to run the node server
+`./runserver` to run the node server
