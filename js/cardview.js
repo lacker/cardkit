@@ -93,8 +93,8 @@ let Card = React.createClass({
   clickCardInPlay: function() {
     fromIndex = window.game.current().board.indexOf(this.props.cardInfo);
     if (fromIndex != -1 && 
-        !this.props.cardInfo.enteredPlayThisTurn &&
-        !this.props.cardInfo.hasAttacked) {
+        !this.enteredPlayThisTurn &&
+        !this.hasAttacked) {
       this.clickCardInPlay(fromIndex, this.props.cardInfo);
     }
   },
