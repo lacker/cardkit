@@ -160,7 +160,6 @@ let Card = React.createClass({
 
   // when a card is clicked, highlight it, play it, or attack with it
   highlightOrPlayMove: function(moveClosure) {
-    console.log("highlgihting");
     let hasFocus = !this.state.hasFocus;
     if (!hasFocus) { // play or attack with card
       moveClosure();
