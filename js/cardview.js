@@ -17,8 +17,9 @@ let Card = React.createClass({
 
   // cards blank their state at end of turn  
   componentDidMount: function() {
+    var self = this;
     window.addEventListener('turnEnded', function() {
-      this.setState({ 
+      self.setState({ 
                       hasAttacked:false, 
                       enteredPlayThisTurn:false, 
                       hasFocus:false
