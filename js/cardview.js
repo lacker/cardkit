@@ -108,7 +108,6 @@ let Card = React.createClass({
     if (fromIndex != -1 && 
         !this.state.enteredPlayThisTurn &&
         !this.state.hasAttacked) {
-      console.log("clicking card in play")
       this.clickCardInPlayFromIndex(fromIndex);
     }
   },
