@@ -86,9 +86,8 @@ let Card = React.createClass({
   // set all cards hasFocus to false, except currentCard
   // currentCard can be left null
   unhighlightAllCards: function(currentCard) {
-    let evt = new CustomEvent("unhighlight", {
-    });
-    window.dispatchEvent(evt);
+    let event = new CustomEvent("unhighlight", {});
+    window.dispatchEvent(event);
     if (currentCard) {
       currentCard.setState({hasFocus:true});
     }
@@ -109,6 +108,7 @@ let Card = React.createClass({
     if (fromIndex != -1 && 
         !this.state.enteredPlayThisTurn &&
         !this.state.hasAttacked) {
+      console.log("clicking card in play")
       this.clickCardInPlayFromIndex(fromIndex);
     }
   },
