@@ -67,7 +67,7 @@ let Card = React.createClass({
   playFromHand: function() {
     let fromIndex = window.game.current().hand.indexOf(this.props.cardInfo);
     if (fromIndex != -1) {
-      this.playFromHand(fromIndex, this.props.cardInfo);
+      this.playFromHandIndex(fromIndex);
       return true;
     }
     return false;
@@ -110,7 +110,7 @@ let Card = React.createClass({
   },
 
   // highlight a card when clicked, play when double clicked
-  playFromHand: function(fromIndex) {
+  playFromHandIndex: function(fromIndex) {
     // card can only be highlighted and played if player has enough mana
     if (this.props.cardInfo.cost <= this.props.player.mana) {
       let moveClosure = function() {
