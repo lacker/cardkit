@@ -1,5 +1,0 @@
-#!/bin/bash
-# Run this stuff from the cardkit directory.
-# TODO: see if this works
-
-nohup npm start &

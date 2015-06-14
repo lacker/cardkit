@@ -1,5 +1,0 @@
-#!/bin/bash
-# Run this from the cardkit directory.
-# TODO: see if this works
-
-nohup ./runserver &
