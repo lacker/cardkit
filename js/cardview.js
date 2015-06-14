@@ -4,13 +4,30 @@ require("../scss/style.scss");
 
 let Card = React.createClass({
 
+  // it's a little weird that enteredPlayThisTurn is true
+  // even for cards in your hand
+  // this is maybe because I don't understand setState well
   getInitialState: function() {
-    return {  hasFocus: false, 
+    return {  
+              hasFocus: false, 
               hasAttacked: false, 
               enteredPlayThisTurn:true
            };
   },
+
+  // cards blank their state at end of turn  
+  componentDidMount: function() {
+    window.addEventListener('turnEnded', function() {
+      this.setState({ 
+                      hasAttacked:false, 
+                      enteredPlayThisTurn:false, 
+                      hasFocus:false
+                   });
+
+    });
+  },
   
+  // layout and style the card
   render() {
     let combinedCSS = this.cssClassesForCard();
     return (
@@ -71,22 +88,12 @@ let Card = React.createClass({
     return false;
   },
   
-  componentDidMount: function() {
-    window.addEventListener('turnEnded', this.turnEnded);
-  },
-
-  turnEnded: function() {
-    this.setState({hasAttacked:false, 
-                   enteredPlayThisTurn:false, 
-                   hasFocus:false});
-  },
-
-
   // smash creature's face
   attackCreatureFromIndex: function(fromAttackIndex, toIndex, attackingCard) {
-    let move = {"op":"attack", 
-                "from":fromAttackIndex,
-                "to": toIndex
+    let move = {
+                  "op":"attack", 
+                  "from":fromAttackIndex,
+                  "to": toIndex
                };
     window.client.makeLocalMove(move);
     attackingCard.setState({"hasAttacked": true});
@@ -131,10 +138,10 @@ let Card = React.createClass({
  // highlight a card when clicked, attack face when double clicked
   clickCardInPlayFromIndex: function(fromIndex) {
     let hasFocus = !this.state.hasFocus;
-    if (!hasFocus) { // play or attack with card
+    if (!hasFocus) {  // play or attack with card
       this.setState({hasFocus: false, hasAttacked: true});
       window.client.makeLocalMove({"op":"face", "from":fromIndex});
-    } else { // just highlight the card
+    } else {  // just highlight the card
       this.setState({hasFocus: true});
       window.game.activeCard = this;
     }
