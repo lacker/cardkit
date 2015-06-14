@@ -94,7 +94,7 @@ class GameState {
     // may not be our turn.
     this.turn = 1
 
-    this.players = [new PlayerState("You", true),
+    this.players = [new PlayerState(this.name, true),
                     new PlayerState("waiting for opponent...", false)]
   }
 

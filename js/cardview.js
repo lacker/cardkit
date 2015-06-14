@@ -36,10 +36,10 @@ let Card = React.createClass({
 
   // click cards in current player's hand or board
   clickCard: function() {
-    if (this.attackCreature()) { }
-    else if (this.playFromHand()) { }
-    else this.clickCardInPlay();
-    console.log("alerting");
+    if (this.attackCreature()) { 
+    } else if (this.playFromHand()) { 
+    } else this.clickCardInPlay();
+   
     if (window.game.winner) {
       alert("WINNER");
     }
@@ -81,12 +81,12 @@ let Card = React.createClass({
   unhighlightAllCards: function(currentCard) {
     for (let card of window.game.current().board) {
       if (card != currentCard) {
-        card.setState({hasFocus: false});
+        card.hasFocus = false;
       }
     }
     for (let card of window.game.current().hand) {
       if (card != currentCard) {
-        card.setState({hasFocus: false});
+        card.hasFocus = false;
       }
     }
 
@@ -94,7 +94,7 @@ let Card = React.createClass({
 
   // highlight card when clicked, or smash face if already highlighted
   clickCardInPlay: function() {
-    fromIndex = window.game.current().board.indexOf(this.props.cardInfo);
+    let fromIndex = window.game.current().board.indexOf(this.props.cardInfo);
     if (fromIndex != -1 && 
         !this.enteredPlayThisTurn &&
         !this.hasAttacked) {
@@ -109,19 +109,20 @@ let Card = React.createClass({
                 "to": toIndex
                };
     window.client.makeLocalMove(move);
-    attackingCard.hasAttacked = true;
+    attackingCard.setStae("hasAttacked": true);
   },
 
   // highlight a card when clicked, play when double clicked
   playFromHandIndex: function(fromIndex) {
     // card can only be highlighted and played if player has enough mana
     if (this.props.cardInfo.cost <= this.props.player.mana) {
+      let self = this;
       let moveClosure = function() {
         let move = {"op":"play", 
                     "from":fromIndex
                    };
         window.client.makeLocalMove(move);
-        this.enteredPlayThisTurn = true;
+        self.enteredPlayThisTurn = true;
       }
       this.highlightOrPlayMove(moveClosure);    
     }
@@ -129,12 +130,13 @@ let Card = React.createClass({
 
   // highlight a card when clicked, attack face when double clicked
   clickCardInPlayFromIndex: function(fromIndex) {
+    let self = this;
     let moveClosure = function() {
       let move = {"op":"face", 
                   "from":fromIndex
                  };
       window.client.makeLocalMove(move);
-      this.hasAttacked = true;      
+      self.hasAttacked = true;      
     }
     this.highlightOrPlayMove(moveClosure);
   },
