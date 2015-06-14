@@ -88,12 +88,12 @@ let Card = React.createClass({
   unhighlightAllCards: function(currentCard) {
     for (let card of window.game.current().board) {
       if (card != currentCard) {
-        card.hasFocus = false;
+        card.setState({hasFocus:false});
       }
     }
     for (let card of window.game.current().hand) {
       if (card != currentCard) {
-        card.hasFocus = false;
+        card.setState({hasFocus:false});
       }
     }
 
@@ -151,7 +151,7 @@ let Card = React.createClass({
   // when a card is clicked, highlight it, play it, or attack with it
   highlightOrPlayMove: function(moveClosure) {
     let hasFocus = !this.state.hasFocus;
-    this.setState({hasFocus: hasFocus});
+    this.setState({hasFocus});
     if (!hasFocus) { // play or attack with card
       moveClosure();
       this.unhighlightAllCards();
