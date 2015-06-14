@@ -57,14 +57,8 @@ let GameView = React.createClass({
 
   // end and start a new turn when button is clicked
   endTurn() {
-    for (let card of window.game.current().board) {
-      card.hasAttacked = false;
-      card.enteredPlayThisTurn = false;
-      card.hasFocus = false;
-    }
-    for (let card of window.game.current().hand) {
-      card.hasFocus = false;
-    }
+    let event = new CustomEvent("turnEnded", {});
+    window.dispatchEvent(event);
     window.client.makeLocalMove({"op":"endTurn"});
     window.client.makeLocalMove({"op":"beginTurn"});
   },
