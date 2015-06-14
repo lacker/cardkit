@@ -110,15 +110,15 @@ let Card = React.createClass({
   },
 
   // highlight a card when clicked, play when double clicked
-  playFromHand: function(fromIndex, card) {
+  playFromHand: function(fromIndex) {
     // card can only be highlighted and played if player has enough mana
-    if (card.cost <= this.props.player.mana) {
+    if (this.props.cardInfo.cost <= this.props.player.mana) {
       let moveClosure = function() {
         let move = {"op":"play", 
                     "from":fromIndex
                    };
         window.client.makeLocalMove(move);
-        card.enteredPlayThisTurn = true;
+        this.enteredPlayThisTurn = true;
       }
       this.highlightOrPlayMove(moveClosure);    
     }
