@@ -4,7 +4,6 @@ require("../scss/style.scss");
 
 let Card = React.createClass({
   render() {
-
     let combinedCSS = this.cssClassesForCard();
     return (
       <div className={combinedCSS} onClick={this.clickCard}>

@@ -10,10 +10,8 @@ let Player = React.createClass({
         <div className="hand-container">
           {handCards}
         </div> 
-
     );
   }
-
 });
 
 module.exports = Player;
