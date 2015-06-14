@@ -122,7 +122,7 @@ class Client {
     let seed = message.seed
 
     console.log(`starting game: ${players[0]} vs ${players[1]}`)
-    mixpanel.track("startGame")
+    window.track("startGame")
     
     this.game.startGame(players, seed)
     this.forceUpdate()

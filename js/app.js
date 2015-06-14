@@ -27,3 +27,6 @@ React.render(<App/>, document.body)
 
 let isDev = document.URL.match("localhost") || document.URL.match("127.0.0.1")
 mixpanel.register({production: !isDev})
+window.track = function(event) {
+  mixpanel.track(event)
+}
