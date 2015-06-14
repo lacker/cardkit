@@ -9,7 +9,7 @@ const CARDS = [
     defense: 2,
     cost: 2
   },
-  /*{
+  {
     name: "Threebot",
     attack: 3,
     defense: 3,
@@ -44,7 +44,7 @@ const CARDS = [
     attack: 8,
     defense: 8,
     cost: 8
-  },*/
+  },
 ]
 
 // The state of a single player.
