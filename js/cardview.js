@@ -70,16 +70,6 @@ let Card = React.createClass({
     }
     return false;
   },
-
-  // returns true and plays card if click is a play from hand
-  playFromHand: function() {
-    let fromIndex = window.game.current().hand.indexOf(this.props.cardInfo);
-    if (fromIndex != -1) {
-      this.playFromHandIndex(fromIndex);
-      return true;
-    }
-    return false;
-  },
   
   componentDidMount: function() {
     window.addEventListener('turnEnded', this.turnEnded);
@@ -102,6 +92,16 @@ let Card = React.createClass({
     attackingCard.setState({"hasAttacked": true});
   },
 
+  // returns true and plays card if click is a play from hand
+  playFromHand: function() {
+    let fromIndex = window.game.current().hand.indexOf(this.props.cardInfo);
+    if (fromIndex != -1) {
+      this.playFromHandIndex(fromIndex);
+      return true;
+    }
+    return false;
+  },
+  
   // highlight a card when clicked, play when double clicked
   playFromHandIndex: function(fromIndex) {
     // card can only be highlighted and played if player has enough mana
