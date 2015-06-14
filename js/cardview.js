@@ -19,11 +19,14 @@ let Card = React.createClass({
   componentDidMount: function() {
     var self = this;
     window.addEventListener('turnEnded', function() {
-      self.setState({ 
-                      hasAttacked:false, 
-                      enteredPlayThisTurn:false, 
-                      hasFocus:false
-                   });
+      // #hax
+      if (self.isMounted()) {
+        self.setState({ 
+                        hasAttacked:false, 
+                        enteredPlayThisTurn:false, 
+                        hasFocus:false
+                     });        
+      }
 
     });
   },
