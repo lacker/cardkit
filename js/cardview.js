@@ -3,6 +3,13 @@ import React from "react";
 require("../scss/style.scss");
 
 let Card = React.createClass({
+  getInitialState: function() {
+    return {  hasFocus: false, 
+              hasAttacked: false, 
+              enteredPlayThisTurn:false
+           };
+  },
+  
   render() {
     let combinedCSS = this.cssClassesForCard();
     return (
@@ -21,11 +28,11 @@ let Card = React.createClass({
     if (this.props.cardInfo.cost > this.props.player.mana) {
       cssClassCanPlay = "too-expensive";
     }
-    let cssClass = this.hasFocus ? 
+    let cssClass = this.state.hasFocus ? 
                    'playing-card active-card' : 'playing-card';
-    let cssClassAttacked = this.hasAttacked ? 
+    let cssClassAttacked = this.state.hasAttacked ? 
                            'has-attacked-card' : '';
-    let cssClassJustPlayed = this.enteredPlayThisTurn ? 
+    let cssClassJustPlayed = this.state.enteredPlayThisTurn ? 
                              'just-played-card' : '';
     let combinedCSS = cssClass + ' ' + 
                       cssClassCanPlay + ' ' + 
@@ -96,8 +103,8 @@ let Card = React.createClass({
   clickCardInPlay: function() {
     let fromIndex = window.game.current().board.indexOf(this.props.cardInfo);
     if (fromIndex != -1 && 
-        !this.enteredPlayThisTurn &&
-        !this.hasAttacked) {
+        !this.state.enteredPlayThisTurn &&
+        !this.state.hasAttacked) {
       this.clickCardInPlayFromIndex(fromIndex);
     }
   },
@@ -109,7 +116,7 @@ let Card = React.createClass({
                 "to": toIndex
                };
     window.client.makeLocalMove(move);
-    attackingCard.setStae("hasAttacked": true);
+    attackingCard.setState({"hasAttacked": true});
   },
 
   // highlight a card when clicked, play when double clicked
@@ -122,7 +129,7 @@ let Card = React.createClass({
                     "from":fromIndex
                    };
         window.client.makeLocalMove(move);
-        self.enteredPlayThisTurn = true;
+        self.setState({"enteredPlayThisTurn": true});
       }
       this.highlightOrPlayMove(moveClosure);    
     }
@@ -136,15 +143,16 @@ let Card = React.createClass({
                   "from":fromIndex
                  };
       window.client.makeLocalMove(move);
-      self.hasAttacked = true;      
+      self.setState({"hasAttacked": true});
     }
     this.highlightOrPlayMove(moveClosure);
   },
 
   // when a card is clicked, highlight it, play it, or attack with it
   highlightOrPlayMove: function(moveClosure) {
-    this.setState({hasFocus: !this.hasFocus});
-    if (!this.hasFocus) { // play or attack with card
+    let hasFocus = !this.state.hasFocus;
+    this.setState({hasFocus: hasFocus});
+    if (!hasFocus) { // play or attack with card
       moveClosure();
       this.unhighlightAllCards();
     } else { // just highlight the card
