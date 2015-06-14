@@ -63,7 +63,11 @@ class Client {
   // Send a looking-for-game message.
   register() {
     console.log("registering as " + this.name)
-    this.send({op: "register", name: this.name, seeking: !this.game.started()})
+    if (this.game) {
+      this.send({op: "register", name: this.name, seeking: !this.game.started()})
+    } else {
+      this.send({op: "register", name: this.name, seeking: true})
+    }
   }
 
   forceUpdate() {

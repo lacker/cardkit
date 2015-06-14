@@ -169,6 +169,10 @@ class GameState {
     this.beginTurn()
   }
 
+  started() {
+    return this._started;
+  }
+
   resolveDamage() {
     for (let player of this.players) {
       player.board = player.board.filter(card => card.defense > 0)
