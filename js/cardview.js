@@ -5,7 +5,7 @@ require("../scss/style.scss");
 let Card = React.createClass({
   render() {
 
-    let combinedCSS = this.cssClassesForCard(this.props.cardInfo);
+    let combinedCSS = this.cssClassesForCard();
     return (
       <div className={combinedCSS} onClick={this.clickCard}>
         {this.props.cardInfo.name}
@@ -17,16 +17,16 @@ let Card = React.createClass({
   },
 
   // style the card based on if it has attacked, is castable, etc
-  cssClassesForCard: function(card) {
+  cssClassesForCard: function() {
     let cssClassCanPlay = '';
-    if (card.cost > this.props.player.mana) {
+    if (this.props.cardInfo.cost > this.props.player.mana) {
       cssClassCanPlay = "too-expensive";
     }
-    let cssClass = card.hasFocus ? 
+    let cssClass = this.hasFocus ? 
                    'playing-card active-card' : 'playing-card';
-    let cssClassAttacked = card.hasAttacked ? 
+    let cssClassAttacked = this.hasAttacked ? 
                            'has-attacked-card' : '';
-    let cssClassJustPlayed = card.enteredPlayThisTurn ? 
+    let cssClassJustPlayed = this.enteredPlayThisTurn ? 
                              'just-played-card' : '';
     let combinedCSS = cssClass + ' ' + 
                       cssClassCanPlay + ' ' + 
