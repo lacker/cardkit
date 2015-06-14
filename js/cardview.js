@@ -86,17 +86,21 @@ let Card = React.createClass({
   // set all cards hasFocus to false, except currentCard
   // currentCard can be left null
   unhighlightAllCards: function(currentCard) {
-    for (let card of window.game.current().board) {
-      if (card != currentCard) {
-        card.setState({hasFocus:false});
-      }
-    }
-    for (let card of window.game.current().hand) {
-      if (card != currentCard) {
-        card.setState({hasFocus:false});
-      }
+    let evt = new CustomEvent("unhighlight", {
+    });
+    window.dispatchEvent(evt);
+    if (currentCard) {
+      currentCard.setState({hasFocus:true});
     }
 
+  },
+
+  componentDidMount: function() {
+    window.addEventListener('unhighlight', this.unhighlight);
+  },
+
+  unhighlight: function() {
+    this.setState({hasFocus:false});
   },
 
   // highlight card when clicked, or smash face if already highlighted
