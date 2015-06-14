@@ -38,7 +38,11 @@ let Card = React.createClass({
   clickCard: function() {
     if (this.attackCreature()) { }
     else if (this.playFromHand()) { }
-    else this.clickCardInPlay()
+    else this.clickCardInPlay();
+    console.log("alerting");
+    if (window.game.winner) {
+      alert("WINNER");
+    }
   },
 
   // returns true and executes attacks if click is a creature attack
@@ -55,7 +59,7 @@ let Card = React.createClass({
     
     let toIndex = window.game.opponent().board.indexOf(this.props.cardInfo);
     if (toIndex != -1 && attackingCard) {
-      this.attackCreature(fromAttackIndex, toIndex, attackingCard);
+      this.attackCreatureFromIndex(fromAttackIndex, toIndex, attackingCard);
       this.unhighlightAllCards();
       return true;      
     }
@@ -94,12 +98,12 @@ let Card = React.createClass({
     if (fromIndex != -1 && 
         !this.enteredPlayThisTurn &&
         !this.hasAttacked) {
-      this.clickCardInPlay(fromIndex, this.props.cardInfo);
+      this.clickCardInPlayFromIndex(fromIndex);
     }
   },
 
   // smash creature's face
-  attackCreature: function(fromAttackIndex, toIndex, attackingCard) {
+  attackCreatureFromIndex: function(fromAttackIndex, toIndex, attackingCard) {
     let move = {"op":"attack", 
                 "from":fromAttackIndex,
                 "to": toIndex
@@ -124,13 +128,13 @@ let Card = React.createClass({
   },
 
   // highlight a card when clicked, attack face when double clicked
-  clickCardInPlay: function(fromIndex, card) {
+  clickCardInPlayFromIndex: function(fromIndex) {
     let moveClosure = function() {
       let move = {"op":"face", 
                   "from":fromIndex
                  };
       window.client.makeLocalMove(move);
-      card.hasAttacked = true;      
+      this.hasAttacked = true;      
     }
     this.highlightOrPlayMove(moveClosure);
   },

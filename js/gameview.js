@@ -22,7 +22,7 @@ let GameView = React.createClass({
     return (
         <div className="game-container">
           
-          // OPPONENT
+          {/* OPPONENT */}
           <Player playerState={opponent} />
           <div className="player-avatar" style={this.avatarStyle(1)}>
             Computer
@@ -30,7 +30,7 @@ let GameView = React.createClass({
             <div className="vital-stats-container">Mana: {opponent.mana} / {opponent.maxMana}</div>
           </div>
           
-          // MIDDLE OF BOARD
+          {/* MIDDLE OF BOARD */}
           <div className="in-play-area">
             <div className="player-board">
               {opponentBoardCards}
@@ -42,7 +42,7 @@ let GameView = React.createClass({
           
           <div className={cssEndTurn} onClick={this.endTurn}>End Turn</div>
 
-          // HOME PLAYER
+          {/* HOME PLAYER */}
           <div className="player-avatar " style={this.avatarStyle(0)}>
             Me
             <div className="vital-stats-container">Life: {homePlayer.life}</div>

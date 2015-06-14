@@ -86,7 +86,6 @@ class GameState {
   // name is the name of the human at the controls.
   constructor(name) {
     this.name = name
-    this._started = false
 
     // Index of whose turn it is.
     // The human at the controls is always 0 here.
@@ -95,11 +94,8 @@ class GameState {
     // may not be our turn.
     this.turn = 1
 
-    this.players = [new PlayerState(this.name, true),
+    this.players = [new PlayerState("You", true),
                     new PlayerState("waiting for opponent...", false)]
-
-    // The name of the winner
-    this.winner = null
   }
 
   // The player whose turn it is
@@ -124,11 +120,6 @@ class GameState {
   //
   // Returns whether the move was understood.
   makeMove(move) {
-    if (this.winner != null) {
-      // You can't make normal moves when the game is over
-      return false
-    }
-
     if (move.op == "beginTurn") {
       this.beginTurn()
     } else if (move.op == "attack") {
@@ -165,21 +156,12 @@ class GameState {
       return
     }
 
-    this._started = true
     this.beginTurn()
   }
 
-  resolveDamage() {
+  clearDead() {
     for (let player of this.players) {
       player.board = player.board.filter(card => card.defense > 0)
-    }
-    if (this.current().life <= 0) {
-      this.winner = this.opponent().name
-    } else if (this.opponent().life <= 0) {
-      this.winner = this.current().name
-    }
-    if (this.winner != null) {
-      console.log(this.winner + " wins!")
     }
   }
 
@@ -189,7 +171,7 @@ class GameState {
     let defender = this.opponent().getBoard(to)
     attacker.defense -= defender.attack
     defender.defense -= attacker.attack
-    this.resolveDamage()
+    this.clearDead()
   }
 
   // Plays a card from the hand. For now assumes it's a creature.
@@ -206,20 +188,17 @@ class GameState {
     player.mana -= card.cost
   }
 
-  // Whether the game has started
-  started() {
-    return this._started
-  }
-
   // Attacks face
   face(from) {
     let attacker = this.current().getBoard(from)
     this.opponent().life -= attacker.attack
-    this.resolveDamage()
   }
 
   draw() {
     // Make a copy so that we can edit this card
+    if (!this.rng) {
+      this.rng = new Math.seedrandom(7)
+    }
     let card = CARDS[Math.floor(this.rng() * CARDS.length)]
     let copy = {}
     for (let key in card) {
