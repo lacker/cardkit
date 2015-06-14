@@ -98,7 +98,7 @@ let Card = React.createClass({
                 "from":fromAttackIndex,
                 "to": toIndex
                };
-    window.client.makeLocalMove(move, this);
+    window.client.makeLocalMove(move);
     attackingCard.setState({"hasAttacked": true});
   },
 
@@ -110,7 +110,7 @@ let Card = React.createClass({
     }    
     let hasFocus = !this.state.hasFocus;
     if (!hasFocus) { // play or attack with card
-      window.client.makeLocalMove({"op":"play", "from":fromIndex}, this);
+      window.client.makeLocalMove({"op":"play", "from":fromIndex});
       this.setState({hasFocus: false, enteredPlayThisTurn: true});
     } else { // just highlight the card
       this.setState({hasFocus: true});
@@ -133,7 +133,7 @@ let Card = React.createClass({
     let hasFocus = !this.state.hasFocus;
     if (!hasFocus) { // play or attack with card
       this.setState({hasFocus: false, hasAttacked: true});
-      window.client.makeLocalMove({"op":"face", "from":fromIndex}, this);
+      window.client.makeLocalMove({"op":"face", "from":fromIndex});
     } else { // just highlight the card
       this.setState({hasFocus: true});
       window.game.activeCard = this;

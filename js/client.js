@@ -100,7 +100,7 @@ class Client {
   }
 
   // Makes a move locally then communicates it to the server.
-  makeLocalMove(move, card) {
+  makeLocalMove(move) {
     move.player = this.name
     move.id = "m" + Math.floor(Math.random() * 1000000000000)
 
