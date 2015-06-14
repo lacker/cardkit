@@ -12,7 +12,6 @@ let Card = React.createClass({
   },
   
   render() {
-    console.log("rendering")
     let combinedCSS = this.cssClassesForCard();
     return (
       <div className={combinedCSS} onClick={this.clickCard}>
@@ -35,7 +34,6 @@ let Card = React.createClass({
     let cssClassAttacked = this.state.hasAttacked ? 
                            'has-attacked-card' : '';
     let fromIndex = window.game.current().board.indexOf(this.props.cardInfo);
-    console.log(fromIndex);
     let cssClassJustPlayed = this.state.enteredPlayThisTurn && fromIndex != -1? 
                              'just-played-card' : '';
 
