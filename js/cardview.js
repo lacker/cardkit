@@ -7,7 +7,7 @@ let Card = React.createClass({
 
     let combinedCSS = this.cssClassesForCard(this.props.cardInfo);
     return (
-        <div className={combinedCSS} onClick={this.clickCard}>
+      <div className={combinedCSS} onClick={this.clickCard}>
         {this.props.cardInfo.name}
         <br />
         {this.props.cardInfo.attack}/{this.props.cardInfo.defense}
@@ -73,6 +73,8 @@ let Card = React.createClass({
     return false;
   },
   
+  // set all cards hasFocus to false, except currentCard
+  // currentCard can be left null
   unhighlightAllCards: function(currentCard) {
     for (let card of window.game.current().board) {
       if (card != currentCard) {
