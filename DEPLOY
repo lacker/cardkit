@@ -8,4 +8,4 @@ ssh in there, cd to cardkit
 
 `npm run build` to update the static files for nginx
 
-`./runserver` to run the node server
+`./runserver` to run the node server - although it should be nohupped so normally you don't need to do this, only if you want to test out a server change.
