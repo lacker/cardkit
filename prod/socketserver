@@ -1,0 +1,4 @@
+#!/bin/bash
+# Run this from the cardkit directory.
+
+nohup ./runserver &

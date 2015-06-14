@@ -1,0 +1,11 @@
+How to deploy this.
+
+Digital Ocean is at 45.55.220.119
+
+ssh in there, cd to cardkit
+
+`git pull` to update the code
+
+`./prod/fileserver` to run the static file server
+
+`./prod/socketserver` to run the node server
