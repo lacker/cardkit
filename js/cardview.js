@@ -37,10 +37,13 @@ let Card = React.createClass({
 
   // click cards in current player's hand or board
   clickCard: function() {
-    
-    // ATTACK
-    // can click opponent's in play cards
-    // after player has clicked his own in play card to attack
+    if (this.attackCreature()) { }
+    else if (this.playFromHand()) { }
+    else this.clickCardInPlay()
+  },
+
+  // returns true and executes attacks if click is a creature attack
+  attackCreature: function() {
     let fromAttackIndex = 0;
     let attackingCard;
     for (let card of window.game.current().board) {
@@ -51,49 +54,47 @@ let Card = React.createClass({
       fromAttackIndex++;
     }
     
-
     let toIndex = window.game.opponent().board.indexOf(this.props.cardInfo);
     if (toIndex != -1 && attackingCard) {
       this.attackCreature(fromAttackIndex, toIndex, attackingCard);
       this.unhighlightAllCards();
-      return;      
+      return true;      
     }
+    return false;
+  },
 
-    // PLAY CARD FROM HAND
-    // can click to play cards in hand
+  // returns true and plays card if click is a play from hand
+  playFromHand: function() {
     let fromIndex = window.game.current().hand.indexOf(this.props.cardInfo);
     if (fromIndex != -1) {
       this.playFromHand(fromIndex, this.props.cardInfo);
-      return;
+      return true;
     }
-    
-    // HIGHLIGHT CARD, OR SMASH FACE IF ALREADY HIGHLIGHTED
-    // can click a card in play if it's in the player's board
-    // and it's not summoning sick or already attacked
-    fromIndex = window.game.current().board.indexOf(this.props.cardInfo);
-    if (fromIndex != -1 && 
-        !this.props.cardInfo.enteredPlayThisTurn &&
-        !this.props.cardInfo.hasAttacked) {
-      this.clickCardInPlay(fromIndex, this.props.cardInfo);
-      return;
-    }
-
-    // if it's not in their hand or board, then do nothing
-
+    return false;
   },
   
   unhighlightAllCards: function(currentCard) {
     for (let card of window.game.current().board) {
       if (card != currentCard) {
-        card.hasFocus = false;
+        card.setState({hasFocus: false});
       }
     }
     for (let card of window.game.current().hand) {
       if (card != currentCard) {
-        card.hasFocus = false;
+        card.setState({hasFocus: false});
       }
     }
 
+  },
+
+  // highlight card when clicked, or smash face if already highlighted
+  clickCardInPlay: function() {
+    fromIndex = window.game.current().board.indexOf(this.props.cardInfo);
+    if (fromIndex != -1 && 
+        !this.props.cardInfo.enteredPlayThisTurn &&
+        !this.props.cardInfo.hasAttacked) {
+      this.clickCardInPlay(fromIndex, this.props.cardInfo);
+    }
   },
 
   // smash creature's face
@@ -135,13 +136,12 @@ let Card = React.createClass({
 
   // when a card is clicked, highlight it, play it, or attack with it
   highlightOrPlayMove: function(moveClosure, card) {
-    card.hasFocus = !card.hasFocus;
+    card.setState({hasFocus: !card.hasFocus});
     if (!card.hasFocus) { // play or attack with card
       moveClosure();
       this.unhighlightAllCards();
     } else { // just highlight the card
       this.unhighlightAllCards(card);
-      window.client.forceUpdate();
     }
   }
 
