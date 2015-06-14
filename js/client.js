@@ -110,7 +110,7 @@ class Client {
       return
     }
 
-    this.forceUpdate()
+    this.forceUpdate();
     this.send(move)
   }
 
