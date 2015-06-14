@@ -56,14 +56,9 @@ let Card = React.createClass({
   attackCreature: function() {
     let fromAttackIndex = 0;
     let attackingCard;
-    for (let card of window.game.current().board) {
-      if (card.hasFocus) {
-        attackingCard = card;
-        break;
-      }
-      fromAttackIndex++;
+    if (window.game.activeCard) {
+      attackingCard = window.game.activeCard;
     }
-    
     let toIndex = window.game.opponent().board.indexOf(this.props.cardInfo);
     if (toIndex != -1 && attackingCard) {
       this.attackCreatureFromIndex(fromAttackIndex, toIndex, attackingCard);
@@ -86,12 +81,11 @@ let Card = React.createClass({
   // set all cards hasFocus to false, except currentCard
   // currentCard can be left null
   unhighlightAllCards: function(currentCard) {
+    if (currentCard) {
+      currentCard.setState({stayFocused:true});
+    }
     let event = new CustomEvent("unhighlight", {});
     window.dispatchEvent(event);
-    if (currentCard) {
-      currentCard.setState({hasFocus:true});
-    }
-
   },
 
   componentDidMount: function() {
@@ -106,16 +100,10 @@ let Card = React.createClass({
   },
 
   unhighlight: function() {
-    this.setState({hasFocus:false});
-  },
-
-  // highlight card when clicked, or smash face if already highlighted
-  clickCardInPlay: function() {
-    let fromIndex = window.game.current().board.indexOf(this.props.cardInfo);
-    if (fromIndex != -1 && 
-        !this.state.enteredPlayThisTurn &&
-        !this.state.hasAttacked) {
-      this.clickCardInPlayFromIndex(fromIndex);
+    if (this.state.stayFocused) {
+      this.setState({stayFocused:false});
+    } else {
+      this.setState({hasFocus:false});
     }
   },
 
@@ -139,9 +127,19 @@ let Card = React.createClass({
                     "from":fromIndex
                    };
         window.client.makeLocalMove(move);
-        self.setState({"enteredPlayThisTurn": true});
+        self.setState({enteredPlayThisTurn: true});
       }
       this.highlightOrPlayMove(moveClosure);    
+    }
+  },
+
+ // highlight card when clicked, or smash face if already highlighted
+  clickCardInPlay: function() {
+    let fromIndex = window.game.current().board.indexOf(this.props.cardInfo);
+    if (fromIndex != -1 && 
+        !this.state.enteredPlayThisTurn &&
+        !this.state.hasAttacked) {
+      this.clickCardInPlayFromIndex(fromIndex);
     }
   },
 
@@ -153,7 +151,7 @@ let Card = React.createClass({
                   "from":fromIndex
                  };
       window.client.makeLocalMove(move);
-      self.setState({"hasAttacked": true});
+      self.setState({hasAttacked: true});
     }
     this.highlightOrPlayMove(moveClosure);
   },
@@ -166,6 +164,8 @@ let Card = React.createClass({
       this.unhighlightAllCards();
     } else { // just highlight the card
       this.unhighlightAllCards(this);
+      this.setState({hasFocus: true});
+      window.game.activeCard = this;
     }
   }
 
