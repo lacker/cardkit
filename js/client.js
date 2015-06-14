@@ -64,7 +64,7 @@ class Client {
   register() {
     console.log("registering as " + this.name)
     if (this.game) {
-      this.send({op: "register", name: this.name, seeking: !this.game._started})
+      this.send({op: "register", name: this.name, seeking: !this.game.started()})
     } else {
       this.send({op: "register", name: this.name, seeking: true})
     }
