@@ -172,15 +172,6 @@ h2 {
   padding-top:2vh;
 }
 
-// highlight active player
-.active-player {
-  background-color: $palette-two;
-  box-shadow: 5px 5px 12px 0px rgba(22,22,22,1);
-  color:white;
-  cursor: pointer;
-  pointer-events:auto;
-}
-
 
 /* 
    styles for end turn button 
@@ -198,6 +189,15 @@ h2 {
   bottom:$in-play-height/2 - 1vh;
   pointer-events:none;
   margin-left: $in-play-width + 17vw + 1vw;
+}
+
+// highlight end of turn button for active player
+.active-player {
+  background-color: $palette-two;
+  box-shadow: 5px 5px 12px 0px rgba(22,22,22,1);
+  color:white;
+  cursor: pointer;
+  pointer-events:auto;
 }
 
 // pop up end turn button a bit on hover
