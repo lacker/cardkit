@@ -11,15 +11,19 @@ let App = React.createClass({
     window.name = `Guest ${Math.floor(Math.random() * 100)}`
     window.game = new GameState(window.name)
     window.client = new Client(window.name, window.game)
-
     return window.game
   },
 
   render() {
+    
+    window.client.forceUpdate = (() => this.forceUpdate())
+
     return (
       <div className="app">
-        <LobbyView />
-        <GameView state={this.state} />
+        { window.client.registered ?
+            <GameView state={this.state} />
+          : <LobbyView />
+        }
       </div>
     );
   }

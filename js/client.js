@@ -37,7 +37,7 @@ class Client {
 
     if (message.op == "hello") {
       // We always need to register what our name is
-      this.register()
+      // this.register()
     } else if (message.op == "start") {
       this.handleStart(message)
     } else if (this.handleRemoteMove(message)) {
@@ -62,6 +62,7 @@ class Client {
 
   // Send a looking-for-game message.
   register() {
+    this.registered = true; // UI checks this to refresh on game seek
     console.log("registering as " + this.name)
     if (this.game) {
       this.send({op: "register", name: this.name, seeking: !this.game.started()})

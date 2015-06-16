@@ -36,8 +36,14 @@ let Card = React.createClass({
       <div className={combinedCSS} onClick={this.clickCard}>
         {this.props.cardInfo.name}
         <div className="mana-label">{this.props.cardInfo.cost}</div> 
-        <br />
-        {this.props.cardInfo.attack}/{this.props.cardInfo.defense}
+        <div className="attack-label">
+          {this.props.cardInfo.attack}
+          <img className="card-icon-image" src="img/crossed-swords.svg" />
+        </div> 
+        <div className="health-label">
+          {this.props.cardInfo.defense}
+          <img className="card-icon-image" src="img/shield.svg" />
+        </div> 
       </div>
     );
   

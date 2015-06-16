@@ -96,7 +96,7 @@ class GameState {
     this.turn = 1
 
     this.players = [new PlayerState(this.name, true),
-                    new PlayerState("waiting for opponent...", false)]
+                    new PlayerState("Waiting...", false)]
 
     // The name of the winner
     this.winner = null
