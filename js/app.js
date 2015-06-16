@@ -3,6 +3,7 @@ import React from "react"
 import Client from "./client"
 import GameState from "./gamestate"
 import GameView from "./gameview"
+import LobbyView from "./lobbyview"
 
 let App = React.createClass({
   getInitialState() {
@@ -17,6 +18,7 @@ let App = React.createClass({
   render() {
     return (
       <div className="app">
+        <LobbyView />
         <GameView state={this.state} />
       </div>
     );

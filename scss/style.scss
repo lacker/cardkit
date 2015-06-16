@@ -22,14 +22,16 @@ body {
 // \todo simplified avatar for cards in play
 .playing-card {
   background-color: $palette-three; 
-  width: $card-width;
-  height: $card-height;
+  width: $card-width - $default-padding;
+  height: $card-height - $default-padding;
   border-radius: $default-corner-radius;
   display: inline-block;
   border: 1px solid;
 	border-color:black;
   box-shadow: 5px 5px 12px 0px rgba(22,22,22,1);
   cursor: pointer;
+  text-align:left;
+  padding:$default-padding/2;
 }
 
 // pop up a bit on hover
@@ -144,4 +146,23 @@ $end-turn-button-width: 90px;
 	height:$card-height + $default-padding;
   position: relative;
   right: $end-turn-button-width/2;
+}
+
+
+/* 
+   styles for LobbyView 
+*/
+
+// the button to find a game in the lobby
+.find-game-button {
+  width: $end-turn-button-width;
+  padding:$default-padding;
+  background-color: $palette-two;
+  border-radius:6px;
+  border: 1px solid;
+}
+
+
+.mana-label {
+  float:right;
 }

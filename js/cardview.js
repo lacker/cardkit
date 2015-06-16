@@ -35,6 +35,7 @@ let Card = React.createClass({
     return (
       <div className={combinedCSS} onClick={this.clickCard}>
         {this.props.cardInfo.name}
+        <div className="mana-label">{this.props.cardInfo.cost}</div> 
         <br />
         {this.props.cardInfo.attack}/{this.props.cardInfo.defense}
       </div>
