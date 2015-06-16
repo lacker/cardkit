@@ -5,9 +5,7 @@ Set up with `npm install`
 
 `npm start` runs the client locally at localhost:8080 (or you can use /webpack_dev_server/ if you prefer)
 
-`./runserver` runs the server locally at localhost:8080
-
-Note: To test locally, open two browser windows pointing at localhost:8080
+`./runserver` runs the server locally at localhost:9090
 
 Note: To test locally, open two browser windows pointing at localhost:8080
 
