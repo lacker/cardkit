@@ -49,13 +49,13 @@ const CARDS = [
 
 // The state of a single player.
 class PlayerState {
-  constructor(name) {
-    this.name = name
-    this.hand = []
-    this.board = []
-    this.life = 30
-    this.mana = 0
-    this.maxMana = 0
+  constructor(data) {
+    this.name = data.name
+    this.hand = data.hand || []
+    this.board = data.board || []
+    this.life = data.life || 30
+    this.mana = data.mana || 0
+    this.maxMana = data.maxMana || 0
   }
 
   // Throws if the index is bad
@@ -95,8 +95,8 @@ class GameState {
     // may not be our turn.
     this.turn = 1
 
-    this.players = [new PlayerState(this.name, true),
-                    new PlayerState("waiting for opponent...", false)]
+    this.players = [new PlayerState({name: this.name}),
+                    new PlayerState({name: "waiting for opponent..."})]
 
     // The name of the winner
     this.winner = null
