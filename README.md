@@ -9,4 +9,6 @@ Set up with `npm install`
 
 Note: To test locally, open two browser windows pointing at localhost:8080
 
+Note: To test locally, open two browser windows pointing at localhost:8080
+
 The initial config and layout is based on http://jmfurlott.com/tutorial-setting-up-a-single-page-react-web-app-with-react-router-and-webpack/
