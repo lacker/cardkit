@@ -5,6 +5,8 @@ Set up with `npm install`
 
 `npm start` runs the client locally at localhost:8080 (or you can use /webpack_dev_server/ if you prefer)
 
-`./runserver` runs the server locally at localhost:9090
+`./runserver` runs the server locally at localhost:8080
+
+Note: To test locally, open two browser windows pointing at localhost:8080
 
 The initial config and layout is based on http://jmfurlott.com/tutorial-setting-up-a-single-page-react-web-app-with-react-router-and-webpack/
