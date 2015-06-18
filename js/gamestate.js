@@ -93,11 +93,11 @@ class GameState {
     // We just start off with it not being our turn so that the UI
     // will be disabled - when we actually start the game it may or
     // may not be our turn.
-    this.turn = data.turn || 1
+    this.turn = (data.turn == null) ? 1 : data.turn
 
-    this.players = data.players || [
-      new PlayerState({name: this.name}),
-      new PlayerState({name: "waiting for opponent..."})]
+    let playerInfo = data.players || [{name: this.name},
+                                      {name: "waiting for opponent..."}]
+    this.players = playerInfo.map(info => new PlayerState(info))
 
     // The name of the winner
     this.winner = data.winner || null
