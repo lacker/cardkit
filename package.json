@@ -21,16 +21,17 @@
     "url": "https://github.com/lacker/cardkit/issues"
   },
   "devDependencies": {
-    "react-router": "~0.13.3",
-    "react-hot-loader": "~1.2.7",
-    "react": "~0.13.3",
-    "webpack-dev-server": "~1.9.0",
-    "node-libs-browser": "~0.5.2",
-    "webpack": "~1.9.10",
     "babel-core": "~5.5.6",
+    "babel-jest": "~5.3.0",
     "babel-loader": "~5.1.4",
     "jest-cli": "~0.4.13",
-    "babel-jest": "~5.3.0"
+    "json-loader": "^0.5.2",
+    "node-libs-browser": "~0.5.2",
+    "react": "~0.13.3",
+    "react-hot-loader": "~1.2.7",
+    "react-router": "~0.13.3",
+    "webpack": "~1.9.10",
+    "webpack-dev-server": "~1.9.0"
   },
   "dependencies": {
     "babel": "^5.5.6",
@@ -43,7 +44,14 @@
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
-    "testFileExtensions": ["es6", "js"],
-    "moduleFileExtensions": ["js", "json", "es6"]
+    "testFileExtensions": [
+      "es6",
+      "js"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "es6"
+    ]
   }
 }
