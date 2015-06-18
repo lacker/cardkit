@@ -69,11 +69,13 @@ let Card = React.createClass({
                       cssClassJustPlayed; 
     return combinedCSS;
   },
-
+  
   // click cards in current player's hand or board
   clickCard: function() {
     if (this.attackCreature()) { 
+      window.game.activeCard = null;
     } else if (this.playFromHand()) { 
+      window.game.activeCard = null;
     } else this.clickCardInPlay();
    
     if (window.game.winner) {
@@ -85,13 +87,10 @@ let Card = React.createClass({
   // returns true and executes attacks if click is a creature attack
   attackCreature: function() {
     let fromAttackIndex = 0;
-    let attackingCard;
-    if (window.game.activeCard) {
-      attackingCard = window.game.activeCard;
-    }
     let toIndex = window.game.opponent().board.indexOf(this.props.cardInfo);
-    if (toIndex != -1 && attackingCard) {
-      this.attackCreatureFromIndex(fromAttackIndex, toIndex, attackingCard);
+    if (toIndex != -1 && window.game.activeCard != null) {
+      console.log(window.game.activeCard)
+      this.attackCreatureFromIndex(fromAttackIndex, toIndex, window.game.activeCard);
       return true;      
     }
     return false;
@@ -105,7 +104,7 @@ let Card = React.createClass({
                   "to": toIndex
                };
     window.client.makeLocalMove(move);
-    attackingCard.setState({"hasAttacked": true});
+    attackingCard.setState({"hasAttacked": true, hasFocus: false});
   },
 
   // returns true and plays card if click is a play from hand
