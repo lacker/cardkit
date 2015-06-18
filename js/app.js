@@ -3,6 +3,7 @@ import React from "react"
 import Client from "./client"
 import GameState from "./gamestate"
 import GameView from "./gameview"
+import LobbyView from "./lobbyview"
 
 let App = React.createClass({
   getInitialState() {
@@ -10,14 +11,19 @@ let App = React.createClass({
     window.name = `Guest ${Math.floor(Math.random() * 100)}`
     window.game = new GameState({name: window.name})
     window.client = new Client(window.name, window.game)
-
     return window.game
   },
 
   render() {
+    
+    window.client.forceUpdate = (() => this.forceUpdate())
+
     return (
       <div className="app">
-        <GameView state={this.state} />
+        { window.client.registered ?
+            <GameView state={this.state} />
+          : <LobbyView />
+        }
       </div>
     );
   }

@@ -1,55 +1,55 @@
 // http://coolors.co/app/00ffc5-fe5f55-adf5ff-0075a2-481620
-@import url(http://fonts.googleapis.com/css?family=MedievalSharp);
-
-$palette-one: #000;
-$palette-two: #999;
-$palette-three: #ffdeb1;
+$palette-one: #00FFC5;
+$palette-two: #FE5F55;
+$palette-three: #ADF5FF;
 $palette-four: #0075A2;
 $palette-five: #481620;
 
-$default-padding: 3vh;
-$card-height: 14vh;
-$card-width: 8vh;
-$in-play-width: 1000px; 
-$in-play-height: $card-height*2; 
-$avatar-width: 30vh;
-$default-corner-radius: 0.5vh;
+$default-padding: 1vw;
+$default-horizontal-padding: 1vw;
+$default-vertical-padding: 1vh;
+$card-height: 13vh;
+$card-width: 9vw;
+$end-turn-button-width: 10vw;
+$in-play-width: $card-width * 7; 
+$in-play-height: $card-height*2 + $default-vertical-padding*4; 
+$default-corner-radius: 6px;
+
+
+/* 
+   styles that override general globals
+*/
 
 body {
-  font-family: 'MedievalSharp', cursive;
-	padding:0;
-	margin:0;
-  background-color: #000;
-  background-image: url(/img/background.jpg);
-  background-repeat: no-repeat;
-  background-size: contain;
-  overflow: hidden;
+  padding: 0;
+  margin: 0;
 }
 
 h2 {
-  font-weight: bold;
-  font-size: 3vh;
-  margin: 0;
-  padding: 0;
+  font-size: 2vh;
 }
 
+
+/* 
+   styles for CardView 
+*/
+
 // cards in play and in hand
-// \todo simplified avatar for cards in play
 .playing-card {
   background-color: $palette-three; 
-  background-image: url(/img/card-tex.png);
-  background-size: cover;
-  background-repeat: no-repeat;
-  width: $card-width;
-  height: $card-height;
+  width: $card-width - $default-padding;
+  height: $card-height - $default-vertical-padding;
+  padding-left: $default-padding/2;
+  padding-right: $default-padding/2;
+  padding-top: $default-vertical-padding/2;
+  padding-bottom: $default-vertical-padding/2;
   border-radius: $default-corner-radius;
   display: inline-block;
-  border: 2px solid;
-	border-color:black;
-  box-shadow: 1vh 1vh 2vh 0vh rgba(22,22,22,0.2);
+  border: 1px solid;
+  border-color:black;
+  box-shadow: 1.5vh 1.5vh 3vh 0vhx rgba(22,22,22,1);
   cursor: pointer;
-  font-size: 2vh;
-  padding: $default-padding - 1vh;
+  text-align:left;
 }
 
 // pop up a bit on hover
@@ -59,78 +59,139 @@ h2 {
   box-shadow: 1.5vh 1.5vh 3vh 0vh rgba(22,22,22,0.2);
 }
 
+// show mana cost for card
+.mana-label {
+  float:right;
+}
+
+// position label at bottom of card
+.attack-label {
+  margin-top: $card-height - $default-vertical-padding*6;
+}
+
+// position label at bottom of card, oddly
+.health-label {
+  float:right;
+  margin-top: -2vh;
+}
+
+// make attack/defense svg icons small
+.card-icon-image {
+  width:24px;
+  float: left;
+}
+
 // when a card has been clicked
 .active-card {
   background-color: $palette-two; 
 }
 
-$end-turn-button-width: 5vh;
+// fade out used cards
+.just-played-card, .has-attacked-card {
+  opacity: .5;
+}
 
-// the main End Turn button that always shows in the game
-.end-turn-button {
-  width: $end-turn-button-width;
-  height: $end-turn-button-width;
-  padding:$default-padding;
-  background-color: $palette-four;
+// fade out cards in hand a tiny bit, if they can't be played
+.too-expensive {
+  opacity: .9;
   color:gray;
-  border-radius:6px;
-  border: 1px solid;
-  float:right;
-  position:relative;
-  bottom:$in-play-height/2 + 5vh;
-  right:-$default-padding + 1vh;
-  pointer-events:none;
-  margin-right: $default-padding;
+  box-shadow: 5px 5px 12px 0px rgba(22,22,22,0);
 }
 
-// pop up end turn button a bit on hover
-.active-player:hover {
-  margin-top: 1vh;
-  box-shadow: 7px 7px 17px 0px rgba(22,22,22,1);
-}
 
-// the representation of the player
-// \todo pics
-.player-avatar {
-  width: 20vh;
-  height: 10vh;
-  padding: $default-padding/4;
-  font-size: 1.5vh;
-  font-weight: fontWeight; 
-  background-color: #73726d;
-  position: relative;
-  margin: 2vh auto 2vh auto;
-
-}
+/* 
+   styles for play area 
+*/
 
 // the overall container with all elements
 .game-container {
-  background-image: url(/img/leather-tex.jpg);
-  background-size: cover;
   text-align: center; 
   background-color: $palette-four; 
-  width: 1200px;
-  margin: 2vh auto 2vh auto;
-  height:94vh;
-  border-radius: 1vh;
-  -webkit-box-shadow: 10px 10px 52px -5px rgba(0,0,0,0.75);
-  -moz-box-shadow: 10px 10px 52px -5px rgba(0,0,0,0.75);
-  box-shadow: 10px 10px 52px -5px rgba(0,0,0,0.75);
-  border: 10px double #000; 
-  border-width: 1.5vh;
 }
 
 // area for cards to be played in center
 .in-play-area {
   text-align: center; 
-  /*background-color:$palette-four; */
+  background-color:$palette-four; 
   height: $in-play-height;
   width: $in-play-width;
   border-radius: $default-corner-radius;
-  /*margin-left:$default-padding;*/
-  margin: 0 auto 0 auto;
+  margin-left: 16vw;
+  margin-bottom: $default-vertical-padding*-4;
 }
 
+// a player's in-play cards
+.player-board {
+  clear:both;
+  width:100%;
+  border: 1px solid;
+  background-color: rgba(245,245,245,1);
+  height: $card-height;
+  border-radius: $default-corner-radius;
+}
+
+// the player's board who is on bottom
+.home-player-board {
+  position: relative;
+  bottom: -10px;
+}
+
+// where a player's unplayed cards go
+.hand-container {
+  height:$card-height + $default-vertical-padding*4;
+  position: relative;
+  right: $end-turn-button-width/2;
+}
+
+
+/* 
+   styles for player avatar 
+*/
+
+// the representation of the player
+.player-avatar {
+  padding: 10px;
+  padding-top: 0; 
+  margin-bottom: $default-padding;
+  width: 120px;
+  height: 120px;
+  margin-left: 43vw;
+  font-weight: fontWeight; 
+  border-radius: 60px;
+  background-color: rgba(245,245,245,1);
+}
+
+// life and mana
+.vital-stats-container {
+  color:black;
+  padding-top:1vh;
+}
+
+// life of player
+.life-container {
+  padding-top:2vh;
+}
+
+
+/* 
+   styles for end turn button 
+*/
+
+// the main End Turn button that always shows in the game
+.end-turn-button {
+  width: $end-turn-button-width;
+  padding:$default-padding;
+  background-color: $palette-four;
+  color:gray;
+  border-radius:6px;
+  border: 1px solid;
+  position:relative;
+  bottom:$in-play-height/2 - 1vh;
+  pointer-events:none;
+  margin-left: $in-play-width + 17vw + 1vw;
+}
+
+// highlight end of turn button for active player
 .active-player {
   background-color: $palette-two;
   box-shadow: 5px 5px 12px 0px rgba(22,22,22,1);
@@ -139,43 +200,39 @@ $end-turn-button-width: 5vh;
   pointer-events:auto;
 }
 
+// pop up end turn button a bit on hover
+.active-player:hover {
+  box-shadow: 7px 7px 17px 0px rgba(22,22,22,1);
+}
 
-// a player';'s in play cards
-.player-board {
-	clear:both;
-	width:100%;
+
+/* 
+   styles for LobbyView 
+*/
+
+// the overall container for the main lobby
+.lobby-container {
+  width: 94vh;
+  height:94vh;
+  text-align: center; 
+  background-color: $palette-four; 
+  margin: 0 auto;
+  border-radius: 1vh;
+  border: 10px double #000; 
+  border-width: 1.5vh;
+}
+
+// the button to find a game in the lobby
+.find-game-button {
+  width: $end-turn-button-width;
+  padding:$default-padding;
+  margin: 0 auto;
+  background-color: $palette-two;
+  border-radius:6px;
   border: 1px solid;
-  background-color: rgba(245,245,245,0.1);
-  height: $in-play-height/2 - 1vh;
-  border-radius: $default-corner-radius;
 }
 
-// the player's board who is on bottom
-.home-player-board {
-	position: relative;
-	bottom: -10px;
-}
-
-// life and mana
-.vital-stats-container {
-	color:black;
-  margin: 0;
-  padding: 0;
-}
-
-// fade out used cards
-.just-played-card, .has-attacked-card {
-	opacity: .5;
-}
-
-// fade out cards in hand a tiny bit, if they can't be played
-.too-expensive {
-	opacity: .9;
-	color:gray;
-}
-
-// where a player's unplayed cards go
-.hand-container {
-	height:$card-height + $default-padding;
-  position: relative;
+// the style for he big swords in the lobby
+.home-image {
+  width:75%;
 }
