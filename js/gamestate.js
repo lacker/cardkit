@@ -133,12 +133,6 @@ class GameState {
       this.beginTurn()
     } else if (move.op == "click_card") {
       this.clickCard(move.index, move.container_type)
-    } else if (move.op == "attack") {
-      this.attack(move.from, move.to)
-    } else if (move.op == "face") {
-      this.face(move.from)
-    } else if (move.op == "play") {
-      this.play(move.from)
     } else if (move.op == "endTurn") {
       this.endTurn()
     } else {
@@ -189,7 +183,7 @@ class GameState {
     }
   }
 
-  // container can beboard or hand
+  // container can be board or hand
   clickCard(index, container_type) {
     let card;
     if (container_type == "board") {
