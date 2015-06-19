@@ -32,18 +32,41 @@ let Card = React.createClass({
   // layout and style the card
   render() {
     let combinedCSS = this.cssClassesForCard();
+
+    let attackPart;
+    if (this.props.cardInfo.attack) {
+      attackPart = (
+        <div className="card-details">
+          <div className="attack-label">
+            {this.props.cardInfo.attack}
+            <img className="card-icon-image" src="img/crossed-swords.svg" />
+          </div>
+          <div className="health-label">
+            {this.props.cardInfo.defense}
+            <img className="card-icon-image" src="img/shield.svg" />
+          </div>
+        </div> 
+)
+    } else {
+      attackPart = (
+        <div div className="card-details">
+          <div className="spell-text-label">
+          {this.props.cardInfo.description}
+        </div>
+        </div>
+        )
+    }
+
     return (
       <div className={combinedCSS} onClick={this.clickCard}>
-        {this.props.cardInfo.name}
-        <div className="mana-label">{this.props.cardInfo.cost}</div> 
-        <div className="attack-label">
-          {this.props.cardInfo.attack}
-          <img className="card-icon-image" src="img/crossed-swords.svg" />
-        </div> 
-        <div className="health-label">
-          {this.props.cardInfo.defense}
-          <img className="card-icon-image" src="img/shield.svg" />
-        </div> 
+        <div className="card-top"> 
+          {this.props.cardInfo.name}
+          <div className="mana-label">{this.props.cardInfo.cost}</div>
+        </div>
+        <div className="card-bottom"> 
+          {attackPart}
+        </div>
+        
       </div>
     );
   
