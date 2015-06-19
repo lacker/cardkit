@@ -7,19 +7,37 @@ const CARDS = [
     name: "Twobot",
     attack: 2,
     defense: 2,
-    cost: 1
+    cost: 2
   },
   {
     name: "Threebot",
     attack: 3,
     defense: 3,
-    cost: 2
+    cost: 3
   },
   {
-    name: "Donk",
+    name: "Fourbot",
+    attack: 4,
+    defense: 4,
+    cost: 4
+  },
+  {
+    name: "Fivebot",
+    attack: 5,
+    defense: 5,
+    cost: 5
+  },
+  {
+    name: "Warp",
     description: "End the next two turns.",
     endTurn: 2,
-    cost: 0
+    cost: 3
+  },
+  {
+    name: "Random Blast",
+    description: "Destroy a random creature.",
+    kill: true,
+    cost: 2
   },
 ]
 
@@ -113,6 +131,8 @@ class GameState {
 
     if (move.op == "beginTurn") {
       this.beginTurn()
+    } else if (move.op == "click_card") {
+      this.clickCard(move.index, move.container_type)
     } else if (move.op == "attack") {
       this.attack(move.from, move.to)
     } else if (move.op == "face") {
@@ -169,12 +189,60 @@ class GameState {
     }
   }
 
+  // container can beboard or hand
+  clickCard(index, container_type) {
+    let card;
+    if (container_type == "board") {
+      // click a card in current player's board
+      card = this.current().getBoard(index)
+      if (card.hasFocus && card.canAct) {
+        this.face(index)
+      }
+      if (card.canAct) {
+        card.hasFocus = !card.hasFocus;
+      }
+    } else if (container_type == "hand") { 
+      // click a card in current player's hand
+      card = this.current().getHand(index)
+      if (card.hasFocus) {
+        this.play(index)
+      }
+      if (this.current().mana >= card.cost) {
+        card.hasFocus = !card.hasFocus;
+      }
+    } else  { 
+      // click a card on opponent's board, might be an attack
+      card = this.opponent().getBoard(index)
+      let i = 0;
+      for (let myCard of this.current().board) {
+        if (myCard.hasFocus) {
+          this.attack(i, index);
+          break;
+        }
+        i++;
+      }
+    }
+
+    // unfocus other cards
+    for (let c of this.current().board) {
+      if (c != card) {
+        c.hasFocus = false;        
+      }
+    }
+    for (let c of this.current().hand) {
+      if (c != card) {
+        c.hasFocus = false;        
+      }
+    }
+  }
+
   // from and to are indices into board
   attack(from, to) {
     let attacker = this.current().getBoard(from)
     let defender = this.opponent().getBoard(to)
     attacker.defense -= defender.attack
     defender.defense -= attacker.attack
+    attacker.canAct = false;
     this.resolveDamage()
   }
 
@@ -192,6 +260,14 @@ class GameState {
       player.board.push(card)
       player.hand.splice(from, 1)
       player.mana -= card.cost      
+    } else if (card.kill) { // it's an Errant Blast
+      player.trash.push(card)
+      player.hand.splice(from, 1)
+      if (this.opponent().board.length) {
+        let randomIndex = Math.floor(Math.random() * (this.opponent().board.length-1));
+        this.opponent().trash.push(this.opponent().board[randomIndex])
+        this.opponent().board.splice(randomIndex, 1)
+      }
     } else if (card.endTurn) { // it's a donk
       player.trash.push(card)
       player.hand.splice(from, 1)
@@ -211,6 +287,8 @@ class GameState {
   face(from) {
     let attacker = this.current().getBoard(from)
     this.opponent().life -= attacker.attack
+    attacker.canAct = false
+    attacker.hasFocus = false
     this.resolveDamage()
   }
 
@@ -221,8 +299,16 @@ class GameState {
     for (let key in card) {
       copy[key] = card[key]
     }
-
+    this.initCardFields(copy)
     this.current().hand.push(copy)
+  }
+
+  initCardFields(card) {
+    card.hasFocus = false; 
+    card.canAct = false; 
+  }
+
+  initCreatureFields(card) {
   }
 
   beginTurn() {
@@ -232,6 +318,13 @@ class GameState {
   }
 
   endTurn() {
+    for (let card of this.current().board) {
+      card.hasFocus = false;
+      card.canAct = true;
+    }
+    for (let card of this.current().hand) {
+      card.hasFocus = false;
+    }
     this.turn = 1 - this.turn
   }
 
