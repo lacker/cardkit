@@ -52,11 +52,27 @@ h2 {
   text-align:left;
 }
 
+.playing-card div, .playing-card img {
+  display: inline-block;
+  vertical-align: middle;
+}
+
 // pop up a bit on hover
 .playing-card:hover {
   transform: rotateX( 5deg ) rotateY(20deg);
   transition: transform 0.1s ease-in;
   box-shadow: 1.5vh 1.5vh 3vh 0vh rgba(22,22,22,0.2);
+}
+
+.card-top {
+  display:block;
+  width: $card-width - 1vw;
+}
+
+.card-bottom {
+  display:block;
+  height:$card-height - 5vh;
+  width: $card-width - 1vw;
 }
 
 // show mana cost for card
@@ -71,8 +87,21 @@ h2 {
 
 // position label at bottom of card, oddly
 .health-label {
-  float:right;
-  margin-top: -2vh;
+  margin-top: $card-height - $default-vertical-padding*6;
+}
+
+.spell-text-label {
+  font-size:.9em;
+  padding-top: 2vh;
+  position: relative;
+}
+
+.card-details {
+  height:6vh;  
+}
+
+.blank-label {
+  display:none;
 }
 
 // make attack/defense svg icons small
@@ -232,7 +261,7 @@ h2 {
   border: 1px solid;
 }
 
-// the style for he big swords in the lobby
+// the style for the big swords in the lobby
 .home-image {
   width:75%;
 }

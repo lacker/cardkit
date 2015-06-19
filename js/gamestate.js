@@ -7,43 +7,19 @@ const CARDS = [
     name: "Twobot",
     attack: 2,
     defense: 2,
-    cost: 2
+    cost: 1
   },
   {
     name: "Threebot",
     attack: 3,
     defense: 3,
-    cost: 3
+    cost: 2
   },
   {
-    name: "Fourbot",
-    attack: 4,
-    defense: 4,
-    cost: 4
-  },
-  {
-    name: "Fivebot",
-    attack: 5,
-    defense: 5,
-    cost: 5
-  },
-  {
-    name: "Sixbot",
-    attack: 6,
-    defense: 6,
-    cost: 6
-  },
-  {
-    name: "Sevenbot",
-    attack: 7,
-    defense: 7,
-    cost: 7
-  },
-  {
-    name: "Eightbot",
-    attack: 8,
-    defense: 8,
-    cost: 8
+    name: "Donk",
+    description: "Your opponent can't attack or play cards next turn.",
+    beginTurn: 2,
+    cost: 0
   },
 ]
 
@@ -53,6 +29,7 @@ class PlayerState {
     this.name = data.name
     this.hand = data.hand || []
     this.board = data.board || []
+    this.trash = data.trash || []
     this.life = data.life || 30
     this.mana = data.mana || 0
     this.maxMana = data.maxMana || 0
@@ -197,7 +174,7 @@ class GameState {
     this.resolveDamage()
   }
 
-  // Plays a card from the hand. For now assumes it's a creature.
+  // Plays a card from the hand.
   // Throws if there's not enough mana.
   // from is an index of the hand
   play(from) {
@@ -206,9 +183,23 @@ class GameState {
     if (player.mana < card.cost) {
       throw `need ${card.cost} mana but only have ${player.mana}`
     }
-    player.board.push(card)
-    player.hand.splice(from, 1)
-    player.mana -= card.cost
+    // it's a creature
+    if (card.defense) {
+      player.board.push(card)
+      player.hand.splice(from, 1)
+      player.mana -= card.cost      
+    } else if (card.beginTurn) { // it's a timewalk
+      player.trash.push(card)
+      player.hand.splice(from, 1)
+      player.mana -= card.cost      
+      for (let i=0;i<card.beginTurn;i++) {
+        let event = new CustomEvent("turnEnded", {});
+        window.dispatchEvent(event);
+        window.client.makeLocalMove({"op":"endTurn"});
+        window.client.makeLocalMove({"op":"beginTurn"});        
+      }    
+    }
+
   }
 
   // Whether the game has started
