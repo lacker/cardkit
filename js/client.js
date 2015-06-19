@@ -7,12 +7,12 @@ class Client {
     this.game = game
     this.makeSocket()
 
-    // Each game-move has an id on it.
-    // The convention is that once you process a move with a certain
-    // id, if you see it again in the future you just won't process
-    // it. That means that for error-resistance we can just repeatedly
-    // resend our past moves.
-    this.processed = new Set()
+    // The next op id we expect.
+    // This is only useful after a "start" specifies which channel you
+    // are listening to.
+    // We skip 0 to avoid bugs. Each actual move for a game has an id,
+    // starting at 1.
+    this.nextID = 1
 
     // Past moves that we can re-send.
     // Here we keep all moves that happened since any opponent move.
@@ -36,14 +36,21 @@ class Client {
     let message = JSON.parse(messageData)
 
     if (message.op == "hello") {
-      // We always need to register what our name is
-      // this.register()
-    } else if (message.op == "start") {
+      // We don't do anything on a hello right now.
+      // It isn't technically necessary, it's just handy for debugging
+      // because you expect a hello to come in.
+      return
+    }
+
+    if (message.op == "start") {
       this.handleStart(message)
+    } else if (message.id != this.nextID) {
+      // This is a dupe, or out-of-order. Ignore it
     } else if (this.handleRemoteMove(message)) {
       // It was a remote move
     } else {
       console.log("don't know how to handle this message. dropping it")
+      return
     }
   }
 
@@ -85,16 +92,12 @@ class Client {
       // This is a bounce of a move we made.
       return true
     }
-    if (move.id && this.processed.has(move.id)) {
-      // This is a move we have already processed.
-      return true
-    }
 
     console.log("making remote move: " + JSON.stringify(move))
     if (this.game.makeMove(move)) {
-      this.processed.add(move.id)
       this.buffer = []
       this.forceUpdate()
+      this.nextID++
       return true
     }
     return false
@@ -103,7 +106,7 @@ class Client {
   // Makes a move locally then communicates it to the server.
   makeLocalMove(move) {
     move.player = this.name
-    move.id = "m" + Math.floor(Math.random() * 1000000000000)
+    move.id = this.nextID
 
     console.log("making local move: " + JSON.stringify(move))
     if (!this.game.makeMove(move)) {
@@ -111,7 +114,8 @@ class Client {
       return
     }
 
-    this.forceUpdate();
+    this.nextID++
+    this.forceUpdate()
     this.send(move)
   }
 
