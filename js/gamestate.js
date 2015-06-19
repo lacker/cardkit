@@ -34,7 +34,7 @@ const CARDS = [
     cost: 3
   },
   {
-    name: "Random Blast",
+    name: "Nuke",
     description: "Destroy a random creature.",
     kill: true,
     cost: 2
