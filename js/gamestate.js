@@ -33,7 +33,6 @@ class PlayerState {
     this.life = data.life || 30
     this.mana = data.mana || 0
     this.maxMana = data.maxMana || 0
-    this.passNextTurn = false
   }
 
   // Throws if the index is bad
@@ -192,7 +191,6 @@ class GameState {
     } else if (card.endTurn) { // it's a donk
       player.trash.push(card)
       player.hand.splice(from, 1)
-      player.mana -= card.cost     
       for (let i=0;i<card.endTurn;i++) {
         this.endTurn()
         this.beginTurn()
