@@ -17,8 +17,8 @@ const CARDS = [
   },
   {
     name: "Donk",
-    description: "Your opponent can't attack or play cards next turn.",
-    beginTurn: 2,
+    description: "End the next two turns.",
+    endTurn: 2,
     cost: 0
   },
 ]
@@ -33,6 +33,7 @@ class PlayerState {
     this.life = data.life || 30
     this.mana = data.mana || 0
     this.maxMana = data.maxMana || 0
+    this.passNextTurn = false
   }
 
   // Throws if the index is bad
@@ -188,18 +189,15 @@ class GameState {
       player.board.push(card)
       player.hand.splice(from, 1)
       player.mana -= card.cost      
-    } else if (card.beginTurn) { // it's a timewalk
+    } else if (card.endTurn) { // it's a donk
       player.trash.push(card)
       player.hand.splice(from, 1)
-      player.mana -= card.cost      
-      for (let i=0;i<card.beginTurn;i++) {
-        let event = new CustomEvent("turnEnded", {});
-        window.dispatchEvent(event);
-        window.client.makeLocalMove({"op":"endTurn"});
-        window.client.makeLocalMove({"op":"beginTurn"});        
-      }    
+      player.mana -= card.cost     
+      for (let i=0;i<card.endTurn;i++) {
+        this.endTurn()
+        this.beginTurn()
+      }
     }
-
   }
 
   // Whether the game has started
