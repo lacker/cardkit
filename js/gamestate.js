@@ -115,10 +115,14 @@ class GameState {
 
   // Each type of move has a JSON representation.
   //
-  // The keys are:
+  // The useful keys are:
   // op: the method name. beginTurn, attack, face, play, endTurn
   // from: the index a card is coming from
   // to: the index a card is going to
+  //
+  // The move also has a "player" and "id" but those are only used by
+  // the networking layer.
+  //
   // makeMove makes a move that is provided via a JSON representation.
   //
   // In typical operation, only the Client should call makeMove.
