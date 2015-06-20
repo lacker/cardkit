@@ -2,9 +2,6 @@
 
 require("seedrandom")
 
-// set this to true for plenty of mana
-let DEBUG = false
-
 const CARDS = [
   {
     name: "BiBot",
@@ -128,6 +125,10 @@ class GameState {
 
     // The name of the winner
     this.winner = data.winner || null
+
+    // set this to true for plenty of mana, for testing
+    this.godMode = false
+
   }
 
   // The player whose turn it is
@@ -416,9 +417,25 @@ class GameState {
     this.current().hand.push(copy)
   }
 
+  drawCardWithName(name) {
+    let cardToDraw = {};
+    for (let i=0;i<CARDS.length;i++) {
+      let card = CARDS[i];
+      if (card.name == name) {
+        for (let key in card) {
+          cardToDraw[key] = card[key]
+        }
+        break
+      }
+    }
+    cardToDraw.canAct = false; 
+    this.current().hand.push(cardToDraw)
+  }
+
+
   beginTurn() {
     this.current().maxMana = Math.min(1 + this.current().maxMana, 10)
-    if (DEBUG) {
+    if (this.godMode) {
       this.current().maxMana = 99;
     }
     this.current().mana = this.current().maxMana
@@ -427,8 +444,10 @@ class GameState {
 
   endTurn() {
     this.selectedCard = null;
-    for (let card of this.current().board) {
-      card.canAct = true;
+    if (this.current().board.length) {
+      for (let card in this.current().board) {
+        card.canAct = true;
+      }      
     }
     this.turn = 1 - this.turn
   }
