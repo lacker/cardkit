@@ -239,15 +239,16 @@ class GameState {
         this.play(index)
       }
     } else if (containerType == "opponentBoard") {
-      // click a card in opponent's board, if current has a selectedCard
-      if (!this.selectedCard) {
-        return;
-      } 
+      // click a card in opponent's board
+
+      // check for attack from board
       var boardIndex = this.current().board.indexOf(this.selectedCard);
       if (boardIndex != -1) {
         this.selectedCard = null;
         this.attack(boardIndex, index);
       }
+
+      // check for action card from hand
       var handIndex = this.current().hand.indexOf(this.selectedCard);
       if (handIndex != -1) {
         this.selectedCard = null;
