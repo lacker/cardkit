@@ -407,12 +407,10 @@ class GameState {
   }
 
   draw() {
-    // Make a copy so that we can edit this card
     let card = CARDS[Math.floor(this.rng() * CARDS.length)]
+    // Make a copy so that we can edit this card
     let copy = {}
-    console.log(card)
     for (let key in card) {
-      console.log(key)
       copy[key] = card[key]
     }
     this.drawCard(copy)
@@ -435,7 +433,8 @@ class GameState {
   endTurn() {
     this.selectedCard = null;
     if (this.current().board.length) {
-      for (let card of this.current().board) {
+      for (let i=0;i<this.current().board.length;i++) {
+        let card = this.current().board[i];
         card.canAct = true;
       }      
     }
