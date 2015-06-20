@@ -123,7 +123,7 @@ class GameState {
     this.turn = (data.turn == null) ? 1 : data.turn
 
     let playerInfo = data.players || [{name: this.name},
-                                      {name: "waiting for opponent..."}]
+                                      {name: "waiting..."}]
     this.players = playerInfo.map(info => new PlayerState(info))
 
     // The name of the winner
@@ -322,7 +322,7 @@ class GameState {
        finally, play any abilities the card has
     */
 
-    // it has errant blast ability
+    // it has Kill ability
     if (card.kill) { 
       if (this.opponent().board.length) {
         let randomIndex = Math.floor(Math.random() * (this.opponent().board.length-1));
@@ -405,15 +405,8 @@ class GameState {
     for (let key in card) {
       copy[key] = card[key]
     }
-    this.initCardFields(copy)
+    copy.canAct = false; 
     this.current().hand.push(copy)
-  }
-
-  initCardFields(card) {
-    card.canAct = false; 
-  }
-
-  initCreatureFields(card) {
   }
 
   beginTurn() {

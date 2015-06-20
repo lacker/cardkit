@@ -52,6 +52,7 @@ h2 {
   text-align:left;
 }
 
+// cards should inline next to each other
 .playing-card div, .playing-card img {
   display: inline-block;
   vertical-align: middle;
@@ -64,11 +65,13 @@ h2 {
   box-shadow: 1.5vh 1.5vh 3vh 0vh rgba(22,22,22,0.2);
 }
 
+// contains name and mana
 .card-top {
   display:block;
   width: $card-width - 1vw;
 }
 
+// contains text/abilities, and attac/defense
 .card-bottom {
   display:block;
   height:$card-height - 5vh;
@@ -90,18 +93,17 @@ h2 {
   margin-top: $card-height - $default-vertical-padding*6;
 }
 
+
+// contains description for non-permanents
 .spell-text-label {
   font-size:.9em;
   padding-top: 2vh;
   position: relative;
 }
 
+// contains description, attack/defense
 .card-details {
   height:6vh;  
-}
-
-.blank-label {
-  display:none;
 }
 
 // make attack/defense svg icons small
