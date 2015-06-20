@@ -102,7 +102,7 @@ class PlayerState {
 // A turn goes like
 //
 // beginTurn
-// Some number of attack, face, and play
+// Some number of selectCard, selectOpponent
 // endTurn
 //
 class GameState {
