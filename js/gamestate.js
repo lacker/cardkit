@@ -22,10 +22,10 @@ const CARDS = [
     cost: 7
   },
   {
-    name: "Moloch's Howl",
-    description: "Destroy all creatures.",
-    flavor: "Moloch whose love is endless oil and stone!",
-    howl: true,
+    name: "Electromagnetic Pulse",
+    description: "Destroy all cards in play.",
+    flavor: "Put all your eggs in one basket, and watch that basket.",
+    emp: true,
     cost: 4
   },
 ]
@@ -211,7 +211,7 @@ class GameState {
         this.endTurn()
         this.beginTurn()
       }
-    } else if (card.howl) {
+    } else if (card.emp) {
       for (let player of this.players) {
         player.board = []
       }
