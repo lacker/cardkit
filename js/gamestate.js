@@ -36,7 +36,7 @@ const CARDS = [
   },
   {
     name: "Blast BiBot",
-    description: "Errant Blast",
+    description: "Destroy one of your opponent's permanents at random.",
     permanent: true,
     attack: 2,
     defense: 2,
@@ -58,13 +58,13 @@ const CARDS = [
   },
   {
     name: "Time Stop",
-    description: "Your opponent can't attack or play cards next turn.",
+    description: "End this turn and the next.",
     endTurn: 2,
     cost: 5
   },
   {
     name: "Time Cruiser",
-    description: "Time Stop",
+    description: "End this turn and the next.",
     permanent: true,
     attack: 10,
     defense: 1,
