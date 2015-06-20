@@ -247,14 +247,14 @@ class GameState {
       // select a card in opponent's board
 
       // check for attack from board
-      var boardIndex = this.current().board.indexOf(this.selectedCard);
+      let boardIndex = this.current().board.indexOf(this.selectedCard);
       if (boardIndex != -1) {
         this.selectedCard = null;
         this.attack(boardIndex, index);
       }
 
       // check for action card from hand
-      var handIndex = this.current().hand.indexOf(this.selectedCard);
+      let handIndex = this.current().hand.indexOf(this.selectedCard);
       if (handIndex != -1) {
         this.selectedCard = null;
         this.playOn(handIndex, index)
@@ -280,11 +280,11 @@ class GameState {
     if (!this.selectedCard) {
       return;
     }
-    var boardIndex = this.current().board.indexOf(this.selectedCard);
+    let boardIndex = this.current().board.indexOf(this.selectedCard);
     if (boardIndex != -1) {
       this.face(boardIndex);
     }
-    var handIndex = this.current().hand.indexOf(this.selectedCard);
+    let handIndex = this.current().hand.indexOf(this.selectedCard);
     if (handIndex != -1) {
       this.playFace(handIndex)
     }        
@@ -410,7 +410,9 @@ class GameState {
     // Make a copy so that we can edit this card
     let card = CARDS[Math.floor(this.rng() * CARDS.length)]
     let copy = {}
+    console.log(card)
     for (let key in card) {
+      console.log(key)
       copy[key] = card[key]
     }
     this.drawCard(copy)
@@ -433,7 +435,7 @@ class GameState {
   endTurn() {
     this.selectedCard = null;
     if (this.current().board.length) {
-      for (let card in this.current().board) {
+      for (let card of this.current().board) {
         card.canAct = true;
       }      
     }
