@@ -49,8 +49,8 @@ describe("GameState", function() {
 
     state.startGame(["bob", "eve"], 123)
 
-    // draw the simplest creature
-    state.drawCard({"cost":0, "permanent": true, "attack":0, "defense":1})
+    // draw the simplest permanent
+    state.drawCard({"cost":0, "permanent": true})
 
     // play last card drawn
     state.play(state.current().hand.length-1)
