@@ -193,12 +193,12 @@ class GameState {
     if (player.mana < card.cost) {
       throw `need ${card.cost} mana but only have ${player.mana}`
     }
+    player.mana -= card.cost      
 
     // Handle creatures
     if (card.defense) {
       player.board.push(card)
       player.hand.splice(from, 1)
-      player.mana -= card.cost      
       return
     }
 
