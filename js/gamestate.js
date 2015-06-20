@@ -303,8 +303,9 @@ class GameState {
     let card = player.getHand(from)
 
     if (card.requiresTarget) {
-      // player clicked an active card that requires a target,
-      // and no action occurs besides unselecting the card
+      // Player has re-clicked this.selectedCard in their hand.
+      // In this case, this.selectedCard requiresTarget, 
+      // so no action occurs besides unselecting the card,
       return;
     }
     if (player.mana < card.cost) {
