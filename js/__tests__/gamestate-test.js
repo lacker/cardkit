@@ -44,15 +44,14 @@ describe("GameState", function() {
 
   })
 
-  it("playing a creature and opponent killing it works", function() {
+  it("kill moves creature from board to trash", function() {
     let state = new GameState({name: "bob"})
 
-    // start game with plenty of mana so we can cast arbitrary
-    state.godMode = true;
     state.startGame(["bob", "eve"], 123)
 
-    // a simple creature
-    state.drawCardWithName("BiBot")
+    // draw the simplest creature
+    state.drawCard({"cost":0, "permanent": true, "attack":0, "defense":1})
+
     // play last card drawn
     state.play(state.current().hand.length-1)
     expect(state.current().board.length == 1).toEqual(true)
@@ -61,8 +60,8 @@ describe("GameState", function() {
     state.makeMove({op: "endTurn"})
     state.makeMove({op: "beginTurn"})
 
-    // get the card that implements kill
-    state.drawCardWithName("Errant Blast")    
+    // get a card that implements kill
+    state.drawCard({"kill":true, "cost":0})    
     // play last card drawn
     state.play(state.current().hand.length-1)
 

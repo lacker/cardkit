@@ -421,20 +421,6 @@ class GameState {
     this.current().hand.push(cardToDraw)    
   }
 
-  drawCardWithName(name) {
-    let cardToDraw = {};
-    for (let i=0;i<CARDS.length;i++) {
-      let card = CARDS[i];
-      if (card.name == name) {
-        for (let key in card) {
-          cardToDraw[key] = card[key]
-        }
-        break
-      }
-    }
-    this.drawCard(cardToDraw)
-  }
-
   beginTurn() {
     this.current().maxMana = Math.min(1 + this.current().maxMana, 10)
     if (this.godMode) {
