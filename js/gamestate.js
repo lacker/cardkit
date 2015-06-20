@@ -413,8 +413,12 @@ class GameState {
     for (let key in card) {
       copy[key] = card[key]
     }
-    copy.canAct = false; 
-    this.current().hand.push(copy)
+    this.drawCard(copy)
+  }
+
+  drawCard(cardToDraw) {
+    cardToDraw.canAct = false; 
+    this.current().hand.push(cardToDraw)    
   }
 
   drawCardWithName(name) {
@@ -428,10 +432,8 @@ class GameState {
         break
       }
     }
-    cardToDraw.canAct = false; 
-    this.current().hand.push(cardToDraw)
+    this.drawCard(cardToDraw)
   }
-
 
   beginTurn() {
     this.current().maxMana = Math.min(1 + this.current().maxMana, 10)
