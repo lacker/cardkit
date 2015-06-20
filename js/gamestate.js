@@ -143,7 +143,7 @@ class GameState {
   // Each type of move has a JSON representation.
   //
   // The useful keys are:
-  // op: the method name. beginTurn, attack, face, play, endTurn
+  // op: the method name. beginTurn, clickCard, clickOpponent, endTurn
   // from: the index a card is coming from
   // to: the index a card is going to
   //
