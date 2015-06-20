@@ -3,7 +3,7 @@
 require("seedrandom")
 
 // set this to true for plenty of mana
-let DEBUG = true
+let DEBUG = false
 
 const CARDS = [
   {
