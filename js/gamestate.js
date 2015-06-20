@@ -19,7 +19,13 @@ const CARDS = [
     name: "Donk",
     description: "End the next two turns.",
     endTurn: 2,
-    cost: 0
+    cost: 7
+  },
+  {
+    name: "Moloch's Howl",
+    description: "Destroy all creatures.",
+    howl: true,
+    cost: 4
   },
 ]
 
@@ -187,17 +193,26 @@ class GameState {
     if (player.mana < card.cost) {
       throw `need ${card.cost} mana but only have ${player.mana}`
     }
-    // it's a creature
+
+    // Handle creatures
     if (card.defense) {
       player.board.push(card)
       player.hand.splice(from, 1)
       player.mana -= card.cost      
-    } else if (card.endTurn) { // it's a donk
+      return
+    }
+
+    // Handle spells with custom effects
+    if (card.donk) {
       player.trash.push(card)
       player.hand.splice(from, 1)
-      for (let i=0;i<card.endTurn;i++) {
+      for (let i = 0; i < card.donk; i++) {
         this.endTurn()
         this.beginTurn()
+      }
+    } else if (card.howl) {
+      for (let player of this.players) {
+        player.board = []
       }
     }
   }
