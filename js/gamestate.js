@@ -164,6 +164,10 @@ class GameState {
     if (move.op == "beginTurn") {
       this.beginTurn()
     } else if (move.op == "selectCard") {
+      /*
+        the possible container types are board, hand, trash, 
+        as well as the opponentFoo for each type
+      */
       this.selectCard(move.index, move.containerType)
     } else if (move.op == "selectOpponent") {
       this.selectOpponent()
