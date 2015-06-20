@@ -2,43 +2,75 @@
 
 require("seedrandom")
 
+// set this to true for plenty of mana
+let DEBUG = false
+
 const CARDS = [
   {
-    name: "Twobot",
+    name: "BiBot",
+    permanent: true,
     attack: 2,
     defense: 2,
     cost: 2
   },
   {
-    name: "Threebot",
+    name: "TriBot",
+    permanent: true,
     attack: 3,
     defense: 3,
     cost: 3
   },
   {
-    name: "Fourbot",
+    name: "QuadBot",
+    permanent: true,
     attack: 4,
     defense: 4,
     cost: 4
   },
   {
-    name: "Fivebot",
+    name: "Pentabot",
+    permanent: true,
     attack: 5,
     defense: 5,
     cost: 5
   },
   {
-    name: "Warp",
-    description: "End the next two turns.",
-    endTurn: 2,
+    name: "Blast BiBot",
+    description: "Errant Blast",
+    permanent: true,
+    attack: 2,
+    defense: 2,
+    kill: true,
+    cost: 5
+  },
+  {
+    name: "Laser Blast",
+    description: "Deal 3 damage to a creature or player.",
+    requiresTarget: true,
+    damage: 3,
+    cost: 2
+  },
+  {
+    name: "Errant Blast",
+    description: "Destroy one of your opponent's permanents at random.",
+    kill: true,
     cost: 3
   },
   {
-    name: "Nuke",
-    description: "Destroy a random creature.",
-    kill: true,
-    cost: 2
+    name: "Time Stop",
+    description: "Your opponent can't attack or play cards next turn.",
+    endTurn: 2,
+    cost: 5
   },
+  {
+    name: "Time Cruiser",
+    description: "Time Stop",
+    permanent: true,
+    attack: 10,
+    defense: 1,
+    endTurn: 2,
+    cost: 8
+  }
 ]
 
 // The state of a single player.
@@ -131,8 +163,10 @@ class GameState {
 
     if (move.op == "beginTurn") {
       this.beginTurn()
-    } else if (move.op == "click_card") {
-      this.clickCard(move.index, move.container_type)
+    } else if (move.op == "clickCard") {
+      this.clickCard(move.index, move.containerType)
+    } else if (move.op == "clickOpponent") {
+      this.clickOpponent()
     } else if (move.op == "endTurn") {
       this.endTurn()
     } else {
@@ -184,51 +218,70 @@ class GameState {
   }
 
   // container can be board or hand
-  clickCard(index, container_type) {
+  clickCard(index, containerType) {
+    if (!this.selectedCard) {
+      this.setSelectedCard(index, containerType)
+      return;
+    }
     let card;
-    if (container_type == "board") {
+    if (containerType == "board") {
       // click a card in current player's board
       card = this.current().getBoard(index)
-      if (card.hasFocus && card.canAct) {
-        this.face(index)
+      if (card == this.selectedCard) {
+        this.selectedCard = null;
+        this.face(index)        
       }
-      if (card.canAct) {
-        card.hasFocus = !card.hasFocus;
-      }
-    } else if (container_type == "hand") { 
+    } else if (containerType == "hand") { 
       // click a card in current player's hand
       card = this.current().getHand(index)
-      if (card.hasFocus) {
+      if (card == this.selectedCard) {
+        this.selectedCard = null;
         this.play(index)
       }
-      if (this.current().mana >= card.cost) {
-        card.hasFocus = !card.hasFocus;
+    } else if (containerType == "opponentBoard") {
+      // click a card in opponent's board, if current has a selectedCard
+      if (!this.selectedCard) {
+        return;
+      } 
+      var boardIndex = this.current().board.indexOf(this.selectedCard);
+      if (boardIndex != -1) {
+        this.selectedCard = null;
+        this.attack(boardIndex, index);
       }
-    } else  { 
-      // click a card on opponent's board, might be an attack
-      card = this.opponent().getBoard(index)
-      let i = 0;
-      for (let myCard of this.current().board) {
-        if (myCard.hasFocus) {
-          this.attack(i, index);
-          break;
-        }
-        i++;
-      }
+      var handIndex = this.current().hand.indexOf(this.selectedCard);
+      if (handIndex != -1) {
+        this.selectedCard = null;
+        this.playOn(handIndex, index)
+      }        
     }
+  }
 
-    // unfocus other cards
-    for (let c of this.current().board) {
-      if (c != card) {
-        c.hasFocus = false;        
-      }
-    }
-    for (let c of this.current().hand) {
-      if (c != card) {
-        c.hasFocus = false;        
+  // container can be board or hand
+  setSelectedCard(index, containerType) {
+    if (containerType == "board") {
+      this.selectedCard = this.current().getBoard(index)
+    } else if (containerType == "hand") { 
+      let card = this.current().getHand(index);
+      if (this.current().mana >= card.cost) {
+        this.selectedCard = card
       }
     }
   }
+
+  // click the opponent to cast a spell or target with attack
+  clickOpponent() {
+    if (!this.selectedCard) {
+      return;
+    }
+    var boardIndex = this.current().board.indexOf(this.selectedCard);
+    if (boardIndex != -1) {
+      this.face(boardIndex);
+    }
+    var handIndex = this.current().hand.indexOf(this.selectedCard);
+    if (handIndex != -1) {
+      this.playFace(handIndex)
+    }        
+  }    
 
   // from and to are indices into board
   attack(from, to) {
@@ -246,23 +299,40 @@ class GameState {
   play(from) {
     let player = this.current()
     let card = player.getHand(from)
+
+    if (card.requiresTarget) {
+      // player clicked an active card that requires a target,
+      // and no action occurs besides unselecting the card
+      return;
+    }
     if (player.mana < card.cost) {
       throw `need ${card.cost} mana but only have ${player.mana}`
     }
-    // it's a creature
-    if (card.defense) {
+
+    // move the card to the appropriate container
+    player.hand.splice(from, 1)
+    player.mana -= card.cost
+    if (card.permanent) {
       player.board.push(card)
-      player.hand.splice(from, 1)
-      player.mana -= card.cost      
-    } else if (card.kill) { // it's an Errant Blast
+    } else {
       player.trash.push(card)
-      player.hand.splice(from, 1)
+    }
+
+    /* 
+       finally, play any abilities the card has
+    */
+
+    // it has errant blast ability
+    if (card.kill) { 
       if (this.opponent().board.length) {
         let randomIndex = Math.floor(Math.random() * (this.opponent().board.length-1));
         this.opponent().trash.push(this.opponent().board[randomIndex])
         this.opponent().board.splice(randomIndex, 1)
       }
-    } else if (card.endTurn) { // it's a donk
+    }
+ 
+    // it has Time Stop ability
+    if (card.endTurn) { 
       player.trash.push(card)
       player.hand.splice(from, 1)
       for (let i=0;i<card.endTurn;i++) {
@@ -270,6 +340,48 @@ class GameState {
         this.beginTurn()
       }
     }
+  }
+
+  // Plays a card from the hand, onto a target.
+  // Throws if there's not enough mana.
+  // from is an index of the hand
+  playOn(from, to) {
+    let player = this.current()
+    let card = player.getHand(from)
+    if (player.mana < card.cost) {
+      throw `need ${card.cost} mana but only have ${player.mana}`
+    }
+    // for direct damage
+    if (card.damage) { 
+      player.trash.push(card)
+      player.hand.splice(from, 1)
+      this.damage(to, card.damage)
+    }
+  }
+
+  // Plays a card from the hand, onto a player.
+  // Throws if there's not enough mana.
+  // from is an index of the hand
+  playFace(from) {
+    let player = this.current()
+    let card = player.getHand(from)
+    if (player.mana < card.cost) {
+      throw `need ${card.cost} mana but only have ${player.mana}`
+    }
+    // for direct damage
+    if (card.damage) { 
+      player.trash.push(card)
+      player.hand.splice(from, 1)
+      this.opponent().life -= card.damage
+      this.resolveDamage()
+    }
+  }
+
+  // for direct damage spells
+  damage(to, amount) {
+    let target = this.opponent().getBoard(to)
+    target.defense -= amount
+    this.resolveDamage()
   }
 
   // Whether the game has started
@@ -282,7 +394,7 @@ class GameState {
     let attacker = this.current().getBoard(from)
     this.opponent().life -= attacker.attack
     attacker.canAct = false
-    attacker.hasFocus = false
+    this.selectedCard = null;
     this.resolveDamage()
   }
 
@@ -298,7 +410,6 @@ class GameState {
   }
 
   initCardFields(card) {
-    card.hasFocus = false; 
     card.canAct = false; 
   }
 
@@ -307,17 +418,17 @@ class GameState {
 
   beginTurn() {
     this.current().maxMana = Math.min(1 + this.current().maxMana, 10)
+    if (DEBUG) {
+      this.current().maxMana = 99;
+    }
     this.current().mana = this.current().maxMana
     this.draw()
   }
 
   endTurn() {
+    this.selectedCard = null;
     for (let card of this.current().board) {
-      card.hasFocus = false;
       card.canAct = true;
-    }
-    for (let card of this.current().hand) {
-      card.hasFocus = false;
     }
     this.turn = 1 - this.turn
   }

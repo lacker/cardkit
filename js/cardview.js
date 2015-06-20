@@ -12,6 +12,7 @@ let Card = React.createClass({
     if (this.props.cardInfo.attack) {
       attackPart = (
         <div className="card-details">
+            {this.props.cardInfo.description}
           <div className="attack-label">
             {this.props.cardInfo.attack}
             <img className="card-icon-image" src="img/crossed-swords.svg" />
@@ -53,7 +54,7 @@ let Card = React.createClass({
     if (this.props.cardInfo.cost > this.props.player.mana) {
       cssClassCanPlay = "too-expensive";
     }
-    let cssClass = this.props.cardInfo.hasFocus ? 
+    let cssClass = window.game.selectedCard == this.props.cardInfo ? 
                    'playing-card active-card' : 'playing-card';
     let fromIndex = window.game.current().board.indexOf(this.props.cardInfo);    
     let cssClassCanAct = !this.props.cardInfo.canAct && fromIndex != -1 ? 
@@ -70,9 +71,9 @@ let Card = React.createClass({
     let boardIndex = window.game.current().board.indexOf(this.props.cardInfo);
     if (boardIndex != -1) {
       let clickMove = {
-                    "op":"click_card", 
+                    "op":"clickCard", 
                     "index":boardIndex,
-                    "container_type": "board"
+                    "containerType": "board"
                  };
       window.client.makeLocalMove(clickMove);
     }
@@ -80,9 +81,9 @@ let Card = React.createClass({
     let handIndex = window.game.current().hand.indexOf(this.props.cardInfo);
     if (handIndex != -1) {
       let clickMove = {
-                    "op":"click_card", 
+                    "op":"clickCard", 
                     "index":handIndex,
-                    "container_type": "hand"
+                    "containerType": "hand"
                  };
       window.client.makeLocalMove(clickMove);
     }
@@ -90,9 +91,9 @@ let Card = React.createClass({
     let opponentBoardIndex = window.game.opponent().board.indexOf(this.props.cardInfo);
     if (opponentBoardIndex != -1) {
       let clickMove = {
-                    "op":"click_card", 
+                    "op":"clickCard", 
                     "index":opponentBoardIndex,
-                    "container_type": "opponent_board"
+                    "containerType": "opponentBoard"
                  };
       window.client.makeLocalMove(clickMove);
     }

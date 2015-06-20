@@ -24,7 +24,7 @@ let GameView = React.createClass({
           
           {/* OPPONENT */}
           <Player playerState={opponent} />
-          <div className="player-avatar" style={this.avatarStyle(1)}>
+          <div onClick={this.clickOpponent} className="player-avatar" style={this.avatarStyle(1)}>
             <div className="vital-stats-container life-container">Life: {opponent.life}</div>
             <h2 className="player-name">{opponent.name}</h2>
             <div className="vital-stats-container">Mana: {opponent.mana} / {opponent.maxMana}</div>
@@ -75,6 +75,13 @@ let GameView = React.createClass({
              color:color,
              fontWeight:fontWeight,
            };
+  },
+
+  clickOpponent() {
+    let clickMove = {
+                    "op":"clickOpponent" 
+                 };
+    window.client.makeLocalMove(clickMove);
   }
 
 });
