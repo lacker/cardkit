@@ -24,6 +24,7 @@ const CARDS = [
   {
     name: "Moloch's Howl",
     description: "Destroy all creatures.",
+    flavor: "Moloch whose love is endless oil and stone!",
     howl: true,
     cost: 4
   },
