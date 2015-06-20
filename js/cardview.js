@@ -71,8 +71,8 @@ let Card = React.createClass({
     let boardIndex = window.game.current().board.indexOf(this.props.cardInfo);
     if (boardIndex != -1) {
       let clickMove = {
-                    "op":"clickCard", 
-                    "index":boardIndex,
+                    "op": "clickCard", 
+                    "index": boardIndex,
                     "containerType": "board"
                  };
       window.client.makeLocalMove(clickMove);
