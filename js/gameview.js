@@ -24,7 +24,7 @@ let GameView = React.createClass({
           
           {/* OPPONENT */}
           <Player playerState={opponent} />
-          <div onClick={this.clickOpponent} className="player-avatar" style={this.avatarStyle(1)}>
+          <div onClick={this.selectOpponent} className="player-avatar" style={this.avatarStyle(1)}>
             <div className="vital-stats-container life-container">Life: {opponent.life}</div>
             <h2 className="player-name">{opponent.name}</h2>
             <div className="vital-stats-container">Mana: {opponent.mana} / {opponent.maxMana}</div>
@@ -55,7 +55,7 @@ let GameView = React.createClass({
     );
   },
 
-  // end and start a new turn when button is clicked
+  // end and start a new turn when button is activated
   endTurn() {
     let event = new CustomEvent("turnEnded", {});
     window.dispatchEvent(event);
@@ -77,11 +77,11 @@ let GameView = React.createClass({
            };
   },
 
-  clickOpponent() {
-    let clickMove = {
-                    "op":"clickOpponent" 
+  selectOpponent() {
+    let selectMove = {
+                    "op":"selectOpponent" 
                  };
-    window.client.makeLocalMove(clickMove);
+    window.client.makeLocalMove(selectMove);
   }
 
 });

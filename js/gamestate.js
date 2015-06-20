@@ -143,7 +143,7 @@ class GameState {
   // Each type of move has a JSON representation.
   //
   // The useful keys are:
-  // op: the method name. beginTurn, clickCard, clickOpponent, endTurn
+  // op: the method name. beginTurn, selectCard, selectOpponent, endTurn
   // from: the index a card is coming from
   // to: the index a card is going to
   //
@@ -163,10 +163,10 @@ class GameState {
 
     if (move.op == "beginTurn") {
       this.beginTurn()
-    } else if (move.op == "clickCard") {
-      this.clickCard(move.index, move.containerType)
-    } else if (move.op == "clickOpponent") {
-      this.clickOpponent()
+    } else if (move.op == "selectCard") {
+      this.selectCard(move.index, move.containerType)
+    } else if (move.op == "selectOpponent") {
+      this.selectOpponent()
     } else if (move.op == "endTurn") {
       this.endTurn()
     } else {
@@ -218,28 +218,28 @@ class GameState {
   }
 
   // container can be board or hand
-  clickCard(index, containerType) {
+  selectCard(index, containerType) {
     if (!this.selectedCard) {
       this.setSelectedCard(index, containerType)
       return;
     }
     let card;
     if (containerType == "board") {
-      // click a card in current player's board
+      // select a card in current player's board
       card = this.current().getBoard(index)
       if (card == this.selectedCard) {
         this.selectedCard = null;
         this.face(index)        
       }
     } else if (containerType == "hand") { 
-      // click a card in current player's hand
+      // select a card in current player's hand
       card = this.current().getHand(index)
       if (card == this.selectedCard) {
         this.selectedCard = null;
         this.play(index)
       }
     } else if (containerType == "opponentBoard") {
-      // click a card in opponent's board
+      // select a card in opponent's board
 
       // check for attack from board
       var boardIndex = this.current().board.indexOf(this.selectedCard);
@@ -270,8 +270,8 @@ class GameState {
     }
   }
 
-  // click the opponent to cast a spell or target with attack
-  clickOpponent() {
+  // select the opponent to cast a spell or target with attack
+  selectOpponent() {
     if (!this.selectedCard) {
       return;
     }
@@ -303,7 +303,7 @@ class GameState {
     let card = player.getHand(from)
 
     if (card.requiresTarget) {
-      // Player has re-clicked this.selectedCard in their hand.
+      // Player has re-selected this.selectedCard in their hand.
       // In this case, this.selectedCard requiresTarget, 
       // so no action occurs besides unselecting the card,
       return;

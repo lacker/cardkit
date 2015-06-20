@@ -34,7 +34,7 @@ let Card = React.createClass({
     }
 
     return (
-      <div className={combinedCSS} onClick={this.clickCard}>
+      <div className={combinedCSS} onClick={this.selectCard}>
         <div className="card-top"> 
           {this.props.cardInfo.name}
           <div className="mana-label">{this.props.cardInfo.cost}</div>
@@ -66,36 +66,36 @@ let Card = React.createClass({
     return combinedCSS;
   },
   
-  // click cards in current player's hand or board
-  clickCard: function() {
+  // select cards in current player's hand or board
+  selectCard: function() {
     let boardIndex = window.game.current().board.indexOf(this.props.cardInfo);
     if (boardIndex != -1) {
-      let clickMove = {
-                    "op": "clickCard", 
+      let selectMove = {
+                    "op": "selectCard", 
                     "index": boardIndex,
                     "containerType": "board"
                  };
-      window.client.makeLocalMove(clickMove);
+      window.client.makeLocalMove(selectMove);
     }
 
     let handIndex = window.game.current().hand.indexOf(this.props.cardInfo);
     if (handIndex != -1) {
-      let clickMove = {
-                    "op":"clickCard", 
+      let selectMove = {
+                    "op":"selectCard", 
                     "index":handIndex,
                     "containerType": "hand"
                  };
-      window.client.makeLocalMove(clickMove);
+      window.client.makeLocalMove(selectMove);
     }
 
     let opponentBoardIndex = window.game.opponent().board.indexOf(this.props.cardInfo);
     if (opponentBoardIndex != -1) {
-      let clickMove = {
-                    "op":"clickCard", 
+      let selectMove = {
+                    "op":"selectCard", 
                     "index":opponentBoardIndex,
                     "containerType": "opponentBoard"
                  };
-      window.client.makeLocalMove(clickMove);
+      window.client.makeLocalMove(selectMove);
     }
 
     if (window.game.winner) {
