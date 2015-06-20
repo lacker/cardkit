@@ -3,7 +3,7 @@
 require("seedrandom")
 
 // set this to true for plenty of mana
-let DEBUG = false
+let DEBUG = true
 
 const CARDS = [
   {
@@ -260,7 +260,8 @@ class GameState {
   // container can be board or hand
   setSelectedCard(index, containerType) {
     if (containerType == "board") {
-      this.selectedCard = this.current().getBoard(index)
+      let card = this.current().getBoard(index);
+      this.selectedCard = card.canAct ? card : null;
     } else if (containerType == "hand") { 
       let card = this.current().getHand(index);
       if (this.current().mana >= card.cost) {
