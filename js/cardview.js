@@ -4,31 +4,6 @@ require("../scss/style.scss");
 
 let Card = React.createClass({
 
-  // it's a little weird that enteredPlayThisTurn is true
-  // even for cards in your hand
-  // this is maybe because I don't understand setState well
-  getInitialState: function() {
-    return {  
-              hasFocus: false, 
-              hasAttacked: false, 
-              enteredPlayThisTurn:true
-           };
-  },
-
-  // cards blank their state at end of turn  
-  componentDidMount: function() {
-    window.addEventListener('turnEnded', (event) => {
-      // #hax
-      if (this.isMounted()) {
-        this.setState({ 
-                        hasAttacked:false, 
-                        enteredPlayThisTurn:false, 
-                        hasFocus:false
-                     });        
-      }
-    });
-  },
-  
   // layout and style the card
   render() {
     let combinedCSS = this.cssClassesForCard();
@@ -37,6 +12,7 @@ let Card = React.createClass({
     if (this.props.cardInfo.attack) {
       attackPart = (
         <div className="card-details">
+            {this.props.cardInfo.description}
           <div className="attack-label">
             {this.props.cardInfo.attack}
             <img className="card-icon-image" src="img/crossed-swords.svg" />
@@ -58,7 +34,7 @@ let Card = React.createClass({
     }
 
     return (
-      <div className={combinedCSS} onClick={this.clickCard}>
+      <div className={combinedCSS} onClick={this.selectCard}>
         <div className="card-top"> 
           {this.props.cardInfo.name}
           <div className="mana-label">{this.props.cardInfo.cost}</div>
@@ -78,105 +54,55 @@ let Card = React.createClass({
     if (this.props.cardInfo.cost > this.props.player.mana) {
       cssClassCanPlay = "too-expensive";
     }
-    let cssClass = this.state.hasFocus ? 
+    let cssClass = window.game.selectedCard == this.props.cardInfo ? 
                    'playing-card active-card' : 'playing-card';
-    let cssClassAttacked = this.state.hasAttacked ? 
+    let fromIndex = window.game.current().board.indexOf(this.props.cardInfo);    
+    let cssClassCanAct = !this.props.cardInfo.canAct && fromIndex != -1 ? 
                            'has-attacked-card' : '';
-    let fromIndex = window.game.current().board.indexOf(this.props.cardInfo);
-    let cssClassJustPlayed = this.state.enteredPlayThisTurn && fromIndex != -1? 
-                             'just-played-card' : '';
 
     let combinedCSS = cssClass + ' ' + 
                       cssClassCanPlay + ' ' + 
-                      cssClassAttacked + ' ' + 
-                      cssClassJustPlayed; 
+                      cssClassCanAct; 
     return combinedCSS;
   },
   
-  // click cards in current player's hand or board
-  clickCard: function() {
-    if (this.attackCreature()) { 
-      window.game.activeCard = null;
-    } else if (this.playFromHand()) { 
-      window.game.activeCard = null;
-    } else this.clickCardInPlay();
-   
+  // select cards in current player's hand or board
+  selectCard: function() {
+    let boardIndex = window.game.current().board.indexOf(this.props.cardInfo);
+    if (boardIndex != -1) {
+      let selectMove = {
+                    "op": "selectCard", 
+                    "index": boardIndex,
+                    "containerType": "board"
+                 };
+      window.client.makeLocalMove(selectMove);
+    }
+
+    let handIndex = window.game.current().hand.indexOf(this.props.cardInfo);
+    if (handIndex != -1) {
+      let selectMove = {
+                    "op":"selectCard", 
+                    "index":handIndex,
+                    "containerType": "hand"
+                 };
+      window.client.makeLocalMove(selectMove);
+    }
+
+    let opponentBoardIndex = window.game.opponent().board.indexOf(this.props.cardInfo);
+    if (opponentBoardIndex != -1) {
+      let selectMove = {
+                    "op":"selectCard", 
+                    "index":opponentBoardIndex,
+                    "containerType": "opponentBoard"
+                 };
+      window.client.makeLocalMove(selectMove);
+    }
+
     if (window.game.winner) {
       alert("WINNER");
 
     }
   },
-
-  // returns true and executes attacks if click is a creature attack
-  attackCreature: function() {
-    let fromAttackIndex = 0;
-    let toIndex = window.game.opponent().board.indexOf(this.props.cardInfo);
-    if (toIndex != -1 && window.game.activeCard != null) {
-      console.log(window.game.activeCard)
-      this.attackCreatureFromIndex(fromAttackIndex, toIndex, window.game.activeCard);
-      return true;      
-    }
-    return false;
-  },
-  
-  // smash creature's face
-  attackCreatureFromIndex: function(fromAttackIndex, toIndex, attackingCard) {
-    let move = {
-                  "op":"attack", 
-                  "from":fromAttackIndex,
-                  "to": toIndex
-               };
-    window.client.makeLocalMove(move);
-    attackingCard.setState({"hasAttacked": true, hasFocus: false});
-  },
-
-  // returns true and plays card if click is a play from hand
-  playFromHand: function() {
-    let fromIndex = window.game.current().hand.indexOf(this.props.cardInfo);
-    if (fromIndex != -1) {
-      this.playFromHandIndex(fromIndex);
-      return true;
-    }
-    return false;
-  },
-  
-  // highlight a card when clicked, play when double clicked
-  playFromHandIndex: function(fromIndex) {
-    // card can only be highlighted and played if player has enough mana
-    if (this.props.cardInfo.cost > this.props.player.mana) {
-      return;
-    }    
-    let hasFocus = !this.state.hasFocus;
-    if (!hasFocus) { // play or attack with card
-      window.client.makeLocalMove({"op":"play", "from":fromIndex});
-      this.setState({hasFocus: false, enteredPlayThisTurn: true});
-    } else { // just highlight the card
-      this.setState({hasFocus: true});
-      window.game.activeCard = this;
-    }    
-  },
-
- // highlight card when clicked, or smash face if already highlighted
-  clickCardInPlay: function() {
-    let fromIndex = window.game.current().board.indexOf(this.props.cardInfo);
-    if (fromIndex != -1 && 
-        !this.state.enteredPlayThisTurn &&
-        !this.state.hasAttacked) {
-      this.clickCardInPlayFromIndex(fromIndex);
-    }
-  },
-
- // highlight a card when clicked, attack face when double clicked
-  clickCardInPlayFromIndex: function(fromIndex) {
-    let hasFocus = !this.state.hasFocus;
-    if (!hasFocus) {  // play or attack with card
-      this.setState({hasFocus: false, hasAttacked: true});
-      window.client.makeLocalMove({"op":"face", "from":fromIndex});
-    } else {  // just highlight the card
-      this.setState({hasFocus: true});
-      window.game.activeCard = this;
-    }
-  }
 
 });
 
