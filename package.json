@@ -34,9 +34,12 @@
     "webpack-dev-server": "~1.9.0"
   },
   "dependencies": {
+    "autoprefixer-core": "^5.2.1",
     "babel": "^5.5.6",
     "css-loader": "^0.14.5",
+    "csswring": "^3.0.5",
     "node-sass": "^3.1.2",
+    "postcss-loader": "^0.5.0",
     "sass-loader": "^1.0.2",
     "seedrandom": "^2.4.0",
     "style-loader": "^0.12.3",
