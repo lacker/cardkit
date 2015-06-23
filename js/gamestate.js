@@ -127,7 +127,7 @@ class GameState {
     this.winner = data.winner || null
 
     // set this to true for plenty of mana, for testing
-    this.godMode = false
+    this.godMode = true
 
   }
 
@@ -262,7 +262,7 @@ class GameState {
     }
   }
 
-  // container can be board or hand
+  // containerTypee can be board or hand
   setSelectedCard(index, containerType) {
     if (containerType == "board") {
       let card = this.current().getBoard(index);
