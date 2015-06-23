@@ -27,8 +27,11 @@ let Card = React.createClass({
       attackPart = (
         <div div className="card-details">
           <div className="spell-text-label">
-          {this.props.cardInfo.description}
-        </div>
+            {this.props.cardInfo.description}
+          </div>
+          <div className="spell-flavor">
+            {this.props.cardInfo.flavor}
+          </div>
         </div>
         )
     }
