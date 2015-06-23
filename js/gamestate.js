@@ -89,6 +89,27 @@ class PlayerState {
     this.maxMana = data.maxMana || 0
   }
 
+  // Moves a card from hand to trash.
+  handToTrash(index) {
+    let card = this.getHand(index)
+    this.hand.splice(index, 1)
+    this.trash.push(card)
+  }
+
+  // Moves a card from board to trash.
+  boardToTrash(index) {
+    let card = this.getBoard(index)
+    this.board.splice(index, 1)
+    this.trash.push(card)
+  }
+
+  // Moves a card from hand to board.
+  handToBoard(index) {
+    let card = this.getHand(index)
+    this.hand.splice(index, 1)
+    this.board.push(card)
+  }
+
   // Throws if the index is bad
   getHand(index) {
     if (index >= this.hand.length) {
@@ -326,12 +347,10 @@ class GameState {
     player.mana -= card.cost      
 
     // move the card to the appropriate container
-    player.hand.splice(from, 1)
-    player.mana -= card.cost
     if (card.permanent) {
-      player.board.push(card)
+      player.handToBoard(from)
     } else {
-      player.trash.push(card)
+      player.handToTrash(from)
     }
 
     // Finally, play any abilities the card has.
@@ -339,14 +358,11 @@ class GameState {
     if (card.kill) { 
       if (this.opponent().board.length) {
         let randomIndex = Math.floor(Math.random() * (this.opponent().board.length-1));
-        this.opponent().trash.push(this.opponent().board[randomIndex])
-        this.opponent().board.splice(randomIndex, 1)
+        this.opponent().boardToTrash(randomIndex)
       }
     }
  
     if (card.endTurn) { 
-      player.trash.push(card)
-      player.hand.splice(from, 1)
       for (let i = 0; i < card.endTurn; i++) {
         this.endTurn()
         this.beginTurn()
@@ -355,7 +371,9 @@ class GameState {
 
     if (card.emp) {
       for (let player of this.players) {
-        player.board = []
+        while (player.board.length > 0) {
+          player.boardToTrash(0)
+        }
       }
     }
   }
@@ -369,10 +387,10 @@ class GameState {
     if (player.mana < card.cost) {
       throw `need ${card.cost} mana but only have ${player.mana}`
     }
+    player.handToTrash(from)
+
     // for direct damage
     if (card.damage) { 
-      player.trash.push(card)
-      player.hand.splice(from, 1)
       this.damage(to, card.damage)
     }
   }
@@ -386,10 +404,10 @@ class GameState {
     if (player.mana < card.cost) {
       throw `need ${card.cost} mana but only have ${player.mana}`
     }
+    player.handToTrash(from)
+
     // for direct damage
     if (card.damage) { 
-      player.trash.push(card)
-      player.hand.splice(from, 1)
       this.opponent().life -= card.damage
       this.resolveDamage()
     }
