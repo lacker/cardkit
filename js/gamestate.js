@@ -57,7 +57,14 @@ const CARDS = [
     name: "Time Stop",
     description: "End this turn and the next.",
     endTurn: 2,
-    cost: 5
+    cost: 7
+  },
+  {
+    name: "Electromagnetic Pulse",
+    description: "Destroy all cards in play.",
+    flavor: "Put all your eggs in one basket, and watch that basket.",
+    emp: true,
+    cost: 4
   },
   {
     name: "Time Cruiser",
@@ -80,6 +87,27 @@ class PlayerState {
     this.life = data.life || 30
     this.mana = data.mana || 0
     this.maxMana = data.maxMana || 0
+  }
+
+  // Moves a card from hand to trash.
+  handToTrash(index) {
+    let card = this.getHand(index)
+    this.hand.splice(index, 1)
+    this.trash.push(card)
+  }
+
+  // Moves a card from board to trash.
+  boardToTrash(index) {
+    let card = this.getBoard(index)
+    this.board.splice(index, 1)
+    this.trash.push(card)
+  }
+
+  // Moves a card from hand to board.
+  handToBoard(index) {
+    let card = this.getHand(index)
+    this.hand.splice(index, 1)
+    this.board.push(card)
   }
 
   // Throws if the index is bad
@@ -316,36 +344,36 @@ class GameState {
     if (player.mana < card.cost) {
       throw `need ${card.cost} mana but only have ${player.mana}`
     }
+    player.mana -= card.cost      
 
     // move the card to the appropriate container
-    player.hand.splice(from, 1)
-    player.mana -= card.cost
     if (card.permanent) {
-      player.board.push(card)
+      player.handToBoard(from)
     } else {
-      player.trash.push(card)
+      player.handToTrash(from)
     }
 
-    /* 
-       finally, play any abilities the card has
-    */
+    // Finally, play any abilities the card has.
 
-    // it has Kill ability
     if (card.kill) { 
       if (this.opponent().board.length) {
         let randomIndex = Math.floor(Math.random() * (this.opponent().board.length-1));
-        this.opponent().trash.push(this.opponent().board[randomIndex])
-        this.opponent().board.splice(randomIndex, 1)
+        this.opponent().boardToTrash(randomIndex)
       }
     }
  
-    // it has Time Stop ability
     if (card.endTurn) { 
-      player.trash.push(card)
-      player.hand.splice(from, 1)
-      for (let i=0;i<card.endTurn;i++) {
+      for (let i = 0; i < card.endTurn; i++) {
         this.endTurn()
         this.beginTurn()
+      }
+    }
+
+    if (card.emp) {
+      for (let player of this.players) {
+        while (player.board.length > 0) {
+          player.boardToTrash(0)
+        }
       }
     }
   }
@@ -359,10 +387,10 @@ class GameState {
     if (player.mana < card.cost) {
       throw `need ${card.cost} mana but only have ${player.mana}`
     }
+    player.handToTrash(from)
+
     // for direct damage
     if (card.damage) { 
-      player.trash.push(card)
-      player.hand.splice(from, 1)
       this.damage(to, card.damage)
     }
   }
@@ -376,10 +404,10 @@ class GameState {
     if (player.mana < card.cost) {
       throw `need ${card.cost} mana but only have ${player.mana}`
     }
+    player.handToTrash(from)
+
     // for direct damage
     if (card.damage) { 
-      player.trash.push(card)
-      player.hand.splice(from, 1)
       this.opponent().life -= card.damage
       this.resolveDamage()
     }
