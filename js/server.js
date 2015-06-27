@@ -7,10 +7,14 @@
 
 // Server protocol:
 // The server bounces client messages to all clients, except registers.
+// It assigns a numerical "id" field to each op, ascending for each
+// game. This is based on the past moves, kept in Connection.games.
+// NOTE: this means that when the server reboots, it borks games in
+// progress.
 // When a client connects, the server sends it
 // { "op": "hello" }
 // When a game starts, the server sends out
-// { "op": "start", "players": [...list of player names...]}
+// { "op": "start", "players": [list of player names], "gameID": <gameid>}
 
 const WebSocketServer = require("ws").Server
 
@@ -30,6 +34,10 @@ class Connection {
       // Connection.waiting is a map of clients that have sent a
       // register operation, keyed by name.
       Connection.waiting = new Map()
+
+      // Connection.games maps each gameID to a list of all moves that
+      // have been made in the game.
+      Connection.games = new Map()
     }
     Connection.all.set(this.address, this)
   }
@@ -54,7 +62,15 @@ class Connection {
       if (message.seeking) {
         Connection.waiting.set(this.name, this)
       }
-    } else {
+    } else if (message.gameID) {
+      // Give the message an id depending on its game
+      if (!Connection.games.has(message.gameID)) {
+        Connection.games.set(message.gameID, [])
+      }
+      let moves = Connection.games.get(message.gameID)
+      message.id = moves.length + 1
+      moves.push(message)
+
       // Bounce anything but registers
       this.broadcast(message)
     }
@@ -62,9 +78,9 @@ class Connection {
     // Consider starting a new game
     if (Connection.waiting.size == 2) {
       let players = Array.from(Connection.waiting.keys())
-      let seed = Math.floor(Math.random() * 1000000)
-      console.log(`starting ${players[0]} vs ${players[1]}. seed: ${seed}`)
-      let start = { op: "start", players, seed }
+      let gameID = Math.floor(Math.random() * 1000000)
+      console.log(`starting ${players[0]} vs ${players[1]}. gameID: ${gameID}`)
+      let start = { op: "start", players, gameID }
       this.broadcast(start)
       Connection.waiting.clear()
     }

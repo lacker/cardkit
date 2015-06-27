@@ -62,7 +62,7 @@ const CARDS = [
   {
     name: "Electromagnetic Pulse",
     description: "Destroy all cards in play.",
-    flavor: "Put all your eggs in one basket, and watch that basket.",
+    flavor: "Watch that basket.",
     emp: true,
     cost: 4
   },

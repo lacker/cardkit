@@ -13,10 +13,6 @@ class Client {
     // We skip 0 to avoid bugs. Each actual move for a game has an id,
     // starting at 1.
     this.nextID = 1
-
-    // Past moves that we can re-send.
-    // Here we keep all moves that happened since any opponent move.
-    this.buffer = []
   }
 
   makeSocket() {
@@ -54,17 +50,9 @@ class Client {
     }
   }
 
-  // Sends all pending message objects upstream.
-  flush() {
-    for (var message of this.buffer) {
-      this.ws.send(JSON.stringify(message))
-    }
-  }
-  
   // Sends a message object upstream.
   send(message) {
-    this.buffer.push(message)
-    this.flush()
+    this.ws.send(JSON.stringify(message))
   }
 
   // Send a looking-for-game message.
@@ -88,10 +76,6 @@ class Client {
     if (!move.op || !move.player) {
       return false
     }
-    if (move.player == this.name) {
-      // This is a bounce of a move we made.
-      return true
-    }
 
     console.log("making remote move: " + JSON.stringify(move))
     if (this.game.makeMove(move)) {
@@ -103,19 +87,13 @@ class Client {
     return false
   }
 
-  // Makes a move locally then communicates it to the server.
+  // Sends a move to the server.
+  // This does *not* display the move until the server confirms it.
   makeLocalMove(move) {
     move.player = this.name
-    move.id = this.nextID
+    move.gameID = this.gameID
 
-    console.log("making local move: " + JSON.stringify(move))
-    if (!this.game.makeMove(move)) {
-      console.log("invalid!")
-      return
-    }
-
-    this.nextID++
-    this.forceUpdate()
+    console.log("sending move to server: " + JSON.stringify(move))
     this.send(move)
   }
 
@@ -124,12 +102,14 @@ class Client {
   handleStart(message) {
     this.buffer = []
     let players = message.players
-    let seed = message.seed
+    this.gameID = message.gameID
 
     console.log(`starting game: ${players[0]} vs ${players[1]}`)
     window.track("startGame")
     
-    this.game.startGame(players, seed)
+    // Just use the gameID as the seed
+    this.game.startGame(players, this.gameID)
+
     this.forceUpdate()
   }
 
