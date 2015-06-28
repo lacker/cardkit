@@ -70,7 +70,7 @@ const CARDS = [
     name: "Time Cruiser",
     description: "End this turn and the next.",
     permanent: true,
-    attack: 10,
+    attack: 5,
     defense: 1,
     endTurn: 2,
     cost: 8
