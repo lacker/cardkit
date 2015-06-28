@@ -29,7 +29,7 @@ export const CARDS = [
   },
   {
     name: "Blast BiBot",
-    description: "Destroy one of your opponent's permanents at random.",
+    description: "Kill one of your opponent's fleet at random.",
     permanent: true,
     attack: 2,
     defense: 2,
@@ -45,7 +45,7 @@ export const CARDS = [
   },
   {
     name: "Errant Blast",
-    description: "Destroy one of your opponent's permanents at random.",
+    description: "Kill one of your opponent's fleet at random.",
     kill: true,
     cost: 3
   },

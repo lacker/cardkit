@@ -89,12 +89,12 @@ class GameState {
 
   // The player whose turn it is
   current() {
-    return this.players[this.turn]
+    return this.players[0]
   }
 
   // The player whose turn it isn't
   opponent() {
-    return this.players[1 - this.turn]
+    return this.players[1]
   }
 
   // Each type of move has a JSON representation.
@@ -113,6 +113,7 @@ class GameState {
   //
   // Returns whether the move was understood.
   makeMove(move) {
+    console.log("make move")
     if (this.winner != null) {
       // You can't make normal moves when the game is over
       return false
@@ -128,6 +129,8 @@ class GameState {
       this.selectCard(move.index, move.containerType)
     } else if (move.op == "selectOpponent") {
       this.selectOpponent()
+    } else if (move.op == "draw") {
+      this.draw()
     } else if (move.op == "endTurn") {
       this.endTurn()
     } else {
@@ -155,6 +158,9 @@ class GameState {
       console.log(`a game started without me, ${this.name}`)
       return
     }
+
+    // always your turn in spacetime
+    this.turn = 0    
 
     this._started = true
     this.beginTurn()
@@ -362,19 +368,22 @@ class GameState {
     this.resolveDamage()
   }
 
-  draw() {
-    let card = CARDS[Math.floor(this.rng() * CARDS.length)]
-    // Make a copy so that we can edit this card
-    let copy = {}
+  cardCopy(player) {
+    let card = CARDS[Math.floor(this.rng() * CARDS.length)]         
+    // Make a copy so that we can edit this card        
+    let copy = {}         
     for (let key in card) {
       copy[key] = card[key]
     }
-    this.drawCard(copy)
+
+   copy.canAct = false; 
+   copy.player = player;
+   return copy
   }
 
-  drawCard(cardToDraw) {
-    cardToDraw.canAct = false; 
-    this.current().hand.push(cardToDraw)    
+  draw(opponentDraws) {
+   this.current().hand.push(this.cardCopy(this.current()))    
+   this.opponent().hand.push(this.cardCopy(this.opponent()))    
   }
 
   beginTurn() {
@@ -383,7 +392,7 @@ class GameState {
       this.current().maxMana = 99;
     }
     this.current().mana = this.current().maxMana
-    this.draw()
+    // this.draw()
   }
 
   endTurn() {
@@ -394,7 +403,8 @@ class GameState {
         card.canAct = true;
       }      
     }
-    this.turn = 1 - this.turn
+    // your turn never ends in spacetime
+    // this.turn = 1 - this.turn
   }
 
   log() {

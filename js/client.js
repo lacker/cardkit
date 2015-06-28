@@ -40,6 +40,10 @@ class Client {
 
     if (message.op == "start") {
       this.handleStart(message)
+    } else if (message.op == "draw" && message.player == "all") {
+      // in spacetime, we keep on drawing
+      message.id = this.nextID
+      this.handleRemoteMove(message)
     } else if (message.id != this.nextID) {
       // This is a dupe, or out-of-order. Ignore it
     } else if (this.handleRemoteMove(message)) {
@@ -90,10 +94,10 @@ class Client {
   // Sends a move to the server.
   // This does *not* display the move until the server confirms it.
   makeLocalMove(move) {
-    if (this.game.turn != 0 && move.op == "selectCard") {
+    /*if (this.game.turn != 0 && move.op == "selectCard") {
       console.log("can't select cards on opponent's turn, but this will change with timers :)")
       return
-    }
+    }*/
     move.player = this.name
     move.gameID = this.gameID
 

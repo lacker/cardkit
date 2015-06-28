@@ -47,6 +47,7 @@ class Connection {
     for (let conn of Connection.all.values()) {
       try {
         conn.ws.send(JSON.stringify(message))
+        console.log("broadcast " + JSON.stringify(message))
       } catch(err) {
         console.log("caught websocket send error: " + err)
       }
@@ -83,7 +84,17 @@ class Connection {
       let start = { op: "start", players, gameID }
       this.broadcast(start)
       Connection.waiting.clear()
+      // you are always drawing cards in spacetime
+      this.drawLoop = setInterval(() => {
+        this.everyoneDraws(); 
+      }, 5000);
     }
+  }
+
+  // in spacetime, we simul-draw!
+  everyoneDraws () {
+    let draw = { op: "draw" , "player":"all"}
+    this.broadcast(draw)
   }
 
   close() {
@@ -92,6 +103,7 @@ class Connection {
     if (this.name != null && Connection.waiting.has(this.name)) {
       Connection.waiting.delete(this.name)
     }
+    clearInterval(this.drawLoop)
   }
 }
 

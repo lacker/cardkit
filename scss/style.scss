@@ -215,6 +215,8 @@ h2 {
 
 // the main End Turn button that always shows in the game
 .end-turn-button {
+  // it's never time to end the turn in spacetime!
+  display: none; 
   width: $end-turn-button-width;
   padding:$default-padding;
   background-color: $palette-four;
