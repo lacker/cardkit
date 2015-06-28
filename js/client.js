@@ -40,7 +40,7 @@ class Client {
 
     if (message.op == "start") {
       this.handleStart(message)
-    } else if (message.op == "draw" && message.player == "all") {
+    } else if (message.op == "draw") {
       // in spacetime, we keep on drawing
       message.id = this.nextID
       this.handleRemoteMove(message)
@@ -77,7 +77,7 @@ class Client {
   // Handles a move being reported from the server.
   // Returns whether we knew what to do with it.
   handleRemoteMove(move) {
-    if (!move.op || !move.player) {
+    if (!move.op || !(move.player || move.playerName)) {
       return false
     }
 

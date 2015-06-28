@@ -1,9 +1,8 @@
-// The state of a ccg type card game.
+/* 
+   The state of a ccg type card game.
+*/
 
 require("seedrandom")
-
-// some json for cards
-import {CARDS} from './cards.js';
 
 // The state of a single player.
 class PlayerState {
@@ -130,7 +129,7 @@ class GameState {
     } else if (move.op == "selectOpponent") {
       this.selectOpponent()
     } else if (move.op == "draw") {
-      this.draw()
+      this.draw(move.playerName, move.card)
     } else if (move.op == "endTurn") {
       this.endTurn()
     } else {
@@ -368,22 +367,16 @@ class GameState {
     this.resolveDamage()
   }
 
-  cardCopy(player) {
-    let card = CARDS[Math.floor(this.rng() * CARDS.length)]         
-    // Make a copy so that we can edit this card        
-    let copy = {}         
-    for (let key in card) {
-      copy[key] = card[key]
+  draw(playerName, card) {
+          console.log("draw")
+
+    for (let player of this.players) {
+      console.log(player)
+      if (player.name == playerName) {
+        player.hand.push(card) 
+        break;   
+      }
     }
-
-   copy.canAct = false; 
-   copy.player = player;
-   return copy
-  }
-
-  draw(opponentDraws) {
-   this.current().hand.push(this.cardCopy(this.current()))    
-   this.opponent().hand.push(this.cardCopy(this.opponent()))    
   }
 
   beginTurn() {
