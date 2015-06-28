@@ -250,7 +250,7 @@ class GameState {
     }
   }
 
-  // container can be board or hand
+  // containerType can be board or hand
   selectCard(index, containerType) {
     if (!this.selectedCard) {
       this.setSelectedCard(index, containerType)
