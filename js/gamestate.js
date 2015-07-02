@@ -125,7 +125,7 @@ class GameState {
         the possible container types are board, hand, trash, 
         as well as the opponentFoo for each type
       */
-      this.selectCard(move.index, move.containerType)
+      this.selectCard(move)
     } else if (move.op == "selectOpponent") {
       this.selectOpponent()
     } else if (move.op == "draw") {
@@ -184,22 +184,24 @@ class GameState {
   }
 
   // containerType can be board or hand
-  selectCard(index, containerType) {
+  selectCard(move) {
+    let index = move.index
+    let containerType = move.containerType
     if (!this.selectedCard) {
-      this.setSelectedCard(index, containerType)
+      this.setSelectedCard(move)
       return;
     }
     let card;
     if (containerType == "board") {
       // select a card in current player's board
-      card = this.current().getBoard(index)
+      card = move.player.getBoard(index)
       if (card == this.selectedCard) {
         this.selectedCard = null;
         this.face(index)        
       }
     } else if (containerType == "hand") { 
       // select a card in current player's hand
-      card = this.current().getHand(index)
+      card = move.player.getHand(index)
       if (card == this.selectedCard) {
         this.selectedCard = null;
         this.play(index)
@@ -208,14 +210,14 @@ class GameState {
       // select a card in opponent's board
 
       // check for attack from board
-      let boardIndex = this.current().board.indexOf(this.selectedCard);
+      let boardIndex = move.player.board.indexOf(this.selectedCard);
       if (boardIndex != -1) {
         this.selectedCard = null;
         this.attack(boardIndex, index);
       }
 
       // check for action card from hand
-      let handIndex = this.current().hand.indexOf(this.selectedCard);
+      let handIndex = move.player.hand.indexOf(this.selectedCard);
       if (handIndex != -1) {
         this.selectedCard = null;
         this.playOn(handIndex, index)
@@ -224,13 +226,18 @@ class GameState {
   }
 
   // containerType can be board or hand
-  setSelectedCard(index, containerType) {
+  setSelectedCard(move) {
+    let index = move.index
+    let containerType = move.containerType
     if (containerType == "board") {
-      let card = this.current().getBoard(index);
+      let card = move.player.getBoard(index);
       this.selectedCard = card.canAct ? card : null;
     } else if (containerType == "hand") { 
-      let card = this.current().getHand(index);
-      if (this.current().mana >= card.cost) {
+      console.log(move.player)
+      console.log(index)
+      console.log(move.player.getHand(index))
+      let card = move.player.getHand(index);
+      if (move.player.mana >= card.cost) {
         this.selectedCard = card
       }
     }
