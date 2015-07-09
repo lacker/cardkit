@@ -90,9 +90,9 @@ class Connection {
       this.broadcast(start)
       Connection.waiting.clear()
       // you are always drawing cards in spacetime
-      this.drawLoop = setInterval(() => {
         this.everyoneDraws(); 
-      }, 5000);
+      //this.drawLoop = setInterval(() => {
+      //}, 5000);
     }
   }
 
@@ -101,7 +101,7 @@ class Connection {
     let players = Array.from(Connection.all.values())
     for (let player of players) {
       let card = this.cardCopy(player.name);
-      let draw = { op: "draw" , "playerName": player.name, "card": card}
+      let draw = { op: "draw" , "player": {name:player.name}, "card": card}
       this.broadcast(draw)
     }
   }
