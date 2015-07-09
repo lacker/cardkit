@@ -75,6 +75,7 @@ let Card = React.createClass({
     if (boardIndex != -1) {
       let selectMove = {
                     "op": "selectCard", 
+                    "player":window.game.players[0],
                     "index": boardIndex,
                     "containerType": "board"
                  };
