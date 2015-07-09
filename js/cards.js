@@ -28,15 +28,6 @@ export const CARDS = [
     cost: 5
   },
   {
-    name: "Blast BiBot",
-    description: "Kill one of your opponent's fleet at random.",
-    permanent: true,
-    attack: 2,
-    defense: 2,
-    kill: true,
-    cost: 5
-  },
-  {
     name: "Laser Blast",
     description: "Deal 3 damage to a creature or player.",
     requiresTarget: true,
@@ -50,17 +41,26 @@ export const CARDS = [
     cost: 3
   },
   {
+    name: "EMP",
+    description: "Destroy all cards in play.",
+    flavor: "Watch that basket.",
+    emp: true,
+    cost: 4
+  },
+  /*{
     name: "Time Stop",
     description: "End this turn and the next.",
     endTurn: 2,
     cost: 7
   },
   {
-    name: "Electromagnetic Pulse",
-    description: "Destroy all cards in play.",
-    flavor: "Watch that basket.",
-    emp: true,
-    cost: 4
+    name: "Blast BiBot",
+    description: "Kill one of your opponent's fleet at random.",
+    permanent: true,
+    attack: 2,
+    defense: 2,
+    kill: true,
+    cost: 5
   },
   {
     name: "Time Cruiser",
@@ -70,5 +70,5 @@ export const CARDS = [
     defense: 1,
     endTurn: 2,
     cost: 8
-  }
+  }*/
 ]

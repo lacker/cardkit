@@ -89,22 +89,23 @@ class Connection {
       let start = { op: "start", players, gameID }
       this.broadcast(start)
       Connection.waiting.clear()
-      // you are always drawing cards in spacetime
-        this.everyoneDraws(); 
-      //this.drawLoop = setInterval(() => {
-      //}, 5000);
+      //you are always drawing cards in spacetime
+      this.drawLoop = setInterval(() => {
+        this.everyoneDraws();
+      }, 5000);
     }
   }
 
   // in spacetime, we simul-draw!
   everyoneDraws () {
-    console.log("hai")
     let players = Array.from(Connection.all.values())
     for (let player of players) {
       let card = this.cardCopy(player.name);
       let draw = { op: "draw" , "player": {name:player.name}, "card": card}
       this.broadcast(draw)
     }
+    this.broadcast({ op: "endTurn", 'player':'foo' })
+    this.broadcast({ op: "beginTurn", 'player':'foo'  })
   }
 
   cardCopy(player) {

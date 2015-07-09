@@ -57,7 +57,8 @@ let Card = React.createClass({
     if (this.props.cardInfo.cost > this.props.player.mana) {
       cssClassCanPlay = "too-expensive";
     }
-    let cssClass = window.game.current().selectedCard == this.props.cardInfo ? 
+    let cssClass = window.game.current().selectedCard == this.props.cardInfo ||
+                   window.game.opponent().selectedCard == this.props.cardInfo ? 
                    'playing-card active-card' : 'playing-card';
     let fromIndex = window.game.current().board.indexOf(this.props.cardInfo);    
     let cssClassCanAct = !this.props.cardInfo.canAct && fromIndex != -1 ? 
@@ -75,7 +76,6 @@ let Card = React.createClass({
     if (boardIndex != -1) {
       let selectMove = {
                     "op": "selectCard", 
-                    "player":window.game.players[0],
                     "index": boardIndex,
                     "containerType": "board"
                  };

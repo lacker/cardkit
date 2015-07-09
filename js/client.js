@@ -38,8 +38,8 @@ class Client {
       return
     }
 
-      message.id = this.nextID
-      console.log("setting message id to " + this.nextID)
+    message.id = this.nextID
+    
     if (message.op == "start") {
       this.handleStart(message)
     } else if (message.op == "draw") {
@@ -49,7 +49,6 @@ class Client {
       console.log("out of order, returning: " + message)
       // This is a dupe, or out-of-order. Ignore it
     } else if (this.handleRemoteMove(message)) {
-      console.log("handle remote move: " + message)
       // It was a remote move
     } else {
       console.log("don't know how to handle this message. dropping it")
@@ -84,12 +83,10 @@ class Client {
       return false
     }
 
-    console.log("making remote move: " + JSON.stringify(move))
     if (this.game.makeMove(move)) {
       this.buffer = []
       this.forceUpdate()
       this.nextID++
-      console.log("the next id after handleRemoteMove is " + this.nextID)
       return true
     }
     return false
@@ -105,7 +102,6 @@ class Client {
     move.player = this.name
     move.gameID = this.gameID
 
-    console.log("sending move to server: " + JSON.stringify(move))
     this.send(move)
   }
 

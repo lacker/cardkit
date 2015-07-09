@@ -44,7 +44,7 @@ let GameView = React.createClass({
           <div className={cssEndTurn} onClick={this.endTurn}>End Turn</div>
 
           {/* HOME PLAYER */}
-          <div className="player-avatar " style={this.avatarStyle(0)}>
+          <div className="player-avatar home-avatar" style={this.avatarStyle(0)}>
             <div className="vital-stats-container">Life: {homePlayer.life}</div>
             <h2>{homePlayer.name}</h2>
             <div className="vital-stats-container">Mana: {homePlayer.mana} / {homePlayer.maxMana}</div>

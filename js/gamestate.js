@@ -183,10 +183,15 @@ class GameState {
   }
 
   // containerType can be board or hand
-  selectCard(index, containerType, player) {
-    var usePlayer = this.current()
-    if (player != usePlayer.name) {
+  selectCard(index, containerType, selectingPlayerName) {
+    let usePlayer
+    let opponent
+    if (selectingPlayerName == this.current().name) {
+      usePlayer = this.current()
+      opponent = this.opponent()
+    } else {
       usePlayer = this.opponent()
+      opponent = this.current()
     }
 
     if (!usePlayer.selectedCard) {
@@ -196,11 +201,18 @@ class GameState {
     let card;
     if (containerType == "board") {
       // select a card in current player's board
-      card = usePlayer.getBoard(index)
+      card = usePlayer.getBoard(index)      
       if (card == usePlayer.selectedCard) {
         usePlayer.selectedCard = null;
-        this.face(index)        
-      }
+        this.face(index, usePlayer)        
+        return;
+      } 
+      card = opponent.getBoard(index)
+      if (card == opponent.selectedCard) {
+        opponent.selectedCard = null;
+        this.face(index, opponent)        
+      } 
+
     } else if (containerType == "hand") { 
       // select a card in current player's hand
       card = usePlayer.getHand(index)
@@ -212,14 +224,14 @@ class GameState {
       // select a card in opponent's board
 
       // check for attack from board
-      let boardIndex = usePlayer.board.indexOf(this.selectedCard);
+      let boardIndex = usePlayer.board.indexOf(usePlayer.selectedCard);
       if (boardIndex != -1) {
         usePlayer.selectedCard = null;
         this.attack(boardIndex, index, usePlayer);
       }
 
       // check for action card from hand
-      let handIndex = usePlayer.hand.indexOf(this.selectedCard);
+      let handIndex = usePlayer.hand.indexOf(usePlayer.selectedCard);
       if (handIndex != -1) {
         usePlayer.selectedCard = null;
         this.playOn(handIndex, index, usePlayer)
@@ -257,12 +269,13 @@ class GameState {
 
   // from and to are indices into board
   attack(from, to, player) {
-    let opponent = this.current() ? this.current.name == player.name : this.opponent()
+    let opponent = this.current().name == player.name ? this.opponent() : this.current()
     let attacker = player.getBoard(from)
     let defender = opponent.getBoard(to)
     attacker.defense -= defender.attack
     defender.defense -= attacker.attack
     attacker.canAct = false;
+    attacker.needsAttackDisplay = true;
     this.resolveDamage()
   }
 
@@ -334,7 +347,7 @@ class GameState {
   // Throws if there's not enough mana.
   // from is an index of the hand
   playFace(from, player) {
-    let opponent = this.current() ? this.current.name == player.name : this.opponent()
+    let opponent = this.current().name == player.name ? this.opponent() : this.current()
     let card = player.getHand(from)
     if (player.mana < card.cost) {
       throw `need ${card.cost} mana but only have ${player.mana}`
@@ -362,11 +375,11 @@ class GameState {
 
   // Attacks face
   face(from, player) {
-    let opponent = this.current() ? this.current.name == player.name : this.opponent()
+    let opponent = this.current().name == player.name ? this.opponent() : this.current()
     let attacker = player.getBoard(from)
     opponent.life -= attacker.attack
     attacker.canAct = false
-    this.selectedCard = null;
+    player.selectedCard = null;
     this.resolveDamage()
   }
 
@@ -383,8 +396,10 @@ class GameState {
     this.current().maxMana = Math.min(1 + this.current().maxMana, 10)
     if (this.godMode) {
       this.current().maxMana = 99;
+      this.opponent().maxMana = 99;
     }
     this.current().mana = this.current().maxMana
+    this.opponent().mana = this.opponent().maxMana
     // this.draw()
   }
 
@@ -393,6 +408,12 @@ class GameState {
     if (this.current().board.length) {
       for (let i=0;i<this.current().board.length;i++) {
         let card = this.current().board[i];
+        card.canAct = true;
+      }      
+    }
+    if (this.opponent().board.length) {
+      for (let i=0;i<this.opponent().board.length;i++) {
+        let card = this.opponent().board[i];
         card.canAct = true;
       }      
     }
