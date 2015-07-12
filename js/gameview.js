@@ -80,7 +80,7 @@ let GameView = React.createClass({
 
   selectOpponent() {
     let selectMove = {
-                    "op":"selectOpponent" 
+                    "op":"selectOpponent"
                  };
     window.client.makeLocalMove(selectMove);
   }

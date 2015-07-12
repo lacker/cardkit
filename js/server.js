@@ -89,16 +89,11 @@ class Connection {
       let start = { op: "start", players, gameID }
       this.broadcast(start)
       Connection.waiting.clear()
-      for (let player of players) {
-        let card = this.cardCopy(player.name);
-        let draw = { op: "draw" , "player": {name:player.name}, "card": card}
-        this.broadcast(draw)
-      }
 
       // everyone starts with 
-      this.everyoneDraws()
-      this.everyoneDraws()
-      this.everyoneDraws()
+      //this.everyoneDraws()
+      //this.everyoneDraws()
+      //this.everyoneDraws()
       
       //you are always drawing cards in spacetime
       this.drawLoop = setInterval(() => {
