@@ -91,9 +91,9 @@ class Connection {
       Connection.waiting.clear()
 
       // everyone starts with 
-      //this.everyoneDraws()
-      //this.everyoneDraws()
-      //this.everyoneDraws()
+      this.everyoneDraws()
+      this.everyoneDraws()
+      this.everyoneDraws()
       
       //you are always drawing cards in spacetime
       this.drawLoop = setInterval(() => {
