@@ -120,7 +120,7 @@ class Connection {
     let players = Array.from(Connection.all.values())
     for (let player of players) {
       let card = this.cardCopy(player.name);
-      let draw = { op: "draw" , "player": {name:player.name}, "card": card}
+      let draw = { op: "draw" , player: {name: player.name}, card}
       this.broadcast(draw)
     }
   }
