@@ -104,15 +104,15 @@ class Connection {
       this.drawLoop = setInterval(() => {
         this.tickTurn();
       }, 10000);
-      
+
     }
   }
 
   // in spacetime, we simul-draw!
   tickTurn() {
     this.everyoneDraws()
-    this.broadcast({ op: "endTurn", 'player':'foo' })
-    this.broadcast({ op: "beginTurn", 'player':'foo'  })
+    this.broadcast({ op: "endTurn", 'player':'no_player' })
+    this.broadcast({ op: "beginTurn", 'player':'no_player'  })
   }
 
   // in spacetime, we simul-draw!
