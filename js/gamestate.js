@@ -126,7 +126,7 @@ class GameState {
       */
       this.selectCard(move.index, move.containerType, move.player)
     } else if (move.op == "selectOpponent") {
-      this.selectOpponent()
+      this.selectOpponent(move.player)
     } else if (move.op == "draw") {
       this.draw(move.player, move.card)
     } else if (move.op == "endTurn") {
@@ -144,7 +144,7 @@ class GameState {
       // We go first
       console.log(`we, ${this.name}, go first`)
       this.turn = 0
-
+     
       this.players[1].name = players[1]
     } else if (players[1] == this.name) {
       // We go second
@@ -156,10 +156,8 @@ class GameState {
       console.log(`a game started without me, ${this.name}`)
       return
     }
-
     // always your turn in spacetime
     this.turn = 0    
-
     this._started = true
     this.beginTurn()
   }
@@ -193,49 +191,71 @@ class GameState {
       usePlayer = this.opponent()
       opponent = this.current()
     }
-
     if (!usePlayer.selectedCard) {
       this.setSelectedCard(index, containerType, usePlayer)
       return;
     }
     let card;
     if (containerType == "board") {
-      // select a card in current player's board
-      card = usePlayer.getBoard(index)      
-      if (card == usePlayer.selectedCard) {
-        usePlayer.selectedCard = null;
-        this.face(index, usePlayer)        
-        return;
-      } 
-      card = opponent.getBoard(index)
-      if (card == opponent.selectedCard) {
-        opponent.selectedCard = null;
-        this.face(index, opponent)        
-      } 
-
+      if(usePlayer.name == selectingPlayerName) {
+        // select a card in current player's board
+        card = usePlayer.getBoard(index)      
+        if (card == usePlayer.selectedCard) {
+          usePlayer.selectedCard = null;
+          this.face(index, usePlayer)        
+          return;
+        }
+      } else {
+        card = opponent.getBoard(index)
+        if (card == opponent.selectedCard) {
+          opponent.selectedCard = null;
+          this.face(index, opponent)        
+        } 
+      }
     } else if (containerType == "hand") { 
-      // select a card in current player's hand
-      card = usePlayer.getHand(index)
-      if (card == usePlayer.selectedCard) {
-        usePlayer.selectedCard = null;
-        this.play(index, usePlayer)
+      if(usePlayer.name == selectingPlayerName) {
+        // select a card in current player's hand
+        card = usePlayer.getHand(index)
+        if (card == usePlayer.selectedCard) {
+          usePlayer.selectedCard = null;
+          this.play(index, usePlayer)
+        }
+      } else {
+        card = opponent.getHand(index)
+        if (card == opponent.selectedCard) {
+          opponent.selectedCard = null;
+          this.play(index, opponent)
+        }
       }
     } else if (containerType == "opponentBoard") {
       // select a card in opponent's board
+      if(usePlayer.name == selectingPlayerName) {
+        // check for attack from board
+        let boardIndex = usePlayer.board.indexOf(usePlayer.selectedCard);
+        if (boardIndex != -1) {
+          usePlayer.selectedCard = null;
+          this.attack(boardIndex, index, usePlayer);
+        }
 
-      // check for attack from board
-      let boardIndex = usePlayer.board.indexOf(usePlayer.selectedCard);
-      if (boardIndex != -1) {
-        usePlayer.selectedCard = null;
-        this.attack(boardIndex, index, usePlayer);
+        // check for action card from hand
+        let handIndex = usePlayer.hand.indexOf(usePlayer.selectedCard);
+        if (handIndex != -1) {
+          usePlayer.selectedCard = null;
+          this.playOn(handIndex, index, usePlayer)
+        }        
+      } else {
+        boardIndex = opponent.board.indexOf(opponent.selectedCard);
+        if (boardIndex != -1) {
+          opponent.selectedCard = null;
+          this.attack(boardIndex, index, opponent);
+        }
+
+        handIndex = opponent.hand.indexOf(opponent.selectedCard);
+        if (handIndex != -1) {
+          opponent.selectedCard = null;
+          this.playOn(handIndex, index, opponent)
+        }                
       }
-
-      // check for action card from hand
-      let handIndex = usePlayer.hand.indexOf(usePlayer.selectedCard);
-      if (handIndex != -1) {
-        usePlayer.selectedCard = null;
-        this.playOn(handIndex, index, usePlayer)
-      }        
     }
   }
 
@@ -253,17 +273,24 @@ class GameState {
   }
 
   // select the opponent to cast a spell or target with attack
-  selectOpponent() {
-    if (!this.current().selectedCard) {
+  selectOpponent(player) {
+    let usePlayer
+    if (player == this.current().name) {
+      usePlayer = this.current()
+    } else {
+      usePlayer = this.opponent()
+    }
+
+    if (usePlayer.selectedCard) {
       return;
     }
-    let boardIndex = this.current().board.indexOf(this.selectedCard);
+    let boardIndex = usePlayer.board.indexOf(usePlayer.selectedCard);
     if (boardIndex != -1) {
-      this.face(boardIndex);
+      this.face(boardIndex, usePlayer);
     }
-    let handIndex = this.current().hand.indexOf(this.selectedCard);
+    let handIndex = usePlayer.hand.indexOf(usePlayer.selectedCard);
     if (handIndex != -1) {
-      this.playFace(handIndex)
+      this.playFace(handIndex, usePlayer)
     }        
   }    
 
@@ -383,8 +410,10 @@ class GameState {
     this.resolveDamage()
   }
 
+
   draw(player, card) {
-    for (let p of this.players) {
+    for (var i=0;i<this.players.length;i++) {
+      var p = this.players[i]
       if (p.name == player.name) {
         p.hand.push(card) 
         break;   

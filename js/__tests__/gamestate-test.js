@@ -39,9 +39,6 @@ describe("GameState", function() {
     expect(state2.turn).toEqual(state.turn)
     expect(state2.winner).toEqual(state.winner)
 
-    expect(
-      state2.current().getHand(0).name).toEqual(state.current().getHand(0).name)
-
   })
 
   it("kill moves creature from board to trash", function() {
@@ -50,10 +47,12 @@ describe("GameState", function() {
     state.startGame(["bob", "eve"], 123)
 
     // draw the simplest permanent
-    state.drawCard({"cost":0, "permanent": true})
+    state.draw({"name":"bob"}, {"cost":0, "permanent": true})
+    expect(state.current().hand.length == 1).toEqual(true)
 
     // play last card drawn
-    state.play(state.current().hand.length-1)
+    state.selectCard(0, "hand", "bob")
+    state.selectCard(0, "hand", "bob")
     expect(state.current().board.length == 1).toEqual(true)
 
     // go to next turn
@@ -61,9 +60,10 @@ describe("GameState", function() {
     state.makeMove({op: "beginTurn"})
 
     // get a card that implements kill
-    state.drawCard({"kill":true, "cost":0})    
+    state.draw({"name":"eve"}, {"kill":true, "cost":0})    
     // play last card drawn
-    state.play(state.current().hand.length-1)
+    state.selectCard(0, "hand", "eve")
+    state.selectCard(0, "hand", "eve")
 
     // permanent leaves board and goes to trash
     expect(state.opponent().board.length == 0).toEqual(true)
