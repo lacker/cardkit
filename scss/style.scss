@@ -94,7 +94,7 @@ h2 {
 }
 
 
-// contains description for non-permanents
+// contains description for the card's effect
 .spell-text-label {
   font-size:.9em;
   padding-top: 1vh;
@@ -197,6 +197,11 @@ h2 {
   background-color: rgba(245,245,245,1);
 }
 
+// the botom player
+.home-avatar {
+  margin-top:30px;
+}
+
 // life and mana
 .vital-stats-container {
   color:black;
@@ -215,6 +220,8 @@ h2 {
 
 // the main End Turn button that always shows in the game
 .end-turn-button {
+  // it's never time to end the turn in spacetime!
+  display: none; 
   width: $end-turn-button-width;
   padding:$default-padding;
   background-color: $palette-four;
@@ -251,11 +258,12 @@ h2 {
   width: 94vh;
   height:94vh;
   text-align: center; 
-  background-color: $palette-four; 
+  background-color: rgba(0,0,0,.8); 
   margin: 0 auto;
   border-radius: 1vh;
   border: 10px double #000; 
   border-width: 1.5vh;
+  color:white;
 }
 
 // the button to find a game in the lobby
@@ -263,12 +271,14 @@ h2 {
   width: $end-turn-button-width;
   padding:$default-padding;
   margin: 0 auto;
-  background-color: $palette-two;
+  background-color: $palette-four;
   border-radius:6px;
   border: 1px solid;
 }
 
 // the style for the big swords in the lobby
 .home-image {
-  width:75%;
+  margin-top:30px;
+  width:70%;
 }
+
