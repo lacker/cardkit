@@ -72,7 +72,7 @@ let Card = React.createClass({
   
   // select cards in current player's hand or board
   selectCard: function() {
-    let boardIndex = window.game.players[0].board.indexOf(this.props.cardInfo);
+    let boardIndex = window.game.current().board.indexOf(this.props.cardInfo);
     if (boardIndex != -1) {
       let selectMove = {
                     "op": "selectCard", 
@@ -82,7 +82,7 @@ let Card = React.createClass({
       window.client.makeLocalMove(selectMove);
     }
 
-    let handIndex = window.game.players[0].hand.indexOf(this.props.cardInfo);
+    let handIndex = window.game.current().hand.indexOf(this.props.cardInfo);
     if (handIndex != -1) {
       let selectMove = {
                     "op":"selectCard", 
@@ -92,7 +92,7 @@ let Card = React.createClass({
       window.client.makeLocalMove(selectMove);
     }
 
-    let opponentBoardIndex = window.game.players[1].board.indexOf(this.props.cardInfo);
+    let opponentBoardIndex = window.game.opponent().board.indexOf(this.props.cardInfo);
     if (opponentBoardIndex != -1) {
       let selectMove = {
                     "op":"selectCard", 

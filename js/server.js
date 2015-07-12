@@ -97,7 +97,7 @@ class Connection {
   }
 
   // in spacetime, we simul-draw!
-  everyoneDraws () {
+  everyoneDraws() {
     let players = Array.from(Connection.all.values())
     for (let player of players) {
       let card = this.cardCopy(player.name);
