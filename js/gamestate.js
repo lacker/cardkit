@@ -82,7 +82,7 @@ class GameState {
     this.winner = data.winner || null
 
     // set this to true for plenty of mana, for testing
-    this.godMode = true
+    this.godMode = false
 
   }
 
