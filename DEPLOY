@@ -6,6 +6,12 @@ ssh in there, cd to cardkit
 
 `git pull` to update the code
 
+`npm install` in case you need new node dependencies
+
 `npm run build` to update the static files for nginx
 
-`./runserver` to run the node server - although it should be nohupped so normally you don't need to do this, only if you want to test out a server change.
+to run the node server, first kill any running one.
+check with `ps aux | grep server` to see what's running.
+use `kill -9 <process id>` to kill things.
+
+`nohup ./runserver &` runs the node server in the background.
