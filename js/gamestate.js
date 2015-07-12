@@ -1,9 +1,8 @@
-// The state of a ccg type card game.
+/* 
+   The state of a ccg type card game.
+*/
 
 require("seedrandom")
-
-// some json for cards
-import {CARDS} from './cards.js';
 
 // The state of a single player.
 class PlayerState {
@@ -89,12 +88,12 @@ class GameState {
 
   // The player whose turn it is
   current() {
-    return this.players[this.turn]
+    return this.players[0]
   }
 
   // The player whose turn it isn't
   opponent() {
-    return this.players[1 - this.turn]
+    return this.players[1]
   }
 
   // Each type of move has a JSON representation.
@@ -125,9 +124,11 @@ class GameState {
         the possible container types are board, hand, trash, 
         as well as the opponentFoo for each type
       */
-      this.selectCard(move.index, move.containerType)
+      this.selectCard(move.index, move.containerType, move.player)
     } else if (move.op == "selectOpponent") {
       this.selectOpponent()
+    } else if (move.op == "draw") {
+      this.draw(move.player, move.card)
     } else if (move.op == "endTurn") {
       this.endTurn()
     } else {
@@ -156,6 +157,9 @@ class GameState {
       return
     }
 
+    // always your turn in spacetime
+    this.turn = 0    
+
     this._started = true
     this.beginTurn()
   }
@@ -179,61 +183,78 @@ class GameState {
   }
 
   // containerType can be board or hand
-  selectCard(index, containerType) {
-    if (!this.selectedCard) {
-      this.setSelectedCard(index, containerType)
+  selectCard(index, containerType, selectingPlayerName) {
+    let usePlayer
+    let opponent
+    if (selectingPlayerName == this.current().name) {
+      usePlayer = this.current()
+      opponent = this.opponent()
+    } else {
+      usePlayer = this.opponent()
+      opponent = this.current()
+    }
+
+    if (!usePlayer.selectedCard) {
+      this.setSelectedCard(index, containerType, usePlayer)
       return;
     }
     let card;
     if (containerType == "board") {
       // select a card in current player's board
-      card = this.current().getBoard(index)
-      if (card == this.selectedCard) {
-        this.selectedCard = null;
-        this.face(index)        
-      }
+      card = usePlayer.getBoard(index)      
+      if (card == usePlayer.selectedCard) {
+        usePlayer.selectedCard = null;
+        this.face(index, usePlayer)        
+        return;
+      } 
+      card = opponent.getBoard(index)
+      if (card == opponent.selectedCard) {
+        opponent.selectedCard = null;
+        this.face(index, opponent)        
+      } 
+
     } else if (containerType == "hand") { 
       // select a card in current player's hand
-      card = this.current().getHand(index)
-      if (card == this.selectedCard) {
-        this.selectedCard = null;
-        this.play(index)
+      card = usePlayer.getHand(index)
+      if (card == usePlayer.selectedCard) {
+        usePlayer.selectedCard = null;
+        this.play(index, usePlayer)
       }
     } else if (containerType == "opponentBoard") {
       // select a card in opponent's board
 
       // check for attack from board
-      let boardIndex = this.current().board.indexOf(this.selectedCard);
+      let boardIndex = usePlayer.board.indexOf(usePlayer.selectedCard);
       if (boardIndex != -1) {
-        this.selectedCard = null;
-        this.attack(boardIndex, index);
+        usePlayer.selectedCard = null;
+        this.attack(boardIndex, index, usePlayer);
       }
 
       // check for action card from hand
-      let handIndex = this.current().hand.indexOf(this.selectedCard);
+      let handIndex = usePlayer.hand.indexOf(usePlayer.selectedCard);
       if (handIndex != -1) {
-        this.selectedCard = null;
-        this.playOn(handIndex, index)
+        usePlayer.selectedCard = null;
+        this.playOn(handIndex, index, usePlayer)
       }        
     }
   }
 
   // containerType can be board or hand
-  setSelectedCard(index, containerType) {
+  setSelectedCard(index, containerType, player) {
     if (containerType == "board") {
-      let card = this.current().getBoard(index);
-      this.selectedCard = card.canAct ? card : null;
+      let card = player.getBoard(index);
+      player.selectedCard = card.canAct ? card : null;
     } else if (containerType == "hand") { 
-      let card = this.current().getHand(index);
-      if (this.current().mana >= card.cost) {
-        this.selectedCard = card
+      let card = player.getHand(index);
+      if (player.mana >= card.cost) {
+        player.selectedCard = card
       }
     }
   }
 
   // select the opponent to cast a spell or target with attack
   selectOpponent() {
-    if (!this.selectedCard) {
+    if (!this.current().selectedCard) {
       return;
     }
     let boardIndex = this.current().board.indexOf(this.selectedCard);
@@ -247,22 +268,22 @@ class GameState {
   }    
 
   // from and to are indices into board
-  attack(from, to) {
-    let attacker = this.current().getBoard(from)
-    let defender = this.opponent().getBoard(to)
+  attack(from, to, player) {
+    let opponent = this.current().name == player.name ? this.opponent() : this.current()
+    let attacker = player.getBoard(from)
+    let defender = opponent.getBoard(to)
     attacker.defense -= defender.attack
     defender.defense -= attacker.attack
     attacker.canAct = false;
+    attacker.needsAttackDisplay = true;
     this.resolveDamage()
   }
 
   // Plays a card from the hand.
   // Throws if there's not enough mana.
   // from is an index of the hand
-  play(from) {
-    let player = this.current()
+  play(from, player) {
     let card = player.getHand(from)
-
     if (card.requiresTarget) {
       // Player has re-selected this.selectedCard in their hand.
       // In this case, this.selectedCard requiresTarget, 
@@ -309,8 +330,7 @@ class GameState {
   // Plays a card from the hand, onto a target.
   // Throws if there's not enough mana.
   // from is an index of the hand
-  playOn(from, to) {
-    let player = this.current()
+  playOn(from, to, player) {
     let card = player.getHand(from)
     if (player.mana < card.cost) {
       throw `need ${card.cost} mana but only have ${player.mana}`
@@ -326,8 +346,8 @@ class GameState {
   // Plays a card from the hand, onto a player.
   // Throws if there's not enough mana.
   // from is an index of the hand
-  playFace(from) {
-    let player = this.current()
+  playFace(from, player) {
+    let opponent = this.current().name == player.name ? this.opponent() : this.current()
     let card = player.getHand(from)
     if (player.mana < card.cost) {
       throw `need ${card.cost} mana but only have ${player.mana}`
@@ -336,7 +356,7 @@ class GameState {
 
     // for direct damage
     if (card.damage) { 
-      this.opponent().life -= card.damage
+      opponent.life -= card.damage
       this.resolveDamage()
     }
   }
@@ -354,36 +374,33 @@ class GameState {
   }
 
   // Attacks face
-  face(from) {
-    let attacker = this.current().getBoard(from)
-    this.opponent().life -= attacker.attack
+  face(from, player) {
+    let opponent = this.current().name == player.name ? this.opponent() : this.current()
+    let attacker = player.getBoard(from)
+    opponent.life -= attacker.attack
     attacker.canAct = false
-    this.selectedCard = null;
+    player.selectedCard = null;
     this.resolveDamage()
   }
 
-  draw() {
-    let card = CARDS[Math.floor(this.rng() * CARDS.length)]
-    // Make a copy so that we can edit this card
-    let copy = {}
-    for (let key in card) {
-      copy[key] = card[key]
+  draw(player, card) {
+    for (let p of this.players) {
+      if (p.name == player.name) {
+        p.hand.push(card) 
+        break;   
+      }
     }
-    this.drawCard(copy)
-  }
-
-  drawCard(cardToDraw) {
-    cardToDraw.canAct = false; 
-    this.current().hand.push(cardToDraw)    
   }
 
   beginTurn() {
     this.current().maxMana = Math.min(1 + this.current().maxMana, 10)
     if (this.godMode) {
       this.current().maxMana = 99;
+      this.opponent().maxMana = 99;
     }
     this.current().mana = this.current().maxMana
-    this.draw()
+    this.opponent().mana = this.opponent().maxMana
+    // this.draw()
   }
 
   endTurn() {
@@ -394,7 +411,14 @@ class GameState {
         card.canAct = true;
       }      
     }
-    this.turn = 1 - this.turn
+    if (this.opponent().board.length) {
+      for (let i=0;i<this.opponent().board.length;i++) {
+        let card = this.opponent().board[i];
+        card.canAct = true;
+      }      
+    }
+    // your turn never ends in spacetime
+    // this.turn = 1 - this.turn
   }
 
   log() {

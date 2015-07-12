@@ -5,11 +5,11 @@ let LobbyView = React.createClass({
     render() {
        return (
         <div className="lobby-container">
-          <h1>Welcome to Open Spells</h1>
+          <h1>Welcome to Spacetime</h1>
           <div className="find-game-button" onClick={this.findGame}>
             Find a Game
           </div>
-          <img className="home-image" src="img/crossed-swords.svg" />
+          <img className="home-image" src="img/galaxy-color-shadow.svg" />
         </div>
     );
   },
