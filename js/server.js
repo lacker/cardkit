@@ -111,8 +111,8 @@ class Connection {
   // in spacetime, we simul-draw!
   tickTurn() {
     this.everyoneDraws()
-    this.broadcast({ op: "endTurn", 'player':'no_player' })
-    this.broadcast({ op: "beginTurn", 'player':'no_player'  })
+    this.broadcast({ op: "endTurn", "player": "no_player" })
+    this.broadcast({ op: "beginTurn", "player": "no_player" })
   }
 
   // in spacetime, we simul-draw!
@@ -124,9 +124,6 @@ class Connection {
       this.broadcast(draw)
     }
   }
-
-
-  
 
   cardCopy(player) {
     let card = CARDS[Math.floor(this.rng() * CARDS.length)]         
@@ -140,7 +137,6 @@ class Connection {
     copy.player = player;
     return copy
   }
-
 
   close() {
     console.log(`disconnected from ${this.address}`)
