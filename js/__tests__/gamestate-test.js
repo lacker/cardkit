@@ -66,4 +66,33 @@ describe("GameState", function() {
 
   })
 
+  it("direct damage kills appropriate sized creature", function() {
+    let state = new GameState({name: "bob"})
+
+    state.startGame(["bob", "eve"], 123)
+
+    // draw the simplest 2/2
+    state.draw({"name":"bob"}, 
+               {"cost":0, "permanent": true, "attack": 2, "defense": 2})
+
+    // play last card drawn
+    state.selectCard(0, "hand", "bob")
+    state.selectCard(0, "hand", "bob")
+
+    // go to next turn
+    state.makeMove({op: "refreshCards"})
+
+    // get a card that implements direct damage
+    state.draw({"name":"eve"}, {"damage":2, "cost":0})    
+    // play last card drawn
+    state.selectCard(0, "hand", "eve")
+    state.selectCard(0, "opponentBoard", "eve")
+
+    // permanent leaves board and goes to trash
+    expect(state.opponent().board.length == 0).toEqual(true)
+    expect(state.opponent().trash.length == 1).toEqual(true)
+
+  })
+
+
 })

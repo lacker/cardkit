@@ -163,7 +163,9 @@ class GameState {
   }
 
   resolveDamage() {
-    for (let player of this.players) {
+
+    for (var i=0;i<this.players.length;i++) {
+      var player = this.players[i]
       player.board = player.board.filter(card => card.defense > 0)
     }
     if (this.current().life <= 0) {
@@ -362,7 +364,7 @@ class GameState {
 
     // for direct damage
     if (card.damage) { 
-      this.damage(to, card.damage)
+      this.damage(to, card.damage, player)
     }
   }
 
@@ -385,8 +387,14 @@ class GameState {
   }
 
   // for direct damage spells
-  damage(to, amount) {
-    let target = this.opponent().getBoard(to)
+  damage(to, amount, player) {
+    let usePlayer
+    if (player == this.current()) {
+      usePlayer = this.opponent()
+    } else {
+      usePlayer = this.current()
+    }
+    let target = usePlayer.getBoard(to)
     target.defense -= amount
     this.resolveDamage()
   }
