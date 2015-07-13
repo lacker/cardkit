@@ -18,7 +18,9 @@
 
 // some json for cards
 import {CARDS} from './cards.js';
+
 require("seedrandom")
+Math.seedrandom()
 
 const WebSocketServer = require("ws").Server
 
