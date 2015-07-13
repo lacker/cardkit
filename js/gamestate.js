@@ -40,6 +40,7 @@ class PlayerState {
   // Throws if the index is bad
   getHand(index) {
     if (index >= this.hand.length) {
+      return -1
       throw (this.name + "'s hand has no card at index " + index)
     }
     return this.hand[index]
@@ -48,6 +49,7 @@ class PlayerState {
   // Throws if the index is bad
   getBoard(index) {
     if (index >= this.board.length) {
+      return -1
       throw (this.name + "'s board has no card at index " + index)
     }
     return this.board[index]
