@@ -69,13 +69,6 @@ class GameState {
     this.name = data.name
     this._started = data._started || false
 
-    // Index of whose turn it is.
-    // The human at the controls is always 0 here.
-    // We just start off with it not being our turn so that the UI
-    // will be disabled - when we actually start the game it may or
-    // may not be our turn.
-    this.turn = (data.turn == null) ? 1 : data.turn
-
     let playerInfo = data.players || [{name: this.name},
                                       {name: "waiting..."}]
     this.players = playerInfo.map(info => new PlayerState(info))
@@ -154,23 +147,15 @@ class GameState {
   startGame(players, seed) {
     this.rng = new Math.seedrandom(seed)
     if (players[0] == this.name) {
-      // We go first
-      console.log(`we, ${this.name}, go first`)
-      this.turn = 0
-     
       this.players[1].name = players[1]
     } else if (players[1] == this.name) {
-      // We go second
-      console.log(`we, ${this.name}, go second`)
-      this.turn = 1
-
       this.players[1].name = players[0]
     } else {
       console.log(`a game started without me, ${this.name}`)
       return
     }
+
     // always your turn in spacetime
-    this.turn = 0    
     this._started = true
     this.beginTurn()
   }
