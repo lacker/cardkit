@@ -67,13 +67,6 @@ class GameState {
     this.name = data.name
     this._started = data._started || false
 
-    // Index of whose turn it is.
-    // The human at the controls is always 0 here.
-    // We just start off with it not being our turn so that the UI
-    // will be disabled - when we actually start the game it may or
-    // may not be our turn.
-    this.turn = (data.turn == null) ? 1 : data.turn
-
     let playerInfo = data.players || [{name: this.name},
                                       {name: "waiting..."}]
     this.players = playerInfo.map(info => new PlayerState(info))
@@ -84,21 +77,23 @@ class GameState {
     // set this to true for plenty of mana, for testing
     this.godMode = false
 
+    // A list of all moves we have ever made on the game state
+    this.history = []
   }
 
-  // The player whose turn it is
+  // The player who's playing locally
   current() {
     return this.players[0]
   }
 
-  // The player whose turn it isn't
+  // The remote player
   opponent() {
     return this.players[1]
   }
 
   // Each type of move has a JSON representation.
   //
-  // The useful keys are:
+  // The useful keys include:
   // op: the method name. beginTurn, selectCard, selectOpponent, endTurn
   // from: the index a card is coming from
   // to: the index a card is going to
@@ -137,29 +132,30 @@ class GameState {
       console.log("ignoring op: " + move.op)
       return false
     }
+
+    this.history.push(move)
     return true
+  }
+
+  logHistory() {
+    console.log("" + this.history.length + " moves in history.")
+    for (let move of this.history) {
+      console.log(JSON.stringify(move))
+    }
   }
 
   startGame(players, seed) {
     this.rng = new Math.seedrandom(seed)
     if (players[0] == this.name) {
-      // We go first
-      console.log(`we, ${this.name}, go first`)
-      this.turn = 0
-     
       this.players[1].name = players[1]
     } else if (players[1] == this.name) {
-      // We go second
-      console.log(`we, ${this.name}, go second`)
-      this.turn = 1
-
       this.players[1].name = players[0]
     } else {
       console.log(`a game started without me, ${this.name}`)
       return
     }
+
     // always your turn in spacetime
-    this.turn = 0    
     this._started = true
     this.beginTurn()
   }
@@ -406,9 +402,8 @@ class GameState {
     this.resolveDamage()
   }
 
-
   draw(player, card) {
-    for (var i=0;i<this.players.length;i++) {
+    for (var i = 0; i < this.players.length; i++) {
       var p = this.players[i]
       if (p.name == player.name) {
         p.hand.push(card) 
@@ -420,31 +415,30 @@ class GameState {
   beginTurn() {
     this.current().maxMana = Math.min(1 + this.current().maxMana, 10)
     this.opponent().maxMana = Math.min(1 + this.current().maxMana, 10)
+
     if (this.godMode) {
       this.current().maxMana = 99;
       this.opponent().maxMana = 99;
     }
+
     this.current().mana = this.current().maxMana
     this.opponent().mana = this.opponent().maxMana
-    // this.draw()
   }
 
   endTurn() {
     this.selectedCard = null;
     if (this.current().board.length) {
-      for (let i=0;i<this.current().board.length;i++) {
+      for (let i = 0; i < this.current().board.length; i++) {
         let card = this.current().board[i];
         card.canAct = true;
       }      
     }
     if (this.opponent().board.length) {
-      for (let i=0;i<this.opponent().board.length;i++) {
+      for (let i = 0; i < this.opponent().board.length; i++) {
         let card = this.opponent().board[i];
         card.canAct = true;
       }      
     }
-    // your turn never ends in spacetime
-    // this.turn = 1 - this.turn
   }
 
   resign(move) {
@@ -453,10 +447,6 @@ class GameState {
     this.resolveDamage()
   }
 
-  log() {
-    console.log("It is player " + this.turn + "'s turn")
-    console.log(this.players)
-  }
 }
 
 module.exports = GameState;

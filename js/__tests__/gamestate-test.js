@@ -10,7 +10,7 @@ describe("GameState", function() {
   it("can be serialized", function() {
     let state = new GameState({name: "bob"})
     let data = JSON.stringify(state)
-    expect(data).toEqual('{"name":"bob","_started":false,"turn":1,"players":[{"name":"bob","hand":[],"board":[],"trash":[],"life":30,"mana":0,"maxMana":0},{"name":"waiting...","hand":[],"board":[],"trash":[],"life":30,"mana":0,"maxMana":0}],"winner":null,"godMode":false}')
+    expect(data).toEqual('{"name":"bob","_started":false,"players":[{"name":"bob","hand":[],"board":[],"trash":[],"life":30,"mana":0,"maxMana":0},{"name":"waiting...","hand":[],"board":[],"trash":[],"life":30,"mana":0,"maxMana":0}],"winner":null,"godMode":false,"history":[]}')
   })
 
   it("can be deserialized", function() {
