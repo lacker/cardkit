@@ -168,6 +168,7 @@ class GameState {
       var player = this.players[i]
       player.board = player.board.filter(card => card.defense > 0)
     }
+
     if (this.current().life <= 0) {
       this.winner = this.opponent().name
     } else if (this.opponent().life <= 0) {
