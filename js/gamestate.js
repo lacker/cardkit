@@ -322,9 +322,16 @@ class GameState {
     // Finally, play any abilities the card has.
 
     if (card.kill) { 
-      if (this.opponent().board.length) {
-        let randomIndex = Math.floor(Math.random() * (this.opponent().board.length-1));
-        this.opponent().boardToTrash(randomIndex)
+      let usePlayer
+      if (player == this.current()) {
+        usePlayer = this.opponent()
+      } else {
+        usePlayer = this.current()
+      }
+
+      if (usePlayer.board.length) {
+        let randomIndex = this.rng() * (usePlayer.board.length-1);
+        usePlayer.boardToTrash(randomIndex)
       }
     }
  
@@ -420,7 +427,7 @@ class GameState {
 
     this.current().mana = this.current().maxMana
     this.opponent().mana = this.opponent().maxMana
-    
+
     this.selectedCard = null;
     if (this.current().board.length) {
       for (let i = 0; i < this.current().board.length; i++) {
