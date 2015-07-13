@@ -423,6 +423,7 @@ class GameState {
 
   beginTurn() {
     this.current().maxMana = Math.min(1 + this.current().maxMana, 10)
+    this.opponent().maxMana = Math.min(1 + this.current().maxMana, 10)
     if (this.godMode) {
       this.current().maxMana = 99;
       this.opponent().maxMana = 99;
