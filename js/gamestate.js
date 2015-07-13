@@ -442,7 +442,7 @@ class GameState {
   }
 
   resign(move) {
-    let player = this.current().name == move.player ? this.current() : this.opponet()
+    let player = this.current().name == move.player ? this.current() : this.opponent()
     player.life = 0
     this.resolveDamage()
   }
