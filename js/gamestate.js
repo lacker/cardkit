@@ -169,14 +169,14 @@ class GameState {
 
       // trash any dead creatures
       var cardsToRemove = [];
-      for (var k=0;k<player.board.length;k++) {
-        var card = player.board[k]
+      for (var j=0;j<player.board.length;j++) {
+        var card = player.board[j]
         if (card.defense <= 0) {
           cardsToRemove.push(card)
         }
       }
-      for (var l=0;l<cardsToRemove.length;l++) {
-        var card = cardsToRemove[l]
+      for (var j=0;j<cardsToRemove.length;j++) {
+        var card = cardsToRemove[j]
         player.trash.push(card)
       }
       player.board = player.board.filter(c => cardsToRemove.indexOf( c ) < 0)
@@ -203,37 +203,37 @@ class GameState {
 
   // containerType can be board or hand
   selectCard(index, containerType, selectingPlayerName) {
-    let usePlayer
+    let activePlayer
     let opponent
     if (selectingPlayerName == this.current().name) {
-      usePlayer = this.current()
+      activePlayer = this.current()
       opponent = this.opponent()
     } else {
-      usePlayer = this.opponent()
+      activePlayer = this.opponent()
       opponent = this.current()
     }
-    if (!usePlayer.selectedCard) {
-      this.setSelectedCard(index, containerType, usePlayer)
+    if (!activePlayer.selectedCard) {
+      this.setSelectedCard(index, containerType, activePlayer)
       return;
     }
     let card;
     if (containerType == "board") {
-      if (usePlayer.name == selectingPlayerName) {
-        this.faceForPlayer(usePlayer, index)
+      if (activePlayer.name == selectingPlayerName) {
+        this.faceForPlayer(activePlayer, index)
       } else {
         this.faceForPlayer(opponent, index)
       }
     } else if (containerType == "hand") { 
-      if (usePlayer.name == selectingPlayerName) {
-        this.playForPlayer(usePlayer, index)
+      if (activePlayer.name == selectingPlayerName) {
+        this.playForPlayer(activePlayer, index)
       } else {
         this.playForPlayer(opponent, index)
       }
     } else if (containerType == "opponentBoard") {
       // select a card in opponent's board
-      if (usePlayer.name == selectingPlayerName) {
-        this.attackForPlayerIfBoardSelected(usePlayer, index)
-        this.playOnForPlayerIfHandSelected(usePlayer, index)
+      if (activePlayer.name == selectingPlayerName) {
+        this.attackForPlayerIfBoardSelected(activePlayer, index)
+        this.playOnForPlayerIfHandSelected(activePlayer, index)
       } else {
         this.attackForPlayerIfBoardSelected(opponent, index)
         this.playOnForPlayerIfHandSelected(opponent, index)
@@ -289,23 +289,23 @@ class GameState {
 
   // select the opponent to cast a spell or target with attack
   selectOpponent(player) {
-    let usePlayer
+    let activePlayer
     if (player == this.current().name) {
-      usePlayer = this.current()
+      activePlayer = this.current()
     } else {
-      usePlayer = this.opponent()
+      activePlayer = this.opponent()
     }
 
-    if (!usePlayer.selectedCard) {
+    if (!activePlayer.selectedCard) {
       return;
     }
-    let boardIndex = usePlayer.board.indexOf(usePlayer.selectedCard);
+    let boardIndex = activePlayer.board.indexOf(activePlayer.selectedCard);
     if (boardIndex != -1) {
-      this.face(boardIndex, usePlayer);
+      this.face(boardIndex, activePlayer);
     }
-    let handIndex = usePlayer.hand.indexOf(usePlayer.selectedCard);
+    let handIndex = activePlayer.hand.indexOf(activePlayer.selectedCard);
     if (handIndex != -1) {
-      this.playFace(handIndex, usePlayer)
+      this.playFace(handIndex, activePlayer)
     }        
   }    
 
@@ -347,16 +347,16 @@ class GameState {
     // Finally, play any abilities the card has.
 
     if (card.kill) { 
-      let usePlayer
+      let activePlayer
       if (player == this.current()) {
-        usePlayer = this.opponent()
+        activePlayer = this.opponent()
       } else {
-        usePlayer = this.current()
+        activePlayer = this.current()
       }
 
-      if (usePlayer.board.length) {
-        let randomIndex = this.rng() * (usePlayer.board.length-1);
-        usePlayer.boardToTrash(randomIndex)
+      if (activePlayer.board.length) {
+        let randomIndex = this.rng() * (activePlayer.board.length-1);
+        activePlayer.boardToTrash(randomIndex)
       }
     }
  
@@ -411,13 +411,13 @@ class GameState {
 
   // for direct damage spells
   damage(to, amount, player) {
-    let usePlayer
+    let activePlayer
     if (player == this.current()) {
-      usePlayer = this.opponent()
+      activePlayer = this.opponent()
     } else {
-      usePlayer = this.current()
+      activePlayer = this.current()
     }
-    let target = usePlayer.getBoard(to)
+    let target = activePlayer.getBoard(to)
     target.defense -= amount
     this.resolveDamage()
   }
