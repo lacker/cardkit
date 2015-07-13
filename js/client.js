@@ -84,6 +84,7 @@ class Client {
     }
 
     if (this.game.makeMove(move)) {
+      console.log("making move " + JSON.stringify(move))
       this.buffer = []
       this.forceUpdate()
       this.nextID++

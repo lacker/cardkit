@@ -213,7 +213,7 @@ class GameState {
         } 
       }
     } else if (containerType == "hand") { 
-      if(usePlayer.name == selectingPlayerName) {
+      if (usePlayer.name == selectingPlayerName) {
         // select a card in current player's hand
         card = usePlayer.getHand(index)
         if (card == usePlayer.selectedCard) {
@@ -423,6 +423,7 @@ class GameState {
 
   beginTurn() {
     this.current().maxMana = Math.min(1 + this.current().maxMana, 10)
+    this.opponent().maxMana = Math.min(1 + this.current().maxMana, 10)
     if (this.godMode) {
       this.current().maxMana = 99;
       this.opponent().maxMana = 99;
