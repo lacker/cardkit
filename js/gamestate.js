@@ -40,7 +40,6 @@ class PlayerState {
   // Throws if the index is bad
   getHand(index) {
     if (index >= this.hand.length) {
-      return -1
       throw (this.name + "'s hand has no card at index " + index)
     }
     return this.hand[index]
@@ -49,7 +48,6 @@ class PlayerState {
   // Throws if the index is bad
   getBoard(index) {
     if (index >= this.board.length) {
-      return -1
       throw (this.name + "'s board has no card at index " + index)
     }
     return this.board[index]
@@ -121,6 +119,8 @@ class GameState {
 
     if (move.op == "beginTurn") {
       this.beginTurn()
+    } else if (move.op == "resign") {
+      this.resign(move)
     } else if (move.op == "selectCard") {
       /*
         the possible container types are board, hand, trash, 
@@ -445,6 +445,12 @@ class GameState {
     }
     // your turn never ends in spacetime
     // this.turn = 1 - this.turn
+  }
+
+  resign(move) {
+    let player = this.current().name == move.player ? this.current() : this.opponet()
+    player.life = 0
+    this.resolveDamage()
   }
 
   log() {

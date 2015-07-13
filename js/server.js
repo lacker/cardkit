@@ -68,6 +68,8 @@ class Connection {
       if (message.seeking) {
         Connection.waiting.set(this.name, this)
       }
+    } else if (message.op == "resign") {
+      clearInterval(this.drawLoop)
     } else if (message.gameID) {
       // Give the message an id depending on its game
       if (!Connection.games.has(message.gameID)) {

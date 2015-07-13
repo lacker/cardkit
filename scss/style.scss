@@ -219,19 +219,22 @@ h2 {
 */
 
 // the main End Turn button that always shows in the game
-.end-turn-button {
-  // it's never time to end the turn in spacetime!
-  display: none; 
+.end-turn-button, .resign-button {
   width: $end-turn-button-width;
   padding:$default-padding;
-  background-color: $palette-four;
-  color:gray;
   border-radius:6px;
   border: 1px solid;
   position:relative;
   bottom:$in-play-height/2 - 1vh;
-  pointer-events:none;
   margin-left: $in-play-width + 17vw + 1vw;
+}
+
+.end-turn-button {
+  // it's never time to end the turn in spacetime!
+  display: none; 
+  pointer-events:none;
+  background-color: $palette-four;
+  color:gray;
 }
 
 // highlight end of turn button for active player
