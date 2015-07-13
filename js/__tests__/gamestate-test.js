@@ -20,23 +20,19 @@ describe("GameState", function() {
 
     expect(state2.name).toEqual(state.name)
     expect(state2._started).toEqual(state._started)
-    expect(state2.turn).toEqual(state.turn)
     expect(state2.winner).toEqual(state.winner)
   })
 
   it("retains card function across reserialization", function() {
     let state = new GameState({name: "bob"})
     state.startGame(["bob", "eve"], 123)
-    state.makeMove({op: "endTurn"})
-    state.makeMove({op: "beginTurn"})
-    state.makeMove({op: "endTurn"})
-    state.makeMove({op: "beginTurn"})
+    state.makeMove({op: "refreshCards"})
+    state.makeMove({op: "refreshCards"})
     let data = JSON.stringify(state)
     let state2 = new GameState(JSON.parse(data))
 
     expect(state2.name).toEqual(state.name)
     expect(state2._started).toEqual(state._started)
-    expect(state2.turn).toEqual(state.turn)
     expect(state2.winner).toEqual(state.winner)
 
   })
@@ -56,8 +52,7 @@ describe("GameState", function() {
     expect(state.current().board.length == 1).toEqual(true)
 
     // go to next turn
-    state.makeMove({op: "endTurn"})
-    state.makeMove({op: "beginTurn"})
+    state.makeMove({op: "refreshCards"})
 
     // get a card that implements kill
     state.draw({"name":"eve"}, {"kill":true, "cost":0})    
