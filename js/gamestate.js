@@ -411,7 +411,7 @@ class GameState {
 
   refreshCards() {
     this.current().maxMana = Math.min(1 + this.current().maxMana, 10)
-    this.opponent().maxMana = Math.min(1 + this.current().maxMana, 10)
+    this.opponent().maxMana = Math.min(1 + this.opponent().maxMana, 10)
 
     if (this.godMode) {
       this.current().maxMana = 99;
@@ -420,6 +420,7 @@ class GameState {
 
     this.current().mana = this.current().maxMana
     this.opponent().mana = this.opponent().maxMana
+    
     this.selectedCard = null;
     if (this.current().board.length) {
       for (let i = 0; i < this.current().board.length; i++) {
