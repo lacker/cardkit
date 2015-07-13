@@ -238,7 +238,7 @@ class GameState {
   }
 
   faceForPlayer(player, index) {
-    card = player.getBoard(index)      
+    let card = player.getBoard(index)      
     if (card == player.selectedCard) {
       player.selectedCard = null;
       this.face(index, player)        
@@ -246,7 +246,7 @@ class GameState {
   }
 
   playForPlayer(player, index) {
-    card = player.getHand(index)
+    let card = player.getHand(index)
     if (card == player.selectedCard) {
       player.selectedCard = null;
       this.play(index, player)
