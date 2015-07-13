@@ -273,7 +273,7 @@ class GameState {
       usePlayer = this.opponent()
     }
 
-    if (usePlayer.selectedCard) {
+    if (!usePlayer.selectedCard) {
       return;
     }
     let boardIndex = usePlayer.board.indexOf(usePlayer.selectedCard);
