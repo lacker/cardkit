@@ -203,37 +203,37 @@ class GameState {
 
   // containerType can be board or hand
   selectCard(index, containerType, selectingPlayerName) {
-    let activePlayer
+    let actingPlayer
     let opponent
     if (selectingPlayerName == this.current().name) {
-      activePlayer = this.current()
+      actingPlayer = this.current()
       opponent = this.opponent()
     } else {
-      activePlayer = this.opponent()
+      actingPlayer = this.opponent()
       opponent = this.current()
     }
-    if (!activePlayer.selectedCard) {
-      this.setSelectedCard(index, containerType, activePlayer)
+    if (!actingPlayer.selectedCard) {
+      this.setSelectedCard(index, containerType, actingPlayer)
       return;
     }
     let card;
     if (containerType == "board") {
-      if (activePlayer.name == selectingPlayerName) {
-        this.faceForPlayer(activePlayer, index)
+      if (actingPlayer.name == selectingPlayerName) {
+        this.faceForPlayer(actingPlayer, index)
       } else {
         this.faceForPlayer(opponent, index)
       }
     } else if (containerType == "hand") { 
-      if (activePlayer.name == selectingPlayerName) {
-        this.playForPlayer(activePlayer, index)
+      if (actingPlayer.name == selectingPlayerName) {
+        this.playForPlayer(actingPlayer, index)
       } else {
         this.playForPlayer(opponent, index)
       }
     } else if (containerType == "opponentBoard") {
       // select a card in opponent's board
-      if (activePlayer.name == selectingPlayerName) {
-        this.attackForPlayerIfBoardSelected(activePlayer, index)
-        this.playOnForPlayerIfHandSelected(activePlayer, index)
+      if (actingPlayer.name == selectingPlayerName) {
+        this.attackForPlayerIfBoardSelected(actingPlayer, index)
+        this.playOnForPlayerIfHandSelected(actingPlayer, index)
       } else {
         this.attackForPlayerIfBoardSelected(opponent, index)
         this.playOnForPlayerIfHandSelected(opponent, index)
@@ -289,23 +289,23 @@ class GameState {
 
   // select the opponent to cast a spell or target with attack
   selectOpponent(player) {
-    let activePlayer
+    let actingPlayer
     if (player == this.current().name) {
-      activePlayer = this.current()
+      actingPlayer = this.current()
     } else {
-      activePlayer = this.opponent()
+      actingPlayer = this.opponent()
     }
 
-    if (!activePlayer.selectedCard) {
+    if (!actingPlayer.selectedCard) {
       return;
     }
-    let boardIndex = activePlayer.board.indexOf(activePlayer.selectedCard);
+    let boardIndex = actingPlayer.board.indexOf(actingPlayer.selectedCard);
     if (boardIndex != -1) {
-      this.face(boardIndex, activePlayer);
+      this.face(boardIndex, actingPlayer);
     }
-    let handIndex = activePlayer.hand.indexOf(activePlayer.selectedCard);
+    let handIndex = actingPlayer.hand.indexOf(actingPlayer.selectedCard);
     if (handIndex != -1) {
-      this.playFace(handIndex, activePlayer)
+      this.playFace(handIndex, actingPlayer)
     }        
   }    
 
@@ -347,16 +347,16 @@ class GameState {
     // Finally, play any abilities the card has.
 
     if (card.kill) { 
-      let activePlayer
+      let actingPlayer
       if (player == this.current()) {
-        activePlayer = this.opponent()
+        actingPlayer = this.opponent()
       } else {
-        activePlayer = this.current()
+        actingPlayer = this.current()
       }
 
-      if (activePlayer.board.length) {
-        let randomIndex = this.rng() * (activePlayer.board.length-1);
-        activePlayer.boardToTrash(randomIndex)
+      if (actingPlayer.board.length) {
+        let randomIndex = this.rng() * (actingPlayer.board.length-1);
+        actingPlayer.boardToTrash(randomIndex)
       }
     }
  
@@ -411,13 +411,13 @@ class GameState {
 
   // for direct damage spells
   damage(to, amount, player) {
-    let activePlayer
+    let actingPlayer
     if (player == this.current()) {
-      activePlayer = this.opponent()
+      actingPlayer = this.opponent()
     } else {
-      activePlayer = this.current()
+      actingPlayer = this.current()
     }
-    let target = activePlayer.getBoard(to)
+    let target = actingPlayer.getBoard(to)
     target.defense -= amount
     this.resolveDamage()
   }
