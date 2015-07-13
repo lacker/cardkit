@@ -94,7 +94,7 @@ class GameState {
   // Each type of move has a JSON representation.
   //
   // The useful keys include:
-  // op: the method name. beginTurn, selectCard, selectOpponent, endTurn
+  // op: the method name. selectCard, selectOpponent, refreshCards
   // from: the index a card is coming from
   // to: the index a card is going to
   //
@@ -112,8 +112,8 @@ class GameState {
       return false
     }
 
-    if (move.op == "beginTurn") {
-      this.beginTurn()
+    if (move.op == "refreshCards") {
+      this.refreshCards()
     } else if (move.op == "resign") {
       this.resign(move)
     } else if (move.op == "selectCard") {
@@ -126,8 +126,6 @@ class GameState {
       this.selectOpponent(move.player)
     } else if (move.op == "draw") {
       this.draw(move.player, move.card)
-    } else if (move.op == "endTurn") {
-      this.endTurn()
     } else {
       console.log("ignoring op: " + move.op)
       return false
@@ -157,7 +155,7 @@ class GameState {
 
     // always your turn in spacetime
     this._started = true
-    this.beginTurn()
+    this.refreshCards()
   }
 
   started() {
@@ -330,10 +328,9 @@ class GameState {
       }
     }
  
-    if (card.endTurn) { 
-      for (let i = 0; i < card.endTurn; i++) {
-        this.endTurn()
-        this.beginTurn()
+    if (card.refreshCards) { 
+      for (let i = 0; i < card.refreshCards; i++) {
+        this.refreshCards()
       }
     }
 
@@ -412,7 +409,7 @@ class GameState {
     }
   }
 
-  beginTurn() {
+  refreshCards() {
     this.current().maxMana = Math.min(1 + this.current().maxMana, 10)
     this.opponent().maxMana = Math.min(1 + this.current().maxMana, 10)
 
@@ -423,9 +420,6 @@ class GameState {
 
     this.current().mana = this.current().maxMana
     this.opponent().mana = this.opponent().maxMana
-  }
-
-  endTurn() {
     this.selectedCard = null;
     if (this.current().board.length) {
       for (let i = 0; i < this.current().board.length; i++) {
