@@ -27,7 +27,6 @@ let wss = new WebSocketServer({port: 9090})
 class Connection {
   constructor(ws) {
     this.ws = ws
-    this.rng = new Math.seedrandom(1337)
     this.name = null
     this.address = `${ws._socket.remoteAddress}:${ws._socket.remotePort}`
     console.log(`connected to ${this.address}`)
@@ -122,7 +121,7 @@ class Connection {
   }
 
   cardCopy(player) {
-    let card = CARDS[Math.floor(this.rng() * CARDS.length)]         
+    let card = CARDS[Math.floor(Math.random() * CARDS.length)]         
     // Make a copy so that we can edit this card        
     let copy = {}         
     for (let key in card) {
