@@ -42,6 +42,7 @@ let GameView = React.createClass({
           </div>
           
           <div className={cssEndTurn} onClick={this.endTurn}>End Turn</div>
+          <div className="resign-button" onClick={this.resign}>Resign</div>
 
           {/* HOME PLAYER */}
           <div className="player-avatar home-avatar" style={this.avatarStyle(0)}>
@@ -54,6 +55,10 @@ let GameView = React.createClass({
         </div>
         
     );
+  },
+
+  resign() {
+    window.client.makeLocalMove({"op":"resign"});
   },
 
   // end and start a new turn when button is activated
