@@ -40,6 +40,7 @@ class PlayerState {
   // Throws if the index is bad
   getHand(index) {
     if (index >= this.hand.length) {
+      return -1
       throw (this.name + "'s hand has no card at index " + index)
     }
     return this.hand[index]
@@ -48,6 +49,7 @@ class PlayerState {
   // Throws if the index is bad
   getBoard(index) {
     if (index >= this.board.length) {
+      return -1
       throw (this.name + "'s board has no card at index " + index)
     }
     return this.board[index]
@@ -209,64 +211,58 @@ class GameState {
     let card;
     if (containerType == "board") {
       if (usePlayer.name == selectingPlayerName) {
-        // select a card in current player's board
-        card = usePlayer.getBoard(index)      
-        if (card == usePlayer.selectedCard) {
-          usePlayer.selectedCard = null;
-          this.face(index, usePlayer)        
-          return;
-        }
+        this.faceForPlayer(usePlayer, index)
       } else {
-        card = opponent.getBoard(index)
-        if (card == opponent.selectedCard) {
-          opponent.selectedCard = null;
-          this.face(index, opponent)        
-        } 
+        this.faceForPlayer(opponent, index)
       }
     } else if (containerType == "hand") { 
       if (usePlayer.name == selectingPlayerName) {
-        // select a card in current player's hand
-        card = usePlayer.getHand(index)
-        if (card == usePlayer.selectedCard) {
-          usePlayer.selectedCard = null;
-          this.play(index, usePlayer)
-        }
+        this.playForPlayer(usePlayer, index)
       } else {
-        card = opponent.getHand(index)
-        if (card == opponent.selectedCard) {
-          opponent.selectedCard = null;
-          this.play(index, opponent)
-        }
+        this.playForPlayer(opponent, index)
       }
     } else if (containerType == "opponentBoard") {
       // select a card in opponent's board
       if (usePlayer.name == selectingPlayerName) {
-        // check for attack from board
-        let boardIndex = usePlayer.board.indexOf(usePlayer.selectedCard);
-        if (boardIndex != -1) {
-          usePlayer.selectedCard = null;
-          this.attack(boardIndex, index, usePlayer);
-        }
-
-        // check for action card from hand
-        let handIndex = usePlayer.hand.indexOf(usePlayer.selectedCard);
-        if (handIndex != -1) {
-          usePlayer.selectedCard = null;
-          this.playOn(handIndex, index, usePlayer)
-        }        
+        this.attackForPlayerIfBoardSelected(usePlayer, index)
+        this.playOnForPlayerIfHandSelected(usePlayer, index)
       } else {
-        boardIndex = opponent.board.indexOf(opponent.selectedCard);
-        if (boardIndex != -1) {
-          opponent.selectedCard = null;
-          this.attack(boardIndex, index, opponent);
-        }
-
-        handIndex = opponent.hand.indexOf(opponent.selectedCard);
-        if (handIndex != -1) {
-          opponent.selectedCard = null;
-          this.playOn(handIndex, index, opponent)
-        }                
+        this.attackForPlayerIfBoardSelected(opponent, index)
+        this.playOnForPlayerIfHandSelected(opponent, index)
       }
+    }
+  }
+
+  attackForPlayerIfBoardSelected(player, index) {
+    // check for attack from board
+    let boardIndex = player.board.indexOf(player.selectedCard);
+    if (boardIndex != -1) {
+      player.selectedCard = null;
+      this.attack(boardIndex, index, player);
+    }
+  }
+
+  playOnForPlayerIfHandSelected(player, index) {
+    let handIndex = player.hand.indexOf(player.selectedCard);
+    if (handIndex != -1) {
+      player.selectedCard = null;
+      this.playOn(handIndex, index, player)
+    }        
+  }
+
+  faceForPlayer(player, index) {
+    let card = player.getBoard(index)      
+    if (card == player.selectedCard) {
+      player.selectedCard = null;
+      this.face(index, player)        
+    }
+  }
+
+  playForPlayer(player, index) {
+    let card = player.getHand(index)
+    if (card == player.selectedCard) {
+      player.selectedCard = null;
+      this.play(index, player)
     }
   }
 
