@@ -197,7 +197,7 @@ class GameState {
     }
     let card;
     if (containerType == "board") {
-      if(usePlayer.name == selectingPlayerName) {
+      if (usePlayer.name == selectingPlayerName) {
         // select a card in current player's board
         card = usePlayer.getBoard(index)      
         if (card == usePlayer.selectedCard) {
@@ -213,7 +213,7 @@ class GameState {
         } 
       }
     } else if (containerType == "hand") { 
-      if(usePlayer.name == selectingPlayerName) {
+      if (usePlayer.name == selectingPlayerName) {
         // select a card in current player's hand
         card = usePlayer.getHand(index)
         if (card == usePlayer.selectedCard) {
@@ -229,7 +229,7 @@ class GameState {
       }
     } else if (containerType == "opponentBoard") {
       // select a card in opponent's board
-      if(usePlayer.name == selectingPlayerName) {
+      if (usePlayer.name == selectingPlayerName) {
         // check for attack from board
         let boardIndex = usePlayer.board.indexOf(usePlayer.selectedCard);
         if (boardIndex != -1) {

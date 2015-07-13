@@ -95,10 +95,6 @@ class Client {
   // Sends a move to the server.
   // This does *not* display the move until the server confirms it.
   makeLocalMove(move) {
-    /*if (this.game.turn != 0 && move.op == "selectCard") {
-      console.log("can't select cards on opponent's turn, but this will change with timers :)")
-      return
-    }*/
     move.player = this.name
     move.gameID = this.gameID
 
