@@ -38,20 +38,18 @@ class Client {
       return
     }
 
+    // AJ - does this just undo all the id-ordering checks? Hmph
     message.id = this.nextID
     
     if (message.op == "start") {
       this.handleStart(message)
-    } else if (message.op == "draw") {
-      // in spacetime, we keep on drawing
-      this.handleRemoteMove(message)
     } else if (message.id != this.nextID) {
       console.log("out of order, returning: " + message)
       // This is a dupe, or out-of-order. Ignore it
     } else if (this.handleRemoteMove(message)) {
       // It was a remote move
     } else {
-      console.log("don't know how to handle this message. dropping it")
+      console.log("handleRemoteMove failed")
       return
     }
   }
