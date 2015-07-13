@@ -84,21 +84,23 @@ class GameState {
     // set this to true for plenty of mana, for testing
     this.godMode = false
 
+    // A list of all moves we have ever made on the game state
+    this.history = []
   }
 
-  // The player whose turn it is
+  // The player who's playing locally
   current() {
     return this.players[0]
   }
 
-  // The player whose turn it isn't
+  // The remote player
   opponent() {
     return this.players[1]
   }
 
   // Each type of move has a JSON representation.
   //
-  // The useful keys are:
+  // The useful keys include:
   // op: the method name. beginTurn, selectCard, selectOpponent, endTurn
   // from: the index a card is coming from
   // to: the index a card is going to
@@ -135,7 +137,16 @@ class GameState {
       console.log("ignoring op: " + move.op)
       return false
     }
+
+    this.history.push(move)
     return true
+  }
+
+  logHistory() {
+    console.log("" + this.history.length + " moves in history.")
+    for (let move of this.history) {
+      console.log(JSON.stringify(move))
+    }
   }
 
   startGame(players, seed) {
@@ -410,9 +421,8 @@ class GameState {
     this.resolveDamage()
   }
 
-
   draw(player, card) {
-    for (var i=0;i<this.players.length;i++) {
+    for (var i = 0; i < this.players.length; i++) {
       var p = this.players[i]
       if (p.name == player.name) {
         p.hand.push(card) 
@@ -424,36 +434,30 @@ class GameState {
   beginTurn() {
     this.current().maxMana = Math.min(1 + this.current().maxMana, 10)
     this.opponent().maxMana = Math.min(1 + this.current().maxMana, 10)
+
     if (this.godMode) {
       this.current().maxMana = 99;
       this.opponent().maxMana = 99;
     }
+
     this.current().mana = this.current().maxMana
     this.opponent().mana = this.opponent().maxMana
-    // this.draw()
   }
 
   endTurn() {
     this.selectedCard = null;
     if (this.current().board.length) {
-      for (let i=0;i<this.current().board.length;i++) {
+      for (let i = 0; i < this.current().board.length; i++) {
         let card = this.current().board[i];
         card.canAct = true;
       }      
     }
     if (this.opponent().board.length) {
-      for (let i=0;i<this.opponent().board.length;i++) {
+      for (let i = 0; i < this.opponent().board.length; i++) {
         let card = this.opponent().board[i];
         card.canAct = true;
       }      
     }
-    // your turn never ends in spacetime
-    // this.turn = 1 - this.turn
-  }
-
-  log() {
-    console.log("It is player " + this.turn + "'s turn")
-    console.log(this.players)
   }
 }
 
