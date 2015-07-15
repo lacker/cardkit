@@ -44,12 +44,12 @@ describe("GameState", function() {
 
     // draw the simplest permanent
     state.draw({"name":"bob"}, {"cost":0, "permanent": true})
-    expect(state.current().hand.length == 1).toEqual(true)
+    expect(state.current().hand.length).toEqual(1)
 
     // play last card drawn
     state.selectCard(0, "hand", "bob")
     state.selectCard(0, "hand", "bob")
-    expect(state.current().board.length == 1).toEqual(true)
+    expect(state.current().board.length).toEqual(1)
 
     // go to next turn
     state.makeMove({op: "refreshCards"})
@@ -61,8 +61,8 @@ describe("GameState", function() {
     state.selectCard(0, "hand", "eve")
 
     // permanent leaves board and goes to trash
-    expect(state.opponent().board.length == 0).toEqual(true)
-    expect(state.opponent().trash.length == 1).toEqual(true)
+    expect(state.opponent().board.length).toEqual(0)
+    expect(state.opponent().trash.length).toEqual(1)
 
   })
 
@@ -91,11 +91,11 @@ describe("GameState", function() {
 
     // permanent leaves board and goes to trash
     // bob
-    expect(state.current().board.length == 0).toEqual(true)
-    expect(state.current().trash.length == 1).toEqual(true)
+    expect(state.current().board.length).toEqual(0)
+    expect(state.current().trash.length).toEqual(1)
     // eve
-    expect(state.opponent().board.length == 0).toEqual(true)
-    expect(state.opponent().trash.length == 1).toEqual(true)
+    expect(state.opponent().board.length).toEqual(0)
+    expect(state.opponent().trash.length).toEqual(1)
   })
 
   it("two creatures die when colliding", function() {
@@ -126,10 +126,10 @@ describe("GameState", function() {
     state.selectCard(0, "opponentBoard", "eve")
 
     // both permanents leave board and go to trash
-    expect(state.current().board.length == 0).toEqual(true)
-    expect(state.current().trash.length == 1).toEqual(true)
-    expect(state.opponent().board.length == 0).toEqual(true)
-    expect(state.opponent().trash.length == 1).toEqual(true)
+    expect(state.current().board.length).toEqual(0)
+    expect(state.current().trash.length).toEqual(1)
+    expect(state.opponent().board.length).toEqual(0)
+    expect(state.opponent().trash.length).toEqual(1)
 
 
   })

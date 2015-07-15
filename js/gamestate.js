@@ -164,31 +164,29 @@ class GameState {
 
   resolveDamage() {
 
-    for (var i=0;i<this.players.length;i++) {
+    for (var i = 0; i < this.players.length; i++) {
       var player = this.players[i]
 
-      // trash any dead creatures
+      // find dead creatures
       var cardsToRemove = [];
-      for (var j=0;j<player.board.length;j++) {
+      for (var j = 0; j < player.board.length; j++) {
         var card = player.board[j]
         if (card.defense <= 0) {
           cardsToRemove.push(card)
         }
       }
-      for (var j=0;j<cardsToRemove.length;j++) {
+      
+      // trash any dead creatures
+      // unselect any trashed cards
+      for (var j = 0; j < cardsToRemove.length; j++) {
         var card = cardsToRemove[j]
         player.trash.push(card)
-      }
-      player.board = player.board.filter(c => cardsToRemove.indexOf( c ) < 0)
-
-      
-      // unselect any trashed cards
-      for (var j=0;j<player.trash.length;j++) {
-        var card = player.trash[j]
         if (card == player.selectedCard) {
           player.selectedCard = null;
         }
       }
+      player.board = player.board.filter(c => cardsToRemove.indexOf(c) < 0)
+
     }
 
     if (this.current().life <= 0) {
