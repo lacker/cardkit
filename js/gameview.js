@@ -67,7 +67,7 @@ let GameView = React.createClass({
   endTurn() {
     let event = new CustomEvent("turnEnded", {});
     window.dispatchEvent(event);
-    window.client.makeLocalMove({"op":"refreshCards"});
+    window.client.makeLocalMove({"op":"refreshPlayers"});
   },
 
   // highlight the active player

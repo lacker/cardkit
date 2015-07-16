@@ -102,7 +102,7 @@ class GameState {
   // Each type of move has a JSON representation.
   //
   // The useful keys include:
-  // op: the method name. selectCard, selectOpponent, refreshCards
+  // op: the method name. selectCard, selectOpponent, refreshPlayers
   // from: the index a card is coming from
   // to: the index a card is going to
   //
@@ -120,8 +120,8 @@ class GameState {
       return false
     }
 
-    if (move.op == "refreshCards") {
-      this.refreshCards()
+    if (move.op == "refreshPlayers") {
+      this.refreshPlayers()
     } else if (move.op == "resign") {
       this.resign(move)
     } else if (move.op == "selectCard") {
@@ -153,9 +153,9 @@ class GameState {
   startGame(players, seed) {
     this.rng = new Math.seedrandom(seed)
     if (players[0] == this.name) {
-      this.players[1].name = players[1]
+      this.remotePlayer().name = players[1]
     } else if (players[1] == this.name) {
-      this.players[1].name = players[0]
+      this.remotePlayer().name = players[0]
     } else {
       console.log(`a game started without me, ${this.name}`)
       return
@@ -163,7 +163,7 @@ class GameState {
 
     // always your turn in spacetime
     this._started = true
-    this.refreshCards()
+    this.refreshPlayers()
   }
 
   started() {
@@ -196,7 +196,12 @@ class GameState {
       player.board = player.board.filter(c => cardsToRemove.indexOf(c) < 0)
 
     }
+    
+    this.checkForWinner()
+  }
 
+  // set the winner and trigger some animation or show if game ends
+  checkForWinner () {
     if (this.localPlayer().life <= 0) {
       this.winner = this.remotePlayer().name
     } else if (this.remotePlayer().life <= 0) {
@@ -206,7 +211,8 @@ class GameState {
       console.log(this.winner + " wins!")
       alert(this.winner + " wins!")
       this.declaredWinner = true
-
+      
+      // stop all cards from attacking
       for (var i = 0; i < this.players.length; i++) {
         var player = this.players[i]
         for (var j = 0; j < player.board.length; j++) {
@@ -216,7 +222,6 @@ class GameState {
           }
         }
       }
-
 
     }
   }
@@ -370,7 +375,6 @@ class GameState {
     if (card.attackRate) {
       // default to attack opponent's face
       card.attacker = this.localPlayer()
-
       card.attackLoop = setInterval(() => {
         console.log("atack")
         this.faceForCard(card, card.attacker)
@@ -378,6 +382,7 @@ class GameState {
       } ,card.attackRate);
     } 
 
+    // kill a permanent at random
     if (card.kill) { 
       let actingPlayer
       if (player == this.localPlayer()) {
@@ -392,12 +397,12 @@ class GameState {
       }
     }
  
-    if (card.refreshCards) { 
-      for (let i = 0; i < card.refreshCards; i++) {
-        this.refreshCards()
-      }
+    // let all permanents act again
+    if (card.refreshPlayers) { 
+      this.refreshPlayers()
     }
 
+    // kill all permanents
     if (card.emp) {
       for (let player of this.players) {
         while (player.board.length > 0) {
@@ -454,12 +459,12 @@ class GameState {
     this.resolveDamage()
   }
 
-  // Whether the game has started
+  // whether the game has started
   started() {
     return this._started
   }
 
-  // Attacks face
+  // attacks face
   face(from, player) {
     let card = player.getBoard(from)
     this.faceForCard(card, player)
@@ -496,6 +501,7 @@ class GameState {
     
   }
 
+  // this is only used in testing right now
   draw(player, card) {
     for (var i = 0; i < this.players.length; i++) {
       var p = this.players[i]
@@ -506,7 +512,8 @@ class GameState {
     }
   }
 
-  refreshCards() {
+  // let all cards act, give everyone a mana, and restore everyone's mana
+  refreshPlayers() {
     this.localPlayer().maxMana = Math.min(1 + this.localPlayer().maxMana, 10)
     this.remotePlayer().maxMana = Math.min(1 + this.remotePlayer().maxMana, 10)
 

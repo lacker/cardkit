@@ -26,8 +26,7 @@ describe("GameState", function() {
   it("retains card function across reserialization", function() {
     let state = new GameState({name: "bob"})
     state.startGame(["bob", "eve"], 123)
-    state.makeMove({op: "refreshCards"})
-    state.makeMove({op: "refreshCards"})
+    state.makeMove({op: "refreshPlayers"})
     let data = JSON.stringify(state)
     let state2 = new GameState(JSON.parse(data))
 
@@ -52,7 +51,7 @@ describe("GameState", function() {
     expect(state.localPlayer().board.length).toEqual(1)
 
     // go to next turn
-    state.makeMove({op: "refreshCards"})
+    state.makeMove({op: "refreshPlayers"})
 
     // get a card that implements kill
     state.draw({"name":"eve"}, {"kill":true, "cost":0})    
@@ -80,7 +79,7 @@ describe("GameState", function() {
     state.selectCard(0, "hand", "bob")
    
     // go to next turn
-    state.makeMove({op: "refreshCards"})
+    state.makeMove({op: "refreshPlayers"})
    
     // get a card that implements direct damage
     state.draw({"name":"eve"}, {"damage":2, "cost":0})    
@@ -120,7 +119,7 @@ describe("GameState", function() {
     state.selectCard(0, "hand", "eve")
 
     // go to next turn
-    state.makeMove({op: "refreshCards"})
+    state.makeMove({op: "refreshPlayers"})
 
     state.selectCard(0, "board", "eve")
     state.selectCard(0, "opponentBoard", "eve")

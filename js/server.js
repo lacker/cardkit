@@ -109,7 +109,7 @@ class Connection {
   // in spacetime, we simul-draw!
   tickTurn() {
     this.everyoneDraws()
-    this.broadcast({ op: "refreshCards", "player": "no_player" })
+    this.broadcast({ op: "refreshPlayers", "player": "no_player" })
   }
 
   // in spacetime, we simul-draw!
