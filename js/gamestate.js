@@ -26,6 +26,9 @@ class PlayerState {
   // Moves a card from board to trash.
   boardToTrash(index) {
     let card = this.getBoard(index)
+    if (card.attackLoop) {
+      clearInterval(card.attackLoop)
+    }
     this.board.splice(index, 1)
     this.trash.push(card)
   }
@@ -73,12 +76,17 @@ class GameState {
 
     // The name of the winner
     this.winner = data.winner || null
+    // a flag to do an alert just once
+    this.declaredWinner = false
 
     // set this to true for plenty of mana, for testing
-    this.godMode = false
+    this.godMode = true
 
     // A list of all moves we have ever made on the game state
     this.history = []
+
+    // how much time it takes to show damage to a card or player in millis
+    this.damageDuration = 900
   }
 
   // The player who's playing locally
@@ -194,8 +202,22 @@ class GameState {
     } else if (this.opponent().life <= 0) {
       this.winner = this.current().name
     }
-    if (this.winner != null) {
+    if (this.winner != null && this.declaredWinner == false) {
       console.log(this.winner + " wins!")
+      alert(this.winner + " wins!")
+      this.declaredWinner = true
+
+      for (var i = 0; i < this.players.length; i++) {
+        var player = this.players[i]
+        for (var j = 0; j < player.board.length; j++) {
+          var card = player.board[j]
+          if (card.attackLoop) {
+            clearInterval(card.attackLoop)
+          }
+        }
+      }
+
+
     }
   }
 
@@ -344,6 +366,18 @@ class GameState {
 
     // Finally, play any abilities the card has.
 
+    // for permanents that attack on a loop
+    if (card.attackRate) {
+      // default to attack opponent's face
+      card.attacker = this.current()
+
+      card.attackLoop = setInterval(() => {
+        console.log("atack")
+        this.faceForCard(card, card.attacker)
+        window.client.forceUpdate()
+      } ,card.attackRate);
+    } 
+
     if (card.kill) { 
       let actingPlayer
       if (player == this.current()) {
@@ -427,12 +461,39 @@ class GameState {
 
   // Attacks face
   face(from, player) {
+    let card = player.getBoard(from)
+    this.faceForCard(card, player)
+  }
+
+  faceForCard(card, player) {
     let opponent = this.current().name == player.name ? this.opponent() : this.current()
-    let attacker = player.getBoard(from)
-    opponent.life -= attacker.attack
-    attacker.canAct = false
+    opponent.life -= card.attack
+
+    card.canAct = false
     player.selectedCard = null;
     this.resolveDamage()
+
+    this.showCardDamage(card)
+    this.showPlayerDamage(opponent)
+  }
+
+  showCardDamage(card) {
+    // opponent damage animation
+    card.showDamage = true
+    card.damageAnimation = setInterval(() => {
+      card.showDamage = null;
+      window.client.forceUpdate()
+    }, this.damageDuration) 
+  }
+
+  showPlayerDamage(player) {
+    // card damage animation
+    card.showDamage = true
+    card.damageAnimation = setInterval(() => {
+      card.showDamage = null;
+      window.client.forceUpdate()
+    }, this.damageDuration) 
+    
   }
 
   draw(player, card) {

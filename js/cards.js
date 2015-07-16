@@ -4,6 +4,7 @@ export const CARDS = [
     permanent: true,
     attack: 2,
     defense: 2,
+    attackRate: 3000,
     cost: 2
   },
   {
@@ -11,6 +12,7 @@ export const CARDS = [
     permanent: true,
     attack: 3,
     defense: 3,
+    attackRate: 3000,
     cost: 3
   },
   {
@@ -18,6 +20,7 @@ export const CARDS = [
     permanent: true,
     attack: 4,
     defense: 4,
+    attackRate: 3000,
     cost: 4
   },
   {
@@ -25,6 +28,7 @@ export const CARDS = [
     permanent: true,
     attack: 5,
     defense: 5,
+    attackRate: 3000,
     cost: 5
   },
   {

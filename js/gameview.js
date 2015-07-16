@@ -20,12 +20,14 @@ let GameView = React.createClass({
     let cssEndTurn = window.game.turn == 0 ? 'active-player' : '';
     cssEndTurn = 'end-turn-button'  + ' ' + cssEndTurn;
 
+    let opponentDamageCSS = opponent.showDamage ? 'player-avatar damage-player' : 'player-avatar';
+
     return (
         <div className="game-container">
           
           {/* OPPONENT */}
           <Player playerState={opponent} />
-          <div onClick={this.selectOpponent} className="player-avatar" style={this.avatarStyle(1)}>
+          <div onClick={this.selectOpponent} className={opponentDamageCSS} style={this.avatarStyle(1)}>
             <div className="vital-stats-container life-container">Life: {opponent.life}</div>
             <h2 className="player-name">{opponent.name}</h2>
             <div className="vital-stats-container">Mana: {opponent.mana} / {opponent.maxMana}</div>

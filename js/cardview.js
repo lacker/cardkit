@@ -42,7 +42,7 @@ let Card = React.createClass({
           {this.props.cardInfo.name}
           <div className="mana-label">{this.props.cardInfo.cost}</div>
         </div>
-        <div className="card-bottom"> 
+        <div className="card-bottom"eee> 
           {attackPart}
         </div>
         
@@ -64,7 +64,13 @@ let Card = React.createClass({
     let cssClassCanAct = !this.props.cardInfo.canAct && fromIndex != -1 ? 
                            'has-attacked-card' : '';
 
+    let cssClassDamage = '';
+    if (this.props.cardInfo.showDamage) {
+      cssClassDamage = "damage-player";
+    }
+
     let combinedCSS = cssClass + ' ' + 
+                      cssClassDamage + ' ' + 
                       cssClassCanPlay + ' ' + 
                       cssClassCanAct; 
     return combinedCSS;
@@ -102,10 +108,6 @@ let Card = React.createClass({
       window.client.makeLocalMove(selectMove);
     }
 
-    if (window.game.winner) {
-      alert("WINNER");
-
-    }
   },
 
 });

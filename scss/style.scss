@@ -285,3 +285,25 @@ h2 {
   width:70%;
 }
 
+@keyframes damage-player {
+    0% {
+        background-color: Yellow;
+        opacity:1;
+    }
+    22% {
+        background-color: Yellow;
+    }
+    77% {
+        background-color: Red;
+    }
+    100% {
+        background-color: #777;
+    }
+}
+
+.damage-player {
+    -webkit-animation-name: damage-player;
+    -webkit-animation-duration: 900ms;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: ease-in-out;
+}    
