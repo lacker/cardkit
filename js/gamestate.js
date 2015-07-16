@@ -493,9 +493,9 @@ class GameState {
 
   showPlayerDamage(player) {
     // card damage animation
-    card.showDamage = true
-    card.damageAnimation = setInterval(() => {
-      card.showDamage = null;
+    player.showDamage = true
+    player.damageAnimation = setInterval(() => {
+      player.showDamage = null;
       window.client.forceUpdate()
     }, this.damageDuration) 
     

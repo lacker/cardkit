@@ -302,8 +302,9 @@ h2 {
 }
 
 .damage-player {
-    -webkit-animation-name: damage-player;
-    -webkit-animation-duration: 900ms;
-    -webkit-animation-iteration-count: 1;
-    -webkit-animation-timing-function: ease-in-out;
+  transform: translate(100px,-100px);
+  animation-name: damage-player;
+  animation-duration: 900ms;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in-out;
 }    
