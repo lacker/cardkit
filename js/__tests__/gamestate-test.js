@@ -23,6 +23,11 @@ describe("GameState", function() {
     expect(state2.winner).toEqual(state.winner)
   })
 
+  it("has accessible players via playerForName", function() {
+    let state = new GameState({name: "bob"})
+    expect(state.playerForName("bob").name).toEqual("bob")
+  })
+
   it("retains card function across reserialization", function() {
     let state = new GameState({name: "bob"})
     state.startGame(["bob", "eve"], 123)
@@ -34,7 +39,6 @@ describe("GameState", function() {
     expect(state2.name).toEqual(state.name)
     expect(state2._started).toEqual(state._started)
     expect(state2.winner).toEqual(state.winner)
-
   })
 
   it("can be consistently serialized with displayString", function() {
@@ -44,7 +48,7 @@ describe("GameState", function() {
     let state2 = new GameState(JSON.parse(data))
     expect(state.displayString()).toEqual(state2.displayString())
   })
-  
+
   it("kill moves creature from board to trash", function() {
     let state = new GameState({name: "bob"})
 
