@@ -15,6 +15,17 @@ class PlayerState {
     this.mana = data.mana || 0
     this.maxMana = data.maxMana || 0
   }
+  
+  // Creates a string that, when printed, is a nice way to view the
+  // contents of the PlayerState for debugging.
+  displayString() {
+    return `name: ${this.name}
+hand: ${this.hand}
+board: ${this.board}
+life: ${this.life}
+mana: ${this.mana}/${this.maxMana}
+`
+  }
 
   // Moves a card from hand to trash.
   handToTrash(index) {
@@ -79,6 +90,32 @@ class GameState {
 
     // A list of all moves we have ever made on the game state
     this.history = []
+  }
+
+  // The player for the provided name.
+  playerForName(name) {
+    this.players.forEach(player => {
+      if (player.name == name) {
+        return player
+      }
+    })
+    return undefined
+  }
+
+  // A string that can be displayed to debug the game state.
+  // This string should be consistent for all clients viewing the same
+  // game. In particular, it prints players by alphabetical order.
+  displayString() {
+    let answer = ""
+    let playerNames = this.players.map(p => p.name)
+    playerNames.sort()
+    playerNames.forEach(name => {
+      let p = this.playerForName(name)
+      if (p) {
+        answer += p.displayString()
+      }
+    })
+    return answer
   }
 
   // The player who's playing locally

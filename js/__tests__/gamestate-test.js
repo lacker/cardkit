@@ -37,6 +37,14 @@ describe("GameState", function() {
 
   })
 
+  it("can be consistently serialized with displayString", function() {
+    let state = new GameState({name: "yorp"})
+    state.startGame(["yorp", "blorp"], 1212)
+    let data = JSON.stringify(state)
+    let state2 = new GameState(JSON.parse(data))
+    expect(state.displayString()).toEqual(state2.displayString())
+  })
+  
   it("kill moves creature from board to trash", function() {
     let state = new GameState({name: "bob"})
 
