@@ -15,6 +15,9 @@
 // { "op": "hello" }
 // When a game starts, the server sends out
 // { "op": "start", "players": [list of player names], "gameID": <gameid>}
+// To verify that clients are in sync, clients send up
+// { "op": "checkSync", "key": key, "value": value }
+// and if the same key ever goes to multiple values, the server logs an error.
 
 // some json for cards
 import {CARDS} from './cards.js';
@@ -44,6 +47,13 @@ class Connection {
       // Connection.games maps each gameID to a list of all moves that
       // have been made in the game.
       Connection.games = new Map()
+
+      // Connection.checkSync maps generic keys to generic
+      // values. Clients can use this to check for synchronization
+      // bugs. Each client should log the same value for a particular
+      // key. The server just logs if it ever sees multiple values for
+      // the same key.
+      Connection.checkSync = new Map()
     }
     Connection.all.set(this.address, this)
   }
@@ -64,7 +74,18 @@ class Connection {
     console.log("received: " + messageData)
 
     let message = JSON.parse(messageData)
-    if (message.op == "register") {
+    if (message.op == "checkSync") {
+      if (Connection.checkSync.has(message.key)) {
+        let oldValue = Connection.checkSync.get(message.key)
+        if (oldValue != message.value) {
+          console.log("checkSync FAIL: expected key " + message.key +
+                      " to map to value " + oldValue + " but saw " +
+                      message.value)
+        }
+      } else {
+        Connection.checkSync.set(message.key, message.value)
+      }
+    } else if (message.op == "register") {
       this.name = message.name
       if (message.seeking) {
         Connection.waiting.set(this.name, this)
