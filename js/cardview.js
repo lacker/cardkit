@@ -42,7 +42,7 @@ let Card = React.createClass({
           {this.props.cardInfo.name}
           <div className="mana-label">{this.props.cardInfo.cost}</div>
         </div>
-        <div className="card-bottom"eee> 
+        <div className="card-bottom"> 
           {attackPart}
         </div>
         
@@ -57,10 +57,10 @@ let Card = React.createClass({
     if (this.props.cardInfo.cost > this.props.player.mana) {
       cssClassCanPlay = "too-expensive";
     }
-    let cssClass = window.game.current().selectedCard == this.props.cardInfo ||
-                   window.game.opponent().selectedCard == this.props.cardInfo ? 
+    let cssClass = window.game.localPlayer().selectedCard == this.props.cardInfo ||
+                   window.game.remotePlayer().selectedCard == this.props.cardInfo ? 
                    'playing-card active-card' : 'playing-card';
-    let fromIndex = window.game.current().board.indexOf(this.props.cardInfo);    
+    let fromIndex = window.game.localPlayer().board.indexOf(this.props.cardInfo);    
     let cssClassCanAct = !this.props.cardInfo.canAct && fromIndex != -1 ? 
                            'has-attacked-card' : '';
 
@@ -76,9 +76,9 @@ let Card = React.createClass({
     return combinedCSS;
   },
   
-  // select cards in current player's hand or board
+  // select cards in local player's hand or board
   selectCard: function() {
-    let boardIndex = window.game.current().board.indexOf(this.props.cardInfo);
+    let boardIndex = window.game.localPlayer().board.indexOf(this.props.cardInfo);
     if (boardIndex != -1) {
       let selectMove = {
                     "op": "selectCard", 
@@ -88,7 +88,7 @@ let Card = React.createClass({
       window.client.makeLocalMove(selectMove);
     }
 
-    let handIndex = window.game.current().hand.indexOf(this.props.cardInfo);
+    let handIndex = window.game.localPlayer().hand.indexOf(this.props.cardInfo);
     if (handIndex != -1) {
       let selectMove = {
                     "op":"selectCard", 
@@ -98,7 +98,7 @@ let Card = React.createClass({
       window.client.makeLocalMove(selectMove);
     }
 
-    let opponentBoardIndex = window.game.opponent().board.indexOf(this.props.cardInfo);
+    let opponentBoardIndex = window.game.remotePlayer().board.indexOf(this.props.cardInfo);
     if (opponentBoardIndex != -1) {
       let selectMove = {
                     "op":"selectCard", 

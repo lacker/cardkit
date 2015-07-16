@@ -83,7 +83,6 @@ class Client {
 
     console.log("making move: " + JSON.stringify(move))
     if (this.game.makeMove(move)) {
-      // console.log("new playerstate: " + JSON.stringify(this.game.players))
       this.buffer = []
       this.forceUpdate()
       this.nextID++

@@ -89,13 +89,13 @@ class GameState {
     this.damageDuration = 900
   }
 
-  // The player who's playing locally
-  current() {
+  // The local player
+  localPlayer() {
     return this.players[0]
   }
 
   // The remote player
-  opponent() {
+  remotePlayer() {
     return this.players[1]
   }
 
@@ -197,10 +197,10 @@ class GameState {
 
     }
 
-    if (this.current().life <= 0) {
-      this.winner = this.opponent().name
-    } else if (this.opponent().life <= 0) {
-      this.winner = this.current().name
+    if (this.localPlayer().life <= 0) {
+      this.winner = this.remotePlayer().name
+    } else if (this.remotePlayer().life <= 0) {
+      this.winner = this.localPlayer().name
     }
     if (this.winner != null && this.declaredWinner == false) {
       console.log(this.winner + " wins!")
@@ -225,12 +225,12 @@ class GameState {
   selectCard(index, containerType, selectingPlayerName) {
     let actingPlayer
     let opponent
-    if (selectingPlayerName == this.current().name) {
-      actingPlayer = this.current()
-      opponent = this.opponent()
+    if (selectingPlayerName == this.localPlayer().name) {
+      actingPlayer = this.localPlayer()
+      opponent = this.remotePlayer()
     } else {
-      actingPlayer = this.opponent()
-      opponent = this.current()
+      actingPlayer = this.remotePlayer()
+      opponent = this.localPlayer()
     }
     if (!actingPlayer.selectedCard) {
       this.setSelectedCard(index, containerType, actingPlayer)
@@ -310,10 +310,10 @@ class GameState {
   // select the opponent to cast a spell or target with attack
   selectOpponent(player) {
     let actingPlayer
-    if (player == this.current().name) {
-      actingPlayer = this.current()
+    if (player == this.localPlayer().name) {
+      actingPlayer = this.localPlayer()
     } else {
-      actingPlayer = this.opponent()
+      actingPlayer = this.remotePlayer()
     }
 
     if (!actingPlayer.selectedCard) {
@@ -331,7 +331,7 @@ class GameState {
 
   // from and to are indices into board
   attack(from, to, player) {
-    let opponent = this.current().name == player.name ? this.opponent() : this.current()
+    let opponent = this.localPlayer().name == player.name ? this.remotePlayer() : this.localPlayer()
     let attacker = player.getBoard(from)
     let defender = opponent.getBoard(to)
     attacker.defense -= defender.attack
@@ -369,7 +369,7 @@ class GameState {
     // for permanents that attack on a loop
     if (card.attackRate) {
       // default to attack opponent's face
-      card.attacker = this.current()
+      card.attacker = this.localPlayer()
 
       card.attackLoop = setInterval(() => {
         console.log("atack")
@@ -380,10 +380,10 @@ class GameState {
 
     if (card.kill) { 
       let actingPlayer
-      if (player == this.current()) {
-        actingPlayer = this.opponent()
+      if (player == this.localPlayer()) {
+        actingPlayer = this.remotePlayer()
       } else {
-        actingPlayer = this.current()
+        actingPlayer = this.localPlayer()
       }
 
       if (actingPlayer.board.length) {
@@ -427,7 +427,7 @@ class GameState {
   // Throws if there's not enough mana.
   // from is an index of the hand
   playFace(from, player) {
-    let opponent = this.current().name == player.name ? this.opponent() : this.current()
+    let opponent = this.localPlayer().name == player.name ? this.remotePlayer() : this.localPlayer()
     let card = player.getHand(from)
     if (player.mana < card.cost) {
       throw `need ${card.cost} mana but only have ${player.mana}`
@@ -444,10 +444,10 @@ class GameState {
   // for direct damage spells
   damage(to, amount, player) {
     let actingPlayer
-    if (player == this.current()) {
-      actingPlayer = this.opponent()
+    if (player == this.localPlayer()) {
+      actingPlayer = this.remotePlayer()
     } else {
-      actingPlayer = this.current()
+      actingPlayer = this.localPlayer()
     }
     let target = actingPlayer.getBoard(to)
     target.defense -= amount
@@ -466,7 +466,7 @@ class GameState {
   }
 
   faceForCard(card, player) {
-    let opponent = this.current().name == player.name ? this.opponent() : this.current()
+    let opponent = this.localPlayer().name == player.name ? this.remotePlayer() : this.localPlayer()
     opponent.life -= card.attack
 
     card.canAct = false
@@ -507,34 +507,34 @@ class GameState {
   }
 
   refreshCards() {
-    this.current().maxMana = Math.min(1 + this.current().maxMana, 10)
-    this.opponent().maxMana = Math.min(1 + this.opponent().maxMana, 10)
+    this.localPlayer().maxMana = Math.min(1 + this.localPlayer().maxMana, 10)
+    this.remotePlayer().maxMana = Math.min(1 + this.remotePlayer().maxMana, 10)
 
     if (this.godMode) {
-      this.current().maxMana = 99;
-      this.opponent().maxMana = 99;
+      this.localPlayer().maxMana = 99;
+      this.remotePlayer().maxMana = 99;
     }
 
-    this.current().mana = this.current().maxMana
-    this.opponent().mana = this.opponent().maxMana
+    this.localPlayer().mana = this.localPlayer().maxMana
+    this.remotePlayer().mana = this.remotePlayer().maxMana
 
     this.selectedCard = null;
-    if (this.current().board.length) {
-      for (let i = 0; i < this.current().board.length; i++) {
-        let card = this.current().board[i];
+    if (this.localPlayer().board.length) {
+      for (let i = 0; i < this.localPlayer().board.length; i++) {
+        let card = this.localPlayer().board[i];
         card.canAct = true;
       }      
     }
-    if (this.opponent().board.length) {
-      for (let i = 0; i < this.opponent().board.length; i++) {
-        let card = this.opponent().board[i];
+    if (this.remotePlayer().board.length) {
+      for (let i = 0; i < this.remotePlayer().board.length; i++) {
+        let card = this.remotePlayer().board[i];
         card.canAct = true;
       }      
     }
   }
 
   resign(move) {
-    let player = this.current().name == move.player ? this.current() : this.opponent()
+    let player = this.localPlayer().name == move.player ? this.localPlayer() : this.remotePlayer()
     player.life = 0
     this.resolveDamage()
   }
