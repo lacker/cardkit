@@ -83,7 +83,11 @@ class Client {
 
     console.log("making move: " + JSON.stringify(move))
     if (this.game.makeMove(move)) {
-      console.log("new playerstate: " + JSON.stringify(this.game.players))
+      // Have the server check for out-of-sync bugs
+      let key = `game${this.gameID}-move${move.id}`
+      let value = this.game.displayString()
+      this.send({op: "checkSync", key, value})
+
       this.buffer = []
       this.forceUpdate()
       this.nextID++
