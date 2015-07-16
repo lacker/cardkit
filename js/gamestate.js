@@ -91,13 +91,13 @@ class GameState {
     this.declaredWinner = false
 
     // set this to true for plenty of mana, for testing
-    this.godMode = false
+    this.godMode = true
 
     // A list of all moves we have ever made on the game state
     this.history = []
 
+    // how much time it takes to show damage to a card or player in millis
     this.damageDuration = 900
-
   }
 
   // The player for the provided name.

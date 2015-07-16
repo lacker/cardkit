@@ -43,7 +43,7 @@ let Card = React.createClass({
           {this.props.cardInfo.name}
           <div className="mana-label">{this.props.cardInfo.cost}</div>
         </div>
-        <div className="card-bottom"> 
+        <div className="card-bottom"eee> 
           {attackPart}
         </div>
         
