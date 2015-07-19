@@ -94,12 +94,13 @@ class GameState {
 
   // The player for the provided name.
   playerForName(name) {
+    let answer = undefined
     this.players.forEach(player => {
       if (player.name == name) {
-        return player
+        answer = player
       }
     })
-    return undefined
+    return answer
   }
 
   // A string that can be displayed to debug the game state.
