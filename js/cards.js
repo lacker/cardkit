@@ -1,74 +1,58 @@
-export const CARDS = [
-  {
-    name: "BiBot",
+export const CARDS = {
+  BiBot: {
     permanent: true,
     attack: 2,
     defense: 2,
     cost: 2
   },
-  {
-    name: "TriBot",
+  TriBot: {
     permanent: true,
     attack: 3,
     defense: 3,
     cost: 3
   },
-  {
-    name: "QuadBot",
+  QuadBot: {
     permanent: true,
     attack: 4,
     defense: 4,
     cost: 4
   },
-  {
-    name: "Pentabot",
+  Pentabot: {
     permanent: true,
     attack: 5,
     defense: 5,
     cost: 5
   },
-  {
-    name: "Laser Blast",
+  "Laser Blast": {
     description: "Deal 3 damage to a creature or player.",
     requiresTarget: true,
     damage: 3,
     cost: 2
   },
-  {
-    name: "Errant Blast",
+  "Errant Blast": {
     description: "Kill one of your opponent's fleet at random.",
     kill: true,
     cost: 3
   },
-  {
-    name: "EMP",
+  EMP: {
     description: "Destroy all cards in play.",
     flavor: "Watch that basket.",
     emp: true,
     cost: 4
   },
-  /*{
-    name: "Time Stop",
-    description: "End this turn and the next.",
-    endTurn: 2,
-    cost: 7
+}
+
+export const DECKS = [
+  {
+    name: "Control",
+    cards: ["Pentabot", "EMP"],
   },
   {
-    name: "Blast BiBot",
-    description: "Kill one of your opponent's fleet at random.",
-    permanent: true,
-    attack: 2,
-    defense: 2,
-    kill: true,
-    cost: 5
+    name: "Weenie",
+    cards: ["BiBot", "TriBot"],
   },
   {
-    name: "Time Cruiser",
-    description: "End this turn and the next.",
-    permanent: true,
-    attack: 5,
-    defense: 1,
-    endTurn: 2,
-    cost: 8
-  }*/
+    name: "Midrange",
+    cards: ["QuadBot", "Errant Blast"],
+  },
 ]

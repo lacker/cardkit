@@ -20,7 +20,7 @@
 // and if the same key ever goes to multiple values, the server logs an error.
 
 // some json for cards
-import {CARDS} from './cards.js';
+import {CARDS, DECKS} from './cards.js';
 
 require("seedrandom")
 Math.seedrandom()
@@ -29,11 +29,19 @@ const WebSocketServer = require("ws").Server
 
 let wss = new WebSocketServer({port: 9090})
 
+function choice(list) {
+  return list[Math.floor(Math.random() * list.length)]
+}
+
 class Connection {
   constructor(ws) {
     this.ws = ws
     this.name = null
     this.address = `${ws._socket.remoteAddress}:${ws._socket.remotePort}`
+
+    // Each connection just gets a random deck chosen for it
+    this.deck = choice(DECKS)
+
     console.log(`connected to ${this.address}`)
 
     if (Connection.all === undefined) {
@@ -137,22 +145,23 @@ class Connection {
   everyoneDraws() {
     let players = Array.from(Connection.all.values())
     for (let player of players) {
-      let card = this.cardCopy(player.name);
+      let card = this.cardCopy(player);
       let draw = { op: "draw" , player: {name: player.name}, card}
       this.broadcast(draw)
     }
   }
 
+  // Gets the actual card object to use for a player drawing a card.
   cardCopy(player) {
-    let card = CARDS[Math.floor(Math.random() * CARDS.length)]         
+    let card = CARDS[choice(player.deck)]
     // Make a copy so that we can edit this card        
     let copy = {}         
     for (let key in card) {
       copy[key] = card[key]
     }
 
-    copy.canAct = false; 
-    copy.player = player;
+    copy.canAct = false
+    copy.player = player.name
     return copy
   }
 
