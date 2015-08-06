@@ -302,7 +302,7 @@ h2 {
 }
 
 .damage-player {
-  transform: translate(100px,-100px);
+  transform-origin: 50% 20%;
   animation-name: damage-player;
   animation-duration: 900ms;
   animation-iteration-count: 1;
