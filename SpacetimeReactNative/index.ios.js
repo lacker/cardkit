@@ -4,50 +4,46 @@
  */
 'use strict';
 
+var gs = require('./gamestate.js');
+var cl = require('./client.js');
+var LobbyView = require('./lobbyview.js');
+var GameView = require('./gameview.js');
+
 var React = require('react-native');
 var {
   AppRegistry,
-  StyleSheet,
-  Text,
   View,
 } = React;
-
+    
 var SpacetimeReactNative = React.createClass({
+
+  getInitialState: function() {
+    // Stash things in window for easy debugging
+    window.name = `Guest ${Math.floor(Math.random() * 100)}`
+    window.game = new gs.GameState()
+    window.game.constructor({name: window.name})
+    window.client = new cl.Client()
+    window.client.constructor(window.name, window.game)
+    return window.game
+  },
+
   render: function() {
+    window.client.forceUpdate = (() => this.forceUpdate())
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
+      <View>
+        { window.client.registered ?
+            <GameView state={this.state} />
+          : <LobbyView />
+        }
       </View>
     );
-  }
-});
+  },
 
-var styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+  findGame() {
+    window.client.register();
+    window.client.forceUpdate();
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+
 });
 
 AppRegistry.registerComponent('SpacetimeReactNative', () => SpacetimeReactNative);

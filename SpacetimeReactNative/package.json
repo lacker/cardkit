@@ -6,6 +6,9 @@
     "start": "node_modules/react-native/packager/packager.sh"
   },
   "dependencies": {
-    "react-native": "^0.8.0"
+    "crypto": "0.0.3",
+    "react-native": "^0.8.0",
+    "react-native-button": "^1.2.0",
+    "seedrandom": "^2.4.2"
   }
 }
