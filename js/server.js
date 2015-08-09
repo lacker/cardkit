@@ -155,9 +155,11 @@ class Connection {
 
   // Gets the actual card object to use for a player drawing a card.
   cardCopy(player) {
-    let card = CARDS[choice(player.deck.cards)]
+    let cardName = choice(player.deck.cards)
+    let card = CARDS[cardName]
     // Make a copy so that we can edit this card        
-    let copy = {}         
+    let copy = {}     
+    copy['name'] = cardName    
     for (let key in card) {
       copy[key] = card[key]
     }
