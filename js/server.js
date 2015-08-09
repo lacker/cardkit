@@ -30,7 +30,9 @@ const WebSocketServer = require("ws").Server
 let wss = new WebSocketServer({port: 9090})
 
 function choice(list) {
-  return list[Math.floor(Math.random() * list.length)]
+  // random card from deck
+  let index = Math.floor(Math.random() * list.length)
+  return list[index]
 }
 
 class Connection {
@@ -153,7 +155,7 @@ class Connection {
 
   // Gets the actual card object to use for a player drawing a card.
   cardCopy(player) {
-    let card = CARDS[choice(player.deck)]
+    let card = CARDS[choice(player.deck.cards)]
     // Make a copy so that we can edit this card        
     let copy = {}         
     for (let key in card) {
