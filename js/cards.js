@@ -42,17 +42,17 @@ export const CARDS = {
   },
 }
 
-export const DECKS = [
-  {
-    name: "Control",
-    cards: ["Pentabot", "EMP"],
-  },
+export var DECKS = [
   {
     name: "Weenie",
-    cards: ["BiBot", "TriBot"],
+    cards: ["BiBot"],
   },
   {
-    name: "Midrange",
-    cards: ["QuadBot", "Errant Blast"],
+    name: "Control",
+    cards: ["EMP"],
   },
+  //{
+  //  name: "Midrange",
+  //  cards: ["QuadBot", "Errant Blast"],
+  //},
 ]

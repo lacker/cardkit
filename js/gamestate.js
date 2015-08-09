@@ -86,7 +86,7 @@ class GameState {
     this.winner = data.winner || null
 
     // set this to true for plenty of mana, for testing
-    this.godMode = false
+    this.godMode = true
 
     // A list of all moves we have ever made on the game state
     this.history = []

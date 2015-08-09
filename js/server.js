@@ -40,9 +40,7 @@ class Connection {
     this.ws = ws
     this.name = null
     this.address = `${ws._socket.remoteAddress}:${ws._socket.remotePort}`
-
-    // Each connection just gets a random deck chosen for it
-    this.deck = choice(DECKS)
+    console.log("new conn")
 
     console.log(`connected to ${this.address}`)
 
@@ -97,6 +95,16 @@ class Connection {
       }
     } else if (message.op == "register") {
       this.name = message.name
+            let d = choice(DECKS)
+    // one player gets emps for test
+    while (!this.deck) {
+      let d = choice(DECKS)
+      if (!d.taken) {
+        this.deck = d
+        this.deck.taken = true
+      }
+    }
+
       if (message.seeking) {
         Connection.waiting.set(this.name, this)
       }
@@ -125,6 +133,10 @@ class Connection {
       Connection.waiting.clear()
 
       // everyone starts with three cards
+      this.everyoneDraws()
+      this.everyoneDraws()
+      this.everyoneDraws()
+      this.everyoneDraws()
       this.everyoneDraws()
       this.everyoneDraws()
       this.everyoneDraws()
