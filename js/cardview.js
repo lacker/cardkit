@@ -6,6 +6,7 @@ let Card = React.createClass({
 
   // layout and style the card
   render() {
+    console.log(this.props)
     let combinedCSS = this.cssClassesForCard();
 
     let attackPart;

@@ -15,9 +15,12 @@
 // { "op": "hello" }
 // When a game starts, the server sends out
 // { "op": "start", "players": [list of player names], "gameID": <gameid>}
+// To verify that clients are in sync, clients send up
+// { "op": "checkSync", "key": key, "value": value }
+// and if the same key ever goes to multiple values, the server logs an error.
 
 // some json for cards
-import {CARDS} from './cards.js';
+import {CARDS, DECKS} from './cards.js';
 
 require("seedrandom")
 Math.seedrandom()
@@ -26,11 +29,19 @@ const WebSocketServer = require("ws").Server
 
 let wss = new WebSocketServer({port: 9090})
 
+function choice(list) {
+  // random card from deck
+  let index = Math.floor(Math.random() * list.length)
+  return list[index]
+}
+
 class Connection {
   constructor(ws) {
     this.ws = ws
     this.name = null
     this.address = `${ws._socket.remoteAddress}:${ws._socket.remotePort}`
+    console.log("new conn")
+
     console.log(`connected to ${this.address}`)
 
     if (Connection.all === undefined) {
@@ -44,6 +55,13 @@ class Connection {
       // Connection.games maps each gameID to a list of all moves that
       // have been made in the game.
       Connection.games = new Map()
+
+      // Connection.checkSync maps generic keys to generic
+      // values. Clients can use this to check for synchronization
+      // bugs. Each client should log the same value for a particular
+      // key. The server just logs if it ever sees multiple values for
+      // the same key.
+      Connection.checkSync = new Map()
     }
     Connection.all.set(this.address, this)
   }
@@ -64,8 +82,29 @@ class Connection {
     console.log("received: " + messageData)
 
     let message = JSON.parse(messageData)
-    if (message.op == "register") {
+    if (message.op == "checkSync") {
+      if (Connection.checkSync.has(message.key)) {
+        let oldValue = Connection.checkSync.get(message.key)
+        if (oldValue != message.value) {
+          console.log("checkSync FAIL: expected key " + message.key +
+                      " to map to value " + oldValue + " but saw " +
+                      message.value)
+        }
+      } else {
+        Connection.checkSync.set(message.key, message.value)
+      }
+    } else if (message.op == "register") {
       this.name = message.name
+            let d = choice(DECKS)
+    // one player gets emps for test
+    while (!this.deck) {
+      let d = choice(DECKS)
+      if (!d.taken) {
+        this.deck = d
+        this.deck.taken = true
+      }
+    }
+
       if (message.seeking) {
         Connection.waiting.set(this.name, this)
       }
@@ -97,6 +136,10 @@ class Connection {
       this.everyoneDraws()
       this.everyoneDraws()
       this.everyoneDraws()
+      this.everyoneDraws()
+      this.everyoneDraws()
+      this.everyoneDraws()
+      this.everyoneDraws()
       
       // you are always drawing cards in spacetime
       this.drawLoop = setInterval(() => {
@@ -116,22 +159,25 @@ class Connection {
   everyoneDraws() {
     let players = Array.from(Connection.all.values())
     for (let player of players) {
-      let card = this.cardCopy(player.name);
+      let card = this.cardCopy(player);
       let draw = { op: "draw" , player: {name: player.name}, card}
       this.broadcast(draw)
     }
   }
 
+  // Gets the actual card object to use for a player drawing a card.
   cardCopy(player) {
-    let card = CARDS[Math.floor(Math.random() * CARDS.length)]         
+    let cardName = choice(player.deck.cards)
+    let card = CARDS[cardName]
     // Make a copy so that we can edit this card        
-    let copy = {}         
+    let copy = {}     
+    copy['name'] = cardName    
     for (let key in card) {
       copy[key] = card[key]
     }
 
-    copy.canAct = false; 
-    copy.player = player;
+    copy.canAct = false
+    copy.player = player.name
     return copy
   }
 

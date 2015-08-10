@@ -15,6 +15,17 @@ class PlayerState {
     this.mana = data.mana || 0
     this.maxMana = data.maxMana || 0
   }
+  
+  // Creates a string that, when printed, is a nice way to view the
+  // contents of the PlayerState for debugging.
+  displayString() {
+    return `name: ${this.name}
+hand: ${this.hand}
+board: ${this.board}
+life: ${this.life}
+mana: ${this.mana}/${this.maxMana}
+`
+  }
 
   // Moves a card from hand to trash.
   handToTrash(index) {
@@ -85,8 +96,34 @@ class GameState {
     // A list of all moves we have ever made on the game state
     this.history = []
 
-    // how much time it takes to show damage to a card or player in millis
     this.damageDuration = 900
+
+  }
+
+    // The player for the provided name.
+  playerForName(name) {
+    let answer = undefined
+    this.players.forEach(player => {
+      if (player.name == name) {
+        answer = player
+      }
+    })
+    return answer
+  }
+
+  // Creates a string that, when printed, is a nice way to view the
+    // contents of the PlayerState for debugging.
+    displayString() {
+    let answer = ""
+    let playerNames = this.players.map(p => p.name)
+    playerNames.sort()
+    playerNames.forEach(name => {
+      let p = this.playerForName(name)
+      if (p) {
+        answer += p.displayString()
+      }
+    })
+    return answer
   }
 
   // The local player
