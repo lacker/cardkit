@@ -1,5 +1,7 @@
 // React view of the Lobby
 import React from 'react';
+import Client from "./client"
+import GameState from "./gamestate"
 
 let LobbyView = React.createClass({
     render() {
@@ -18,14 +20,20 @@ let LobbyView = React.createClass({
   },
 
   findGame() {
-    window.client.register(false);
+    window.client.register();
     window.client.forceUpdate();
   },
 
   
   playCampaign() {
-    window.client.register(true);
-    window.client.forceUpdate();
+     window.client.register();
+     setTimeout(function() {
+       window.computerName = 'cpu'
+       window.computerGame = new GameState({name: 'cpu'})
+       window.computerClient = new Client('cpu', window.computerGame, 9091)
+       window.computerClient.register()
+      }, 3000)
+     window.client.forceUpdate();
   },
 
 });

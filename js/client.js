@@ -1,10 +1,12 @@
 // This websocket client runs in the browser and talks to the
 // websocket server that's defined in server.js.
+
 class Client {
   // game is a GameState and should start at the beginning of the game.
-  constructor(name, game) {
+  constructor(name, game, port) {
     this.name = name
     this.game = game
+    this.port = port
     this.makeSocket()
 
     // The next op id we expect.
@@ -16,9 +18,8 @@ class Client {
   }
 
   makeSocket() {
-    let url = document.URL.replace("http", "ws").replace(/\/$/, "").replace(":8080", "") + ":9090"
-    console.log(`connecting to ${url}`)
-
+    let url = document.URL.replace("http", "ws").replace(/\/$/, "").replace(":8080", "") + ":" + this.port
+    console.log(url)
     // TODO: needs a more aggressive timeout
     this.ws = new WebSocket(url)
 
@@ -60,15 +61,16 @@ class Client {
   }
 
   // Send a looking-for-game message.
-  register(isCampaign) {
+  register() {
     this.registered = true; // UI checks this to refresh on game seek
     console.log("registering as " + this.name)
-    if (this.game && !isCampaign) {
+    if (this.game) {
       this.send({op: "register", name: this.name, seeking: !this.game.started()})
     } else {
-      this.send({op: "register", name: this.name, seeking: true, isCampaign:isCampaign})
+      this.send({op: "register", name: this.name, seeking: true})
     }
   }
+
 
   forceUpdate() {
     console.log("forceUpdate on the client was not overridden")
@@ -91,23 +93,6 @@ class Client {
       this.buffer = []
       this.forceUpdate()
       this.nextID++
-      // if a player has the EMP deck, he EMPs every draw
-      if (move.card && 
-          move.card.name == "EMP" && 
-          move.player.name == this.game.current().name && 
-          this.game.current().hand.length >= 7) {
-        var self = this;
-              let selectMove = {
-                    "op":"selectCard", 
-                    "index":0,
-                    "containerType": "hand"
-                 };                 
-        setTimeout(function() {
-      self.makeLocalMove(selectMove);
-      self.makeLocalMove(selectMove);
-    },2000)
-
-      }
       return true
     }
     return false
@@ -118,7 +103,6 @@ class Client {
   makeLocalMove(move) {
     move.player = this.name
     move.gameID = this.gameID
-
     this.send(move)
   }
 

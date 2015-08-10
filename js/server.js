@@ -28,6 +28,7 @@ Math.seedrandom()
 const WebSocketServer = require("ws").Server
 
 let wss = new WebSocketServer({port: 9090})
+let wss2 = new WebSocketServer({port: 9091})
 
 function choice(list) {
   // random card from deck
@@ -97,7 +98,6 @@ class Connection {
       this.name = message.name
       let d = choice(DECKS)
       this.deck = d
-      this.isCampaign = message.isCampaign
       if (message.seeking) {
         Connection.waiting.set(this.name, this)
       }
@@ -114,23 +114,6 @@ class Connection {
 
       // Bounce anything but registers
       this.broadcast(message)
-    }
-
-    if (this.isCampaign) {
-      let players = [this.name, 'cpu']
-      let gameID = Math.floor(Math.random() * 1000000)
-      let start = { op: "start", players, gameID }
-      this.broadcast(start)
-      Connection.waiting.clear()
-
-      // everyone starts with three cards
-      this.everyoneDraws()      
-      // you are always drawing cards in spacetime
-      this.drawLoop = setInterval(() => {
-        this.tickTurn();
-      }, 10000);
-
-
     }
 
     // Consider starting a new game
@@ -213,5 +196,19 @@ wss.on("connection", function(ws) {
 
   ws.send(JSON.stringify({op: "hello"}))
 })
+
+// for computer player
+wss2.on("connection", function(ws) {
+  let connection = new Connection(ws)
+
+  ws.on("message", function(message) {
+    connection.receive(message)
+  })
+
+  ws.on("close", () => connection.close())
+
+  ws.send(JSON.stringify({op: "hello"}))
+})
+
 
 console.log("server running...")

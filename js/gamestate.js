@@ -20,11 +20,11 @@ class PlayerState {
   // contents of the PlayerState for debugging.
   displayString() {
     return `name: ${this.name}
-hand: ${this.hand}
-board: ${this.board}
-life: ${this.life}
-mana: ${this.mana}/${this.maxMana}
-`
+            hand: ${this.hand}
+            board: ${this.board}
+            life: ${this.life}
+            mana: ${this.mana}/${this.maxMana}
+           `
   }
 
   // Moves a card from hand to trash.

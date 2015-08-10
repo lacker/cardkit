@@ -10,7 +10,7 @@ let App = React.createClass({
     // Stash things in window for easy debugging
     window.name = `Guest ${Math.floor(Math.random() * 100)}`
     window.game = new GameState({name: window.name})
-    window.client = new Client(window.name, window.game)
+    window.client = new Client(window.name, window.game, 9090)
     return window.game
   },
 
