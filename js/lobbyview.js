@@ -9,13 +9,22 @@ let LobbyView = React.createClass({
           <div className="find-game-button" onClick={this.findGame}>
             Find a Game
           </div>
+          <div className="find-game-button campaign-button" onClick={this.playCampaign}>
+            Campaign 1: Bibot Attack
+          </div>
           <img className="home-image" src="img/galaxy-color-shadow.svg" />
         </div>
     );
   },
 
   findGame() {
-    window.client.register();
+    window.client.register(false);
+    window.client.forceUpdate();
+  },
+
+  
+  playCampaign() {
+    window.client.register(true);
     window.client.forceUpdate();
   },
 

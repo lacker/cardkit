@@ -60,13 +60,13 @@ class Client {
   }
 
   // Send a looking-for-game message.
-  register() {
+  register(isCampaign) {
     this.registered = true; // UI checks this to refresh on game seek
     console.log("registering as " + this.name)
-    if (this.game) {
+    if (this.game && !isCampaign) {
       this.send({op: "register", name: this.name, seeking: !this.game.started()})
     } else {
-      this.send({op: "register", name: this.name, seeking: true})
+      this.send({op: "register", name: this.name, seeking: true, isCampaign:isCampaign})
     }
   }
 

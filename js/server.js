@@ -95,16 +95,9 @@ class Connection {
       }
     } else if (message.op == "register") {
       this.name = message.name
-            let d = choice(DECKS)
-    // one player gets emps for test
-    while (!this.deck) {
       let d = choice(DECKS)
-      if (!d.taken) {
-        this.deck = d
-        this.deck.taken = true
-      }
-    }
-
+      this.deck = d
+      this.isCampaign = message.isCampaign
       if (message.seeking) {
         Connection.waiting.set(this.name, this)
       }
@@ -121,6 +114,23 @@ class Connection {
 
       // Bounce anything but registers
       this.broadcast(message)
+    }
+
+    if (this.isCampaign) {
+      let players = [this.name, 'cpu']
+      let gameID = Math.floor(Math.random() * 1000000)
+      let start = { op: "start", players, gameID }
+      this.broadcast(start)
+      Connection.waiting.clear()
+
+      // everyone starts with three cards
+      this.everyoneDraws()      
+      // you are always drawing cards in spacetime
+      this.drawLoop = setInterval(() => {
+        this.tickTurn();
+      }, 10000);
+
+
     }
 
     // Consider starting a new game
@@ -167,6 +177,7 @@ class Connection {
 
   // Gets the actual card object to use for a player drawing a card.
   cardCopy(player) {
+    console.log(player)
     let cardName = choice(player.deck.cards)
     let card = CARDS[cardName]
     // Make a copy so that we can edit this card        
