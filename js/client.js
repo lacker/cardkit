@@ -19,6 +19,7 @@ class Client {
 
   makeSocket() {
     let url = document.URL.replace("http", "ws").replace(/\/$/, "").replace(":8080", "") + ":9090"
+    console.log(`connecting to ${url}`)
     // TODO: needs a more aggressive timeout
     this.ws = new WebSocket(url)
 

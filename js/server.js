@@ -31,8 +31,7 @@ let wss = new WebSocketServer({port: 9090})
 
 function choice(list) {
   // random card from deck
-  let index = Math.floor(Math.random() * list.length)
-  return list[index]
+  return list[Math.floor(Math.random() * list.length)]
 }
 
 class Connection {
@@ -40,7 +39,6 @@ class Connection {
     this.ws = ws
     this.name = null
     this.address = `${ws._socket.remoteAddress}:${ws._socket.remotePort}`
-    console.log("new conn")
 
     console.log(`connected to ${this.address}`)
 
