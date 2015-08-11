@@ -70,8 +70,11 @@ class Connection {
   broadcast(message) {
     for (let conn of Connection.all.values()) {
       try {
-        conn.ws.send(JSON.stringify(message))
-        console.log("broadcast " + JSON.stringify(message))
+        // computer players don't have sockets
+        if (conn.ws) {
+          conn.ws.send(JSON.stringify(message))
+          console.log("broadcast " + JSON.stringify(message))
+        }
       } catch(err) {
         console.log("caught websocket send error: " + err)
       }
@@ -95,9 +98,8 @@ class Connection {
       }
     } else if (message.op == "register") {
       this.name = message.name
-      let d = choice(DECKS)
-      this.deck = d
-      this.isCampaign = message.isCampaign
+      this.deck = choice(DECKS)
+      this.hasComputerOpponent = message.hasComputerOpponent
       if (message.seeking) {
         Connection.waiting.set(this.name, this)
       }
@@ -116,26 +118,21 @@ class Connection {
       this.broadcast(message)
     }
 
-    if (this.isCampaign) {
-      let players = [this.name, 'cpu']
-      let gameID = Math.floor(Math.random() * 1000000)
-      let start = { op: "start", players, gameID }
-      this.broadcast(start)
-      Connection.waiting.clear()
-
-      // everyone starts with three cards
-      this.everyoneDraws()      
-      // you are always drawing cards in spacetime
-      this.drawLoop = setInterval(() => {
-        this.tickTurn();
-      }, 10000);
-
-
-    }
-
     // Consider starting a new game
-    if (Connection.waiting.size == 2) {
+    if (Connection.waiting.size == 2 || message.hasComputerOpponent) {
       let players = Array.from(Connection.waiting.keys())
+      if (message.hasComputerOpponent) {
+        players.push('cpu')
+
+        let cpuPlayer = {
+          'ws': null, //unneeded maybe I should delete
+          'hasComputerOpponent': false,  //unneeded maybe I should delete
+          'address': null,  //unneeded maybe I should delete
+          'name': 'cpu',
+          'deck': choice(DECKS),
+        }
+        Connection.all.set('cpuAddress', cpuPlayer)
+      }
       let gameID = Math.floor(Math.random() * 1000000)
       console.log(`starting ${players[0]} vs ${players[1]}. gameID: ${gameID}`)
       let start = { op: "start", players, gameID }
@@ -143,13 +140,9 @@ class Connection {
       Connection.waiting.clear()
 
       // everyone starts with three cards
-      this.everyoneDraws()
-      this.everyoneDraws()
-      this.everyoneDraws()
-      this.everyoneDraws()
-      this.everyoneDraws()
-      this.everyoneDraws()
-      this.everyoneDraws()
+      for (let i=0;i<3;i++) {        
+        this.everyoneDraws()
+      }
       
       // you are always drawing cards in spacetime
       this.drawLoop = setInterval(() => {
@@ -168,6 +161,7 @@ class Connection {
   // in spacetime, we simul-draw!
   everyoneDraws() {
     let players = Array.from(Connection.all.values())
+    console.log(players)
     for (let player of players) {
       let card = this.cardCopy(player);
       let draw = { op: "draw" , player: {name: player.name}, card}
@@ -177,7 +171,6 @@ class Connection {
 
   // Gets the actual card object to use for a player drawing a card.
   cardCopy(player) {
-    console.log(player)
     let cardName = choice(player.deck.cards)
     let card = CARDS[cardName]
     // Make a copy so that we can edit this card        

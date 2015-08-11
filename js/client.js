@@ -5,6 +5,7 @@ class Client {
   constructor(name, game) {
     this.name = name
     this.game = game
+    this.hasComputerOpponent = false
     this.makeSocket()
 
     // The next op id we expect.
@@ -60,13 +61,13 @@ class Client {
   }
 
   // Send a looking-for-game message.
-  register(isCampaign) {
+  register(hasComputerOpponent) {
     this.registered = true; // UI checks this to refresh on game seek
     console.log("registering as " + this.name)
-    if (this.game && !isCampaign) {
-      this.send({op: "register", name: this.name, seeking: !this.game.started()})
+    if (this.game) {
+      this.send({op: "register", name: this.name, seeking: !this.game.started(), hasComputerOpponent:hasComputerOpponent})
     } else {
-      this.send({op: "register", name: this.name, seeking: true, isCampaign:isCampaign})
+      this.send({op: "register", name: this.name, seeking: true, hasComputerOpponent:hasComputerOpponent})
     }
   }
 
@@ -91,23 +92,6 @@ class Client {
       this.buffer = []
       this.forceUpdate()
       this.nextID++
-      // if a player has the EMP deck, he EMPs every draw
-      if (move.card && 
-          move.card.name == "EMP" && 
-          move.player.name == this.game.current().name && 
-          this.game.current().hand.length >= 7) {
-        var self = this;
-              let selectMove = {
-                    "op":"selectCard", 
-                    "index":0,
-                    "containerType": "hand"
-                 };                 
-        setTimeout(function() {
-      self.makeLocalMove(selectMove);
-      self.makeLocalMove(selectMove);
-    },2000)
-
-      }
       return true
     }
     return false
@@ -120,6 +104,13 @@ class Client {
     move.gameID = this.gameID
 
     this.send(move)
+  }
+
+  makeComputerMove(move) {
+    move.player = this.computerPlayer.name
+    move.gameID = this.gameID
+    this.send(move)
+
   }
 
   // This is called locally when the server decides remotely that a
