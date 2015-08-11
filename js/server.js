@@ -127,7 +127,7 @@ class Connection {
           'hasComputerOpponent': false,  //unneeded maybe I should delete
           'address': null,  //unneeded maybe I should delete
           'name': 'cpu',
-          'deck': choice(DECKS),
+          'deck': DECKS[0], //the bibot deck
         }
         Connection.all.set('cpuAddress', cpuPlayer)
       }

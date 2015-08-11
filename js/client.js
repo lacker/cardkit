@@ -69,6 +69,19 @@ class Client {
     } else {
       this.send({op: "register", name: this.name, seeking: true, hasComputerOpponent:hasComputerOpponent})
     }
+
+    if (hasComputerOpponent) {
+     this.computerLoop =  setInterval(() => {
+    let selectMove = {
+                    "op":"selectCard", 
+                    "index":0,
+                    "containerType": "hand"
+                 };    
+                  this.makeComputerMove(selectMove);
+                  this.makeComputerMove(selectMove);    
+    }, 5000);
+    }
+        
   }
 
 
@@ -108,7 +121,7 @@ class Client {
   }
 
   makeComputerMove(move) {
-    move.player = this.computerPlayer.name
+    move.player = 'cpu'
     move.gameID = this.gameID
     this.send(move)
 

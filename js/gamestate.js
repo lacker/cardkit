@@ -412,9 +412,13 @@ class GameState {
     // for permanents that attack on a loop
     if (card.attackRate) {
       // default to attack opponent's face
-      card.attacker = this.localPlayer()
+      for (let p of this.players) {
+        if (p == player) {          
+          card.attacker = p
+          break;
+        }
+      }
       card.attackLoop = setInterval(() => {
-        console.log("atack")
         this.faceForCard(card, card.attacker)
         window.client.forceUpdate()
       } ,card.attackRate);
