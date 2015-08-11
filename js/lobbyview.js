@@ -1,5 +1,7 @@
 // React view of the Lobby
 import React from 'react';
+import Client from "./client"
+import GameState from "./gamestate"
 
 let LobbyView = React.createClass({
     render() {
@@ -24,8 +26,8 @@ let LobbyView = React.createClass({
 
   
   playCampaign() {
-    window.client.register(true);
-    window.client.forceUpdate();
+     window.client.register(true);
+     window.client.forceUpdate();
   },
 
 });

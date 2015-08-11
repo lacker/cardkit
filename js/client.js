@@ -1,5 +1,6 @@
 // This websocket client runs in the browser and talks to the
 // websocket server that's defined in server.js.
+
 class Client {
   // game is a GameState and should start at the beginning of the game.
   constructor(name, game) {
@@ -18,8 +19,6 @@ class Client {
 
   makeSocket() {
     let url = document.URL.replace("http", "ws").replace(/\/$/, "").replace(":8080", "") + ":9090"
-    console.log(`connecting to ${url}`)
-
     // TODO: needs a more aggressive timeout
     this.ws = new WebSocket(url)
 
@@ -70,6 +69,7 @@ class Client {
       this.send({op: "register", name: this.name, seeking: true, hasComputerOpponent:hasComputerOpponent})
     }
   }
+
 
   forceUpdate() {
     console.log("forceUpdate on the client was not overridden")
