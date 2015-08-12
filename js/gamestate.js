@@ -16,9 +16,8 @@ class PlayerState {
     this.maxMana = data.maxMana || 0
   }
   
-  // A string that can be displayed to debug the game state.
-  // This string should be consistent for all clients viewing the same  
-  // game. In particular, it prints players by alphabetical order.
+  // Creates a string that, when printed, is a nice way to view the
+  // contents of the PlayerState for debugging.
   displayString() {
     return `name: ${this.name}
             hand: ${this.hand}
