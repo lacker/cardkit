@@ -20,7 +20,7 @@ export const CARDS = {
     attackRate: 3000,
     cost: 4
   },
-  Pentabot: {
+  PentaBot: {
     permanent: true,
     attack: 5,
     defense: 5,
@@ -42,7 +42,7 @@ export const CARDS = {
     description: "Destroy all cards in play.",
     flavor: "Watch that basket.",
     emp: true,
-    cost: 4
+    cost: 2
   },
 }
 
@@ -53,7 +53,7 @@ export var DECKS = [
   },
   {
     name: "Control",
-    cards: ["EMP"],
+    cards: ["EMP", "QuadBot", "PentaBot", "TriBot"],
   },
   //{
   //  name: "Midrange",

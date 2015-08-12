@@ -92,7 +92,7 @@ class GameState {
     this.declaredWinner = false
 
     // set this to true for plenty of mana, for testing
-    this.godMode = true
+    this.godMode = false
 
     // A list of all moves we have ever made on the game state
     this.history = []
@@ -396,7 +396,8 @@ class GameState {
       return;
     }
     if (player.mana < card.cost) {
-      throw `need ${card.cost} mana but only have ${player.mana}`
+      player.selectedCard = null
+      // throw `need ${card.cost} mana but only have ${player.mana}`
     }
     player.mana -= card.cost      
 

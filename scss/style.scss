@@ -280,7 +280,8 @@ h2 {
 }
 
 .campaign-button {
-  margin-top:2vh
+  margin-top:2vh;
+  width: $end-turn-button-width*2;
 }
 
 // the style for the big swords in the lobby

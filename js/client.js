@@ -70,16 +70,18 @@ class Client {
       this.send({op: "register", name: this.name, seeking: true, hasComputerOpponent:hasComputerOpponent})
     }
 
+    // when you register a computer game
+    // computer starts trying to play cards out from left to right
     if (hasComputerOpponent) {
-     this.computerLoop =  setInterval(() => {
-    let selectMove = {
-                    "op":"selectCard", 
-                    "index":0,
-                    "containerType": "hand"
-                 };    
-                  this.makeComputerMove(selectMove);
-                  this.makeComputerMove(selectMove);    
-    }, 5000);
+      this.computerLoop =  setInterval(() => {
+        let selectMove = {
+                          "op": "selectCard", 
+                          "index": 0,
+                          "containerType": "hand"
+                         };    
+        this.makeComputerMove(selectMove);
+        this.makeComputerMove(selectMove);    
+      }, 5000);
     }
         
   }
@@ -88,6 +90,7 @@ class Client {
   forceUpdate() {
     console.log("forceUpdate on the client was not overridden")
   }
+
 
   // Handles a move being reported from the server.
   // Returns whether we knew what to do with it.

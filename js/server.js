@@ -97,6 +97,10 @@ class Connection {
     } else if (message.op == "register") {
       this.name = message.name
       this.deck = choice(DECKS)
+      if (message.hasComputerOpponent) {
+        this.deck = DECKS[1] // always get the control deck against the computer, who gets bibots
+
+      }
       this.hasComputerOpponent = message.hasComputerOpponent
       if (message.seeking) {
         Connection.waiting.set(this.name, this)
