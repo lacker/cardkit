@@ -16,9 +16,8 @@ class PlayerState {
     this.maxMana = data.maxMana || 0
   }
   
-  // A string that can be displayed to debug the game state.
-  // This string should be consistent for all clients viewing the same  
-  // game. In particular, it prints players by alphabetical order.
+  // Creates a string that, when printed, is a nice way to view the
+  // contents of the PlayerState for debugging.
   displayString() {
     return `name: ${this.name}
             hand: ${this.hand}
@@ -112,8 +111,9 @@ class GameState {
     return answer
   }
 
-  // Creates a string that, when printed, is a nice way to view the
-    // contents of the PlayerState for debugging.
+    // A string that can be displayed to debug the game state.
+    // This string should be consistent for all clients viewing the same  
+    // game. In particular, it prints players by alphabetical order.
     displayString() {
     let answer = ""
     let playerNames = this.players.map(p => p.name)
@@ -239,7 +239,7 @@ class GameState {
   }
 
   // set the winner and trigger some animation or show if game ends
-  checkForWinner () {
+  checkForWinner() {
     if (this.localPlayer().life <= 0) {
       this.winner = this.remotePlayer().name
     } else if (this.remotePlayer().life <= 0) {

@@ -67,7 +67,7 @@ class Client {
     if (this.game) {
       this.send({op: "register", name: this.name, seeking: !this.game.started(), hasComputerOpponent:hasComputerOpponent})
     } else {
-      this.send({op: "register", name: this.name, seeking: true, hasComputerOpponent:hasComputerOpponent})
+      this.send({op: "register", name: this.name, seeking: true, hasComputerOpponent})
     }
 
     // when you register a computer game
@@ -123,6 +123,7 @@ class Client {
     this.send(move)
   }
 
+  // send a move from the computer player
   makeComputerMove(move) {
     move.player = 'cpu'
     move.gameID = this.gameID
