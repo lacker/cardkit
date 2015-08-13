@@ -1,7 +1,8 @@
 // React view of a GameState
 import React from 'react';
-import Player from './playerview.js';
-import Card from "./cardview.js"
+import Player from '../playerview/playerview';
+import Card from "../cardview/cardview";
+import './_gameview.scss';
 
 
 let GameView = React.createClass({
