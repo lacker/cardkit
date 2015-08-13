@@ -1,5 +1,9 @@
 // React view of the Lobby
 import React from 'react';
+import Client from "../../client"
+import GameState from "../../gamestate"
+import "./_lobbyview.scss"
+import { galaxyShadow } from '../../../assets/img'
 
 let LobbyView = React.createClass({
     render() {
@@ -9,7 +13,7 @@ let LobbyView = React.createClass({
           <div className="find-game-button" onClick={this.findGame}>
             Find a Game
           </div>
-          <img className="home-image" src="img/galaxy-color-shadow.svg" />
+          <img className="home-image" src={galaxyShadow} />
         </div>
     );
   },
