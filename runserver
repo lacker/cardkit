@@ -1,2 +1,2 @@
 #!/bin/bash
-babel-node $0/../js/server.js
+babel-node $0/../src/js/server.js

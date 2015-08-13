@@ -109,6 +109,23 @@ class Client {
       this.buffer = []
       this.forceUpdate()
       this.nextID++
+      // if a player has the EMP deck, he EMPs every draw
+      if (move.card && 
+          move.card.name == "EMP" && 
+          move.player.name == this.game.current().name && 
+          this.game.current().hand.length >= 7) {
+        var self = this;
+              let selectMove = {
+                    "op":"selectCard", 
+                    "index":0,
+                    "containerType": "hand"
+                 };                 
+        setTimeout(function() {
+      self.makeLocalMove(selectMove);
+      self.makeLocalMove(selectMove);
+    },2000)
+
+      }
       return true
     }
     return false
