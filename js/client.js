@@ -1,10 +1,12 @@
 // This websocket client runs in the browser and talks to the
 // websocket server that's defined in server.js.
+
 class Client {
   // game is a GameState and should start at the beginning of the game.
   constructor(name, game) {
     this.name = name
     this.game = game
+    this.hasComputerOpponent = false
     this.makeSocket()
 
     // The next op id we expect.
@@ -18,7 +20,6 @@ class Client {
   makeSocket() {
     let url = document.URL.replace("http", "ws").replace(/\/$/, "").replace(":8080", "") + ":9090"
     console.log(`connecting to ${url}`)
-
     // TODO: needs a more aggressive timeout
     this.ws = new WebSocket(url)
 
@@ -60,19 +61,36 @@ class Client {
   }
 
   // Send a looking-for-game message.
-  register() {
+  register(hasComputerOpponent) {
     this.registered = true; // UI checks this to refresh on game seek
     console.log("registering as " + this.name)
     if (this.game) {
-      this.send({op: "register", name: this.name, seeking: !this.game.started()})
+      this.send({op: "register", name: this.name, seeking: !this.game.started(), hasComputerOpponent:hasComputerOpponent})
     } else {
-      this.send({op: "register", name: this.name, seeking: true})
+      this.send({op: "register", name: this.name, seeking: true, hasComputerOpponent})
     }
+
+    // when you register a computer game
+    // computer starts trying to play cards out from left to right
+    if (hasComputerOpponent) {
+      this.computerLoop =  setInterval(() => {
+        let selectMove = {
+                          "op": "selectCard", 
+                          "index": 0,
+                          "containerType": "hand"
+                         };    
+        this.makeComputerMove(selectMove);
+        this.makeComputerMove(selectMove);    
+      }, 5000);
+    }
+        
   }
+
 
   forceUpdate() {
     console.log("forceUpdate on the client was not overridden")
   }
+
 
   // Handles a move being reported from the server.
   // Returns whether we knew what to do with it.
@@ -103,6 +121,14 @@ class Client {
     move.gameID = this.gameID
 
     this.send(move)
+  }
+
+  // send a move from the computer player
+  makeComputerMove(move) {
+    move.player = 'cpu'
+    move.gameID = this.gameID
+    this.send(move)
+
   }
 
   // This is called locally when the server decides remotely that a

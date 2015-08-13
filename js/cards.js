@@ -3,24 +3,28 @@ export const CARDS = {
     permanent: true,
     attack: 2,
     defense: 2,
+    attackRate: 3000,
     cost: 2
   },
   TriBot: {
     permanent: true,
     attack: 3,
     defense: 3,
+    attackRate: 3000,
     cost: 3
   },
   QuadBot: {
     permanent: true,
     attack: 4,
     defense: 4,
+    attackRate: 3000,
     cost: 4
   },
-  Pentabot: {
+  PentaBot: {
     permanent: true,
     attack: 5,
     defense: 5,
+    attackRate: 3000,
     cost: 5
   },
   "Laser Blast": {
@@ -38,21 +42,21 @@ export const CARDS = {
     description: "Destroy all cards in play.",
     flavor: "Watch that basket.",
     emp: true,
-    cost: 4
+    cost: 2
   },
 }
 
-export const DECKS = [
-  {
-    name: "Control",
-    cards: ["Pentabot", "EMP"],
-  },
+export var DECKS = [
   {
     name: "Weenie",
-    cards: ["BiBot", "TriBot"],
+    cards: ["BiBot"],
   },
   {
-    name: "Midrange",
-    cards: ["QuadBot", "Errant Blast"],
+    name: "Control",
+    cards: ["EMP", "QuadBot", "PentaBot", "TriBot"],
   },
+  //{
+  //  name: "Midrange",
+  //  cards: ["QuadBot", "Errant Blast"],
+  //},
 ]

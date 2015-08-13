@@ -30,6 +30,7 @@ const WebSocketServer = require("ws").Server
 let wss = new WebSocketServer({port: 9090})
 
 function choice(list) {
+  // random card from deck
   return list[Math.floor(Math.random() * list.length)]
 }
 
@@ -38,9 +39,6 @@ class Connection {
     this.ws = ws
     this.name = null
     this.address = `${ws._socket.remoteAddress}:${ws._socket.remotePort}`
-
-    // Each connection just gets a random deck chosen for it
-    this.deck = choice(DECKS)
 
     console.log(`connected to ${this.address}`)
 
@@ -70,8 +68,11 @@ class Connection {
   broadcast(message) {
     for (let conn of Connection.all.values()) {
       try {
-        conn.ws.send(JSON.stringify(message))
-        console.log("broadcast " + JSON.stringify(message))
+        // computer players don't have sockets
+        if (conn.ws) {
+          conn.ws.send(JSON.stringify(message))
+          console.log("broadcast " + JSON.stringify(message))
+        }
       } catch(err) {
         console.log("caught websocket send error: " + err)
       }
@@ -95,6 +96,12 @@ class Connection {
       }
     } else if (message.op == "register") {
       this.name = message.name
+      this.deck = choice(DECKS)
+      if (message.hasComputerOpponent) {
+        this.deck = DECKS[1] // always get the control deck against the computer, who gets bibots
+
+      }
+      this.hasComputerOpponent = message.hasComputerOpponent
       if (message.seeking) {
         Connection.waiting.set(this.name, this)
       }
@@ -114,8 +121,20 @@ class Connection {
     }
 
     // Consider starting a new game
-    if (Connection.waiting.size == 2) {
+    if (Connection.waiting.size == 2 || message.hasComputerOpponent) {
       let players = Array.from(Connection.waiting.keys())
+      if (message.hasComputerOpponent) {
+        players.push('cpu')
+
+        let cpuPlayer = {
+          'ws': null, //unneeded maybe I should delete
+          'hasComputerOpponent': false,  //unneeded maybe I should delete
+          'address': null,  //unneeded maybe I should delete
+          'name': 'cpu',
+          'deck': DECKS[0], //the bibot deck
+        }
+        Connection.all.set('cpuAddress', cpuPlayer)
+      }
       let gameID = Math.floor(Math.random() * 1000000)
       console.log(`starting ${players[0]} vs ${players[1]}. gameID: ${gameID}`)
       let start = { op: "start", players, gameID }
@@ -123,9 +142,9 @@ class Connection {
       Connection.waiting.clear()
 
       // everyone starts with three cards
-      this.everyoneDraws()
-      this.everyoneDraws()
-      this.everyoneDraws()
+      for (let i=0;i<3;i++) {        
+        this.everyoneDraws()
+      }
       
       // you are always drawing cards in spacetime
       this.drawLoop = setInterval(() => {
@@ -138,12 +157,13 @@ class Connection {
   // in spacetime, we simul-draw!
   tickTurn() {
     this.everyoneDraws()
-    this.broadcast({ op: "refreshCards", "player": "no_player" })
+    this.broadcast({ op: "refreshPlayers", "player": "no_player" })
   }
 
   // in spacetime, we simul-draw!
   everyoneDraws() {
     let players = Array.from(Connection.all.values())
+    console.log(players)
     for (let player of players) {
       let card = this.cardCopy(player);
       let draw = { op: "draw" , player: {name: player.name}, card}
@@ -153,9 +173,11 @@ class Connection {
 
   // Gets the actual card object to use for a player drawing a card.
   cardCopy(player) {
-    let card = CARDS[choice(player.deck)]
+    let cardName = choice(player.deck.cards)
+    let card = CARDS[cardName]
     // Make a copy so that we can edit this card        
-    let copy = {}         
+    let copy = {}     
+    copy['name'] = cardName    
     for (let key in card) {
       copy[key] = card[key]
     }

@@ -197,7 +197,7 @@ h2 {
   background-color: rgba(245,245,245,1);
 }
 
-// the botom player
+// the bottom player
 .home-avatar {
   margin-top:30px;
 }
@@ -279,9 +279,37 @@ h2 {
   border: 1px solid;
 }
 
+.campaign-button {
+  margin-top:2vh;
+  width: $end-turn-button-width*2;
+}
+
 // the style for the big swords in the lobby
 .home-image {
   margin-top:30px;
   width:70%;
 }
 
+@keyframes damage-player {
+    0% {
+        background-color: Yellow;
+        opacity:1;
+    }
+    22% {
+        background-color: Yellow;
+    }
+    77% {
+        background-color: Red;
+    }
+    100% {
+        background-color: #777;
+    }
+}
+
+.damage-player {
+  transform-origin: 50% 20%;
+  animation-name: damage-player;
+  animation-duration: 900ms;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in-out;
+}    

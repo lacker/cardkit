@@ -31,8 +31,7 @@ describe("GameState", function() {
   it("retains card function across reserialization", function() {
     let state = new GameState({name: "bob"})
     state.startGame(["bob", "eve"], 123)
-    state.makeMove({op: "refreshCards"})
-    state.makeMove({op: "refreshCards"})
+    state.makeMove({op: "refreshPlayers"})
     let data = JSON.stringify(state)
     let state2 = new GameState(JSON.parse(data))
 
@@ -56,15 +55,15 @@ describe("GameState", function() {
 
     // draw the simplest permanent
     state.draw({"name":"bob"}, {"cost":0, "permanent": true})
-    expect(state.current().hand.length).toEqual(1)
+    expect(state.localPlayer().hand.length).toEqual(1)
 
     // play last card drawn
     state.selectCard(0, "hand", "bob")
     state.selectCard(0, "hand", "bob")
-    expect(state.current().board.length).toEqual(1)
+    expect(state.localPlayer().board.length).toEqual(1)
 
     // go to next turn
-    state.makeMove({op: "refreshCards"})
+    state.makeMove({op: "refreshPlayers"})
 
     // get a card that implements kill
     state.draw({"name":"eve"}, {"kill":true, "cost":0})    
@@ -73,8 +72,8 @@ describe("GameState", function() {
     state.selectCard(0, "hand", "eve")
 
     // permanent leaves board and goes to trash
-    expect(state.opponent().board.length).toEqual(0)
-    expect(state.opponent().trash.length).toEqual(1)
+    expect(state.remotePlayer().board.length).toEqual(0)
+    expect(state.remotePlayer().trash.length).toEqual(1)
 
   })
 
@@ -92,7 +91,7 @@ describe("GameState", function() {
     state.selectCard(0, "hand", "bob")
    
     // go to next turn
-    state.makeMove({op: "refreshCards"})
+    state.makeMove({op: "refreshPlayers"})
    
     // get a card that implements direct damage
     state.draw({"name":"eve"}, {"damage":2, "cost":0})    
@@ -103,11 +102,11 @@ describe("GameState", function() {
 
     // permanent leaves board and goes to trash
     // bob
-    expect(state.current().board.length).toEqual(0)
-    expect(state.current().trash.length).toEqual(1)
+    expect(state.localPlayer().board.length).toEqual(0)
+    expect(state.localPlayer().trash.length).toEqual(1)
     // eve
-    expect(state.opponent().board.length).toEqual(0)
-    expect(state.opponent().trash.length).toEqual(1)
+    expect(state.remotePlayer().board.length).toEqual(0)
+    expect(state.remotePlayer().trash.length).toEqual(1)
   })
 
   it("two creatures die when colliding", function() {
@@ -132,16 +131,16 @@ describe("GameState", function() {
     state.selectCard(0, "hand", "eve")
 
     // go to next turn
-    state.makeMove({op: "refreshCards"})
+    state.makeMove({op: "refreshPlayers"})
 
     state.selectCard(0, "board", "eve")
     state.selectCard(0, "opponentBoard", "eve")
 
     // both permanents leave board and go to trash
-    expect(state.current().board.length).toEqual(0)
-    expect(state.current().trash.length).toEqual(1)
-    expect(state.opponent().board.length).toEqual(0)
-    expect(state.opponent().trash.length).toEqual(1)
+    expect(state.localPlayer().board.length).toEqual(0)
+    expect(state.localPlayer().trash.length).toEqual(1)
+    expect(state.remotePlayer().board.length).toEqual(0)
+    expect(state.remotePlayer().trash.length).toEqual(1)
 
 
   })
