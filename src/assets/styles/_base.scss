@@ -1,0 +1,30 @@
+// http://coolors.co/app/00ffc5-fe5f55-adf5ff-0075a2-481620
+$palette-one: #00FFC5;
+$palette-two: #FE5F55;
+$palette-three: #ADF5FF;
+$palette-four: #0075A2;
+$palette-five: #481620;
+
+$default-padding: 1vw;
+$default-horizontal-padding: 1vw;
+$default-vertical-padding: 1vh;
+$card-height: 13vh;
+$card-width: 9vw;
+$end-turn-button-width: 10vw;
+$in-play-width: $card-width * 7; 
+$in-play-height: $card-height*2 + $default-vertical-padding*4; 
+$default-corner-radius: 6px;
+
+
+/* 
+   styles that override general globals
+*/
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+h2 {
+  font-size: 2vh;
+}

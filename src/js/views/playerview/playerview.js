@@ -1,6 +1,6 @@
 // React view of a PlayerState
 import React from "react";
-import Card from "./cardview.js"
+import Card from "../cardview/cardview"
 
 let Player = React.createClass({
   render() {

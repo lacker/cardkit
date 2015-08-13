@@ -2,8 +2,8 @@ import React from "react"
 
 import Client from "./client"
 import GameState from "./gamestate"
-import GameView from "./gameview"
-import LobbyView from "./lobbyview"
+import GameView from "./views/gameview/gameview"
+import LobbyView from "./views/lobbyview/lobbyview"
 
 let App = React.createClass({
   getInitialState() {

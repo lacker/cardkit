@@ -1,6 +1,7 @@
 // React view of a card
 import React from "react";
-require("../scss/style.scss");
+import "./_cardview.scss";
+import { shield, swords } from '../../../assets/img'
 
 let Card = React.createClass({
 
@@ -16,11 +17,11 @@ let Card = React.createClass({
             {this.props.cardInfo.description}
           <div className="attack-label">
             {this.props.cardInfo.attack}
-            <img className="card-icon-image" src="img/crossed-swords.svg" />
+            <img className="card-icon-image" src={swords} />
           </div>
           <div className="health-label">
             {this.props.cardInfo.defense}
-            <img className="card-icon-image" src="img/shield.svg" />
+            <img className="card-icon-image" src={shield} />
           </div>
         </div> 
 )
