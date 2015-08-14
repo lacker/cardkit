@@ -15,7 +15,7 @@ module.exports = {
   module: {
     loaders: [
       { test: /\.js?$/, loaders: ['react-hot', 'babel'], exclude: /node_modules/ },
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader'},
+      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader?stage=0'},
       { test: /\.scss$/, loader: "style!css!postcss-loader!sass" },
       { test: /\.(jpe?g|png|gif|svg|ico|cur)$/i, loader: 'file-loader?name=images/[name].[ext]'}
 
@@ -27,6 +27,7 @@ module.exports = {
   resolve: {
     extensions: ['', '.js']
   },
+  devtool: '#source-map',
   postcss: function () {
     return [autoprefixer, csswring]
   }
