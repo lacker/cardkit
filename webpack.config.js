@@ -14,11 +14,9 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /\.js?$/, loaders: ['react-hot', 'babel'], exclude: /node_modules/ },
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader?stage=0'},
+      { test: /\.js?$/, loaders: ['react-hot', 'babel-loader?stage=0'], exclude: /node_modules/ },
       { test: /\.scss$/, loader: "style!css!postcss-loader!sass" },
       { test: /\.(jpe?g|png|gif|svg|ico|cur)$/i, loader: 'file-loader?name=images/[name].[ext]'}
-
     ]
   },
   plugins: [
