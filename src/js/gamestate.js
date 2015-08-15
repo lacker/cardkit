@@ -71,7 +71,7 @@ class PlayerState {
 // A turn goes like
 //
 // beginTurn
-// Some number of selectCard, selectOpponent
+// Some number of selectCard, selectOpponent, resign
 // endTurn
 //
 class GameState {
@@ -90,14 +90,14 @@ class GameState {
     // a flag to do an alert just once
     this.declaredWinner = false
 
-    // set this to true for plenty of mana, for testing
-    this.godMode = false
-
     // A list of all moves we have ever made on the game state
     this.history = []
 
     this.damageDuration = 900
 
+    // set this to true for plenty of mana, for testing
+    this.godMode = false
+    
   }
 
   // The player for the provided name.
@@ -111,10 +111,10 @@ class GameState {
     return answer
   }
 
-    // A string that can be displayed to debug the game state.
-    // This string should be consistent for all clients viewing the same  
-    // game. In particular, it prints players by alphabetical order.
-    displayString() {
+  // A string that can be displayed to debug the game state.
+  // This string should be consistent for all clients viewing the same  
+  // game. In particular, it prints players by alphabetical order.
+  displayString() {
     let answer = ""
     let playerNames = this.players.map(p => p.name)
     playerNames.sort()
@@ -264,7 +264,7 @@ class GameState {
     }
   }
 
-  // containerType can be board or hand
+  // containerType can be board, hand, or opponentBoard
   selectCard(index, containerType, selectingPlayerName) {
     let actingPlayer
     let opponent

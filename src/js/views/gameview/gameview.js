@@ -18,9 +18,6 @@ let GameView = React.createClass({
     let homePlayerBoardCards = homePlayer.board.map((cardInfo, i) =>
           <Card cardInfo={cardInfo} player={homePlayer} key={i} />);
 
-    let cssEndTurn = window.game.turn == 0 ? 'active-player' : '';
-    cssEndTurn = 'end-turn-button'  + ' ' + cssEndTurn;
-
     let opponentDamageCSS = opponent.showDamage ? 'player-avatar damage-player' : 'player-avatar';
 
     return (
@@ -44,7 +41,6 @@ let GameView = React.createClass({
             </div>
           </div>
           
-          <div className={cssEndTurn} onClick={this.endTurn}>End Turn</div>
           <div className="resign-button" onClick={this.resign}>Resign</div>
 
           {/* HOME PLAYER */}
@@ -62,13 +58,6 @@ let GameView = React.createClass({
 
   resign() {
     window.client.makeLocalMove({"op":"resign"});
-  },
-
-  // end and start a new turn when button is activated
-  endTurn() {
-    let event = new CustomEvent("turnEnded", {});
-    window.dispatchEvent(event);
-    window.client.makeLocalMove({"op":"refreshPlayers"});
   },
 
   // highlight the active player

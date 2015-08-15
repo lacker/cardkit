@@ -7,40 +7,37 @@ import * as Util from '../../util';
 
 export default class LobbyView extends Component {
 
-    static defaultProps = {
-      name: 'lobby'
-    }
+  static defaultProps = {
+    name: 'lobby'
+  }
 
-    findGame() {
-      window.client.register(false);
-      window.client.forceUpdate();
-    }
-
+  findGame() {
+    window.client.register(false);
+    window.client.forceUpdate();
+  }
   
   playCampaign() {
-     window.client.register(true);
-     window.client.forceUpdate();
+    window.client.register(true);
+    window.client.forceUpdate();
   }
 
-    render() {
+  render() {
+    const block = this.props.name,
+    elm = Util.buildElementClasses(block, [
+      'heading',
+      'campaign-btn',
+      'home-img'
+    ]);
 
-      const block = this.props.name,
-        elm = Util.buildElementClasses(block, [
-          'heading',
-          'campaign-btn',
-          'home-img'
-        ]);
-
-       return (
-        <div className={block}>
-          <h1 className={elm.heading}>Welcome to Spacetime</h1>
-          
-          <button className={elm.campaignBtn} onClick={this.playCampaign}>
-            Campaign 1: Bibot Attack
-          </button>
-          <img className={elm.homeImg} src={galaxyShadowImg} />
-        </div>
+    return (
+      <div className={block}>
+        <h1 className={elm.heading}>Welcome to Spacetime</h1>
+        <button className={elm.campaignBtn} onClick={this.playCampaign}>
+          Campaign 1: Bibot Attack
+        </button>
+        <img className={elm.homeImg} src={galaxyShadowImg} />
+      </div>
     );
   }
-
+  
 }

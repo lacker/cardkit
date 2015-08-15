@@ -142,14 +142,14 @@ class Connection {
       Connection.waiting.clear()
 
       // everyone starts with three cards
-      for (let i=0;i<3;i++) {        
+      for (let i=0; i<STARTING_HAND_SIZE; i++) {        
         this.everyoneDraws()
       }
       
       // you are always drawing cards in spacetime
       this.drawLoop = setInterval(() => {
         this.tickTurn();
-      }, 10000);
+      }, DRAW_SPEED_IN_MILLIS);
 
     }
   }
@@ -163,7 +163,6 @@ class Connection {
   // in spacetime, we simul-draw!
   everyoneDraws() {
     let players = Array.from(Connection.all.values())
-    console.log(players)
     for (let player of players) {
       let card = this.cardCopy(player);
       let draw = { op: "draw" , player: {name: player.name}, card}
