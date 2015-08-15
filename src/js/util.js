@@ -1,3 +1,9 @@
+/*
+ * Takes a BEM block classname and an array of kebab-case element classnames,
+ * returns an object with camelCase keys mapped to kebab-case values in block__element
+ * format
+ */
+
 export function buildElementClasses (block, elements) {
 	let bemClasses = {};
 
