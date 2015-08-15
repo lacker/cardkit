@@ -20,7 +20,14 @@
 // and if the same key ever goes to multiple values, the server logs an error.
 
 // some json for cards
-import {CARDS, DECKS} from './cards.js';
+import {
+  
+         CARDS, 
+         DECKS, 
+         STARTING_HAND_SIZE, 
+         DRAW_SPEED_IN_MILLIS 
+       
+       } from './cards.js';
 
 require("seedrandom")
 Math.seedrandom()
