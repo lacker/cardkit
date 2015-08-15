@@ -21,7 +21,7 @@
 
 // some json for cards
 import {
-  
+
          CARDS, 
          DECKS, 
          STARTING_HAND_SIZE, 
@@ -189,7 +189,7 @@ class Connection {
     }
 
     copy.canAct = false
-    copy.player = player.name
+    copy.playerName = player.name
     return copy
   }
 

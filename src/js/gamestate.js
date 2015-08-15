@@ -96,7 +96,7 @@ class GameState {
     this.damageDuration = 900
 
     // set this to true for plenty of mana, for testing
-    this.godMode = false
+    this.godMode = true
     
   }
 
@@ -247,7 +247,7 @@ class GameState {
     }
     if (this.winner != null && this.declaredWinner == false) {
       console.log(this.winner + " wins!")
-      alert(this.winner + " wins!")
+      // alert(this.winner + " wins!")
       this.declaredWinner = true
       
       // stop all cards from attacking
@@ -309,7 +309,8 @@ class GameState {
     let boardIndex = player.board.indexOf(player.selectedCard);
     if (boardIndex != -1) {
       player.selectedCard = null;
-      this.attack(boardIndex, index, player);
+      // this.attack(boardIndex, index, player);
+      this.selectTargetForAttack(boardIndex, index, player)
     }
   }
 
@@ -341,7 +342,7 @@ class GameState {
   setSelectedCard(index, containerType, player) {
     if (containerType == "board") {
       let card = player.getBoard(index);
-      player.selectedCard = card.canAct ? card : null;
+      player.selectedCard = card;
     } else if (containerType == "hand") { 
       let card = player.getHand(index);
       if (player.mana >= card.cost) {
@@ -371,6 +372,14 @@ class GameState {
       this.playFace(handIndex, actingPlayer)
     }        
   }    
+
+  selectTargetForAttack(from, to, player) {
+    let opponent = this.localPlayer().name == player.name ? this.remotePlayer() : this.localPlayer()
+    let attacker = player.getBoard(from)
+    let defender = opponent.getBoard(to)
+    attacker.attackTarget = defender   
+    alert("selected target") 
+  }
 
   // from and to are indices into board
   attack(from, to, player) {
@@ -419,8 +428,14 @@ class GameState {
           break;
         }
       }
+
       card.attackLoop = setInterval(() => {
-        this.faceForCard(card, card.attacker)
+        // card is set to attack a creatiure
+        if (card.attackTarget && this.attackCreature(card)) {
+        } else {
+          // card is set to attack a player
+          this.faceForCard(card, card.attacker)
+        }
         window.client.forceUpdate()
       } ,card.attackRate);
     } 
@@ -439,7 +454,7 @@ class GameState {
         actingPlayer.boardToTrash(randomIndex)
       }
     }
- 
+
     // let all permanents act again
     if (card.refreshPlayers) { 
       this.refreshPlayers()
@@ -454,6 +469,48 @@ class GameState {
       }
     }
   }
+
+  // have a card attack its attack target
+  // if its still in play
+  // returns true if the attack is legal and therefore occurs
+  attackCreature (card) {
+    let cardOwner, opponent
+    if (card.playerName == this.localPlayer().name) {
+      cardOwner = this.localPlayer()
+      opponent = this.remotePlayer()
+    } else {
+      cardOwner = this.remotePlayer()
+      opponent = this.localPlayer()
+    }
+
+    let from = -1, to = -1
+
+    // could this happen? is the architecture just bad?
+    for (let i = 0; i < cardOwner.board.length; i++) {
+      let c = cardOwner.board[i];
+      if (c == card) {
+        from = i 
+        break;
+      }
+    }
+    
+    // check if the attackTarget still exists
+    for (let i = 0; i < opponent.board.length; i++) {
+      let c = opponent.board[i];
+      if (c == card.attackTarget) {
+        to = i
+        break;
+      }
+    }
+
+    if (from >= 0 && to >= 0) {
+      this.attack(from, to, cardOwner)
+      return true
+    }
+    card.attackTarget = null
+    return false
+  }
+
 
   // Plays a card from the hand, onto a target.
   // Throws if there's not enough mana.
