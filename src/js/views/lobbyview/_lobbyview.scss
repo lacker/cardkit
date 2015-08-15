@@ -2,6 +2,7 @@
 
 // the overall container for the main lobby
 .lobby {
+
   width: 94vh;
   height:94vh;
   text-align: center; 
@@ -13,11 +14,12 @@
   color:white;
 
   // the button to find a game in the lobby
-  &__campaign-btn {
-    display: block;
+  &__basic-btn {
+    display: inline-block;
     width: medium-button-width;
     padding:$default-padding;
     margin: 0 auto;
+    margin-right: 2vw;
     background-color: $palette-four;
     border-radius:6px;
     border: 1px solid black;
@@ -26,7 +28,7 @@
 
   &__home-img {   
     margin-top:30px;
-    width:70%;
+    width:50%;
   }
 
 }
