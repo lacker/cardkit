@@ -68,6 +68,7 @@ class PlayerState {
   }
 }
 
+
 // A turn goes like
 //
 // beginTurn
@@ -378,7 +379,6 @@ class GameState {
     let attacker = player.getBoard(from)
     let defender = opponent.getBoard(to)
     attacker.attackTarget = defender   
-    alert("selected target") 
   }
 
   // from and to are indices into board
@@ -428,6 +428,13 @@ class GameState {
           break;
         }
       }
+      
+      card.warm = 0
+
+      card.warmLoop = setInterval(() => {
+        card.warm += 1
+        window.client.forceUpdate()
+      } ,card.attackRate/10);
 
       card.attackLoop = setInterval(() => {
         // card is set to attack a creatiure
@@ -436,6 +443,7 @@ class GameState {
           // card is set to attack a player
           this.faceForCard(card, card.attacker)
         }
+        card.warm = 0
         window.client.forceUpdate()
       } ,card.attackRate);
     } 
