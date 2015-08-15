@@ -1,11 +1,7 @@
 @import "../../../assets/styles/base";
 
-/* 
-   styles for LobbyView 
-*/
-
 // the overall container for the main lobby
-.lobby-container {
+.lobby {
   width: 94vh;
   height:94vh;
   text-align: center; 
@@ -15,25 +11,22 @@
   border: 10px double #000; 
   border-width: 1.5vh;
   color:white;
-}
 
-// the button to find a game in the lobby
-.find-game-button {
-  width: $end-turn-button-width;
-  padding:$default-padding;
-  margin: 0 auto;
-  background-color: $palette-four;
-  border-radius:6px;
-  border: 1px solid;
-}
+  // the button to find a game in the lobby
+  &__campaign-btn {
+    display: block;
+    width: $end-turn-button-width;
+    padding:$default-padding;
+    margin: 0 auto;
+    background-color: $palette-four;
+    border-radius:6px;
+    border: 1px solid black;
+    color: white;
+  }
 
-.campaign-button {
-  margin-top:2vh;
-  width: $end-turn-button-width*2;
-}
+  &__home-img {   
+    margin-top:30px;
+    width:70%;
+  }
 
-// the style for the big swords in the lobby
-.home-image {
-  margin-top:30px;
-  width:70%;
 }

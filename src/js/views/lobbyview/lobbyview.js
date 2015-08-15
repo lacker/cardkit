@@ -1,38 +1,46 @@
-// React view of the Lobby
-import React from 'react';
-import Client from "../../client"
-import GameState from "../../gamestate"
-import "./_lobbyview.scss"
-import { galaxyShadow } from '../../../assets/img'
+import React, { Component, PropTypes } from 'react';
+import Client from "../../client";
+import GameState from "../../gamestate";
+import "./_lobbyview.scss";
+import { galaxyShadowImg } from '../../../assets/img';
+import * as Util from '../../util';
 
-let LobbyView = React.createClass({
-    render() {
-      //<div className="find-game-button" onClick={this.findGame}>
-          //  Find a Game
-          //</div>
-       return (
-        <div className="lobby-container">
-          <h1>Welcome to Spacetime</h1>
-          
-          <div className="find-game-button campaign-button" onClick={this.playCampaign}>
-            Campaign 1: Bibot Attack
-          </div>
-          <img className="home-image" src={galaxyShadow} />
-        </div>
-    );
-  },
+export default class LobbyView extends Component {
 
-  findGame() {
-    window.client.register(false);
-    window.client.forceUpdate();
-  },
+    static defaultProps = {
+      name: 'lobby'
+    }
+
+    findGame() {
+      window.client.register(false);
+      window.client.forceUpdate();
+    }
 
   
   playCampaign() {
      window.client.register(true);
      window.client.forceUpdate();
-  },
+  }
 
-});
+    render() {
 
-module.exports = LobbyView;
+      const block = this.props.name,
+        elm = Util.buildElementClasses(block, [
+          'heading',
+          'campaign-btn',
+          'home-img'
+        ]);
+
+       return (
+        <div className={block}>
+          <h1 className={elm.heading}>Welcome to Spacetime</h1>
+          
+          <button className={elm.campaignBtn} onClick={this.playCampaign}>
+            Campaign 1: Bibot Attack
+          </button>
+          <img className={elm.homeImg} src={galaxyShadowImg} />
+        </div>
+    );
+  }
+
+}
