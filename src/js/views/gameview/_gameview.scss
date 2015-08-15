@@ -84,8 +84,8 @@ $end-turn-button-width: 10vw;
    styles for end turn button 
 */
 
-// the main End Turn button that always shows in the game
-.end-turn-button, .resign-button {
+// the resign button that always shows in the game
+.resign-button {
   width: $end-turn-button-width;
   padding:$default-padding;
   border-radius:6px;
@@ -95,13 +95,15 @@ $end-turn-button-width: 10vw;
   margin-left: $in-play-width + 17vw + 1vw;
 }
 
-.end-turn-button {
-  // it's never time to end the turn in spacetime!
-  display: none; 
-  pointer-events:none;
-  background-color: $palette-four;
-  color:gray;
+// the time counting down for each new card/mana
+.turn-timer {
+  width: $end-turn-button-width;
+  position:relative;
+  bottom:$in-play-height/2 + 5vh;
+  margin-left: $in-play-width + 19vw;
 }
+
+
 
 // highlight end of turn button for active player
 .active-player {

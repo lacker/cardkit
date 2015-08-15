@@ -158,6 +158,12 @@ class Connection {
         this.tickTurn();
       }, DRAW_SPEED_IN_MILLIS);
 
+      this.currentGameSecond = DRAW_SPEED_IN_MILLIS / 1000;
+      this.timeLoop = setInterval(() => {
+        this.currentGameSecond--;
+        this.broadcast({ op: "tickTime", time: this.currentGameSecond, player: "no_player"})
+      }, 1000);
+
     }
   }
 
@@ -165,6 +171,7 @@ class Connection {
   tickTurn() {
     this.everyoneDraws()
     this.broadcast({ op: "refreshPlayers", "player": "no_player" })
+    this.currentGameSecond = DRAW_SPEED_IN_MILLIS / 1000
   }
 
   // in spacetime, we simul-draw!

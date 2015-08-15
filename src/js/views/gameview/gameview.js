@@ -19,7 +19,7 @@ let GameView = React.createClass({
           <Card cardInfo={cardInfo} player={homePlayer} key={i} />);
 
     let opponentDamageCSS = opponent.showDamage ? 'player-avatar damage-player' : 'player-avatar';
-
+    let currentTime = window.game.currentGameSecond ? window.game.currentGameSecond : 10;
     return (
         <div className="game-container">
           
@@ -40,7 +40,7 @@ let GameView = React.createClass({
               {homePlayerBoardCards}
             </div>
           </div>
-          
+          <h1 className="turn-timer">{currentTime}</h1>
           <div className="resign-button" onClick={this.resign}>Resign</div>
 
           {/* HOME PLAYER */}

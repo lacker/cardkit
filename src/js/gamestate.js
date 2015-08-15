@@ -39,6 +39,7 @@ class PlayerState {
     let card = this.getBoard(index)
     if (card.attackLoop) {
       clearInterval(card.attackLoop)
+      clearInterval(card.warmLoop)
     }
     this.board.splice(index, 1)
     this.trash.push(card)
@@ -173,6 +174,9 @@ class GameState {
       this.selectOpponent(move.player)
     } else if (move.op == "draw") {
       this.draw(move.player, move.card)
+    } else if (move.op == "tickTime") {
+      this.currentGameSecond = move.time
+      window.client.forceUpdate()
     } else {
       console.log("ignoring op: " + move.op)
       return false
@@ -258,6 +262,7 @@ class GameState {
           var card = player.board[j]
           if (card.attackLoop) {
             clearInterval(card.attackLoop)
+            clearInterval(card.warmLoop)
           }
         }
       }
