@@ -40,7 +40,7 @@ let GameView = React.createClass({
               {homePlayerBoardCards}
             </div>
           </div>
-          <h1 className="turn-timer">{currentTime}</h1>
+          <span className="turn-timer">{currentTime}</span>
           <div className="resign-button" onClick={this.resign}>Resign</div>
 
           {/* HOME PLAYER */}

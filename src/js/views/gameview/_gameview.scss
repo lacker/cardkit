@@ -65,7 +65,6 @@ $end-turn-button-width: 10vw;
 
 // the bottom player
 .home-avatar {
-  margin-top:30px;
 }
 
 // life and mana
@@ -97,10 +96,15 @@ $end-turn-button-width: 10vw;
 
 // the time counting down for each new card/mana
 .turn-timer {
+  float:left;
   width: $end-turn-button-width;
-  position:relative;
-  bottom:$in-play-height/2 + 5vh;
+  padding-top: $default-padding;
+  padding-bottom: $default-padding;
+  position: relative;
+  bottom: $in-play-height/2 + 9vh;
   margin-left: $in-play-width + 19vw;
+  background-color: black;
+  color:white;
 }
 
 
