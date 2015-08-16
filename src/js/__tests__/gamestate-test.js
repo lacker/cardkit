@@ -109,7 +109,7 @@ describe("GameState", function() {
     expect(state.remotePlayer().trash.length).toEqual(1)
   })
 
-  it("two creatures die when colliding", function() {
+  /* it("two creatures die when colliding", function() {
     let state = new GameState({name: "bob"})
 
     state.startGame(["bob", "eve"], 123)
@@ -140,7 +140,7 @@ describe("GameState", function() {
     expect(state.remotePlayer().board.length).toEqual(0)
     expect(state.remotePlayer().trash.length).toEqual(1)
 
-  })
+  })*/
 
   it("godMode is off", function() {
     let state = new GameState({name: "bob"})
