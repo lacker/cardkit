@@ -2,11 +2,10 @@
    The state of a ccg type card game.
 */
 
-require("seedrandom")
+//require("seedrandom")
 
 // The state of a single player.
-class PlayerState {
-  constructor(data) {
+exports.PlayerState = function(data) {
     this.name = data.name
     this.hand = data.hand || []
     this.board = data.board || []
@@ -14,11 +13,10 @@ class PlayerState {
     this.life = data.life || 30
     this.mana = data.mana || 0
     this.maxMana = data.maxMana || 0
-  }
   
   // Creates a string that, when printed, is a nice way to view the
   // contents of the PlayerState for debugging.
-  displayString() {
+  this.displayString = function() {
     return `name: ${this.name}
             hand: ${this.hand}
             board: ${this.board}
@@ -28,14 +26,14 @@ class PlayerState {
   }
 
   // Moves a card from hand to trash.
-  handToTrash(index) {
+  this.handToTrash = function(index) {
     let card = this.getHand(index)
     this.hand.splice(index, 1)
     this.trash.push(card)
   }
 
   // Moves a card from board to trash.
-  boardToTrash(index) {
+  this.boardToTrash = function(index) {
     let card = this.getBoard(index)
     if (card.attackLoop) {
       clearInterval(card.attackLoop)
@@ -46,14 +44,14 @@ class PlayerState {
   }
 
   // Moves a card from hand to board.
-  handToBoard(index) {
+  this.handToBoard = function(index) {
     let card = this.getHand(index)
     this.hand.splice(index, 1)
     this.board.push(card)
   }
 
   // Throws if the index is bad
-  getHand(index) {
+  this.getHand = function(index) {
     if (index >= this.hand.length) {
       throw (this.name + "'s hand has no card at index " + index)
     }
@@ -61,7 +59,7 @@ class PlayerState {
   }
 
   // Throws if the index is bad
-  getBoard(index) {
+  this.getBoard = function(index) {
     if (index >= this.board.length) {
       throw (this.name + "'s board has no card at index " + index)
     }
@@ -76,16 +74,16 @@ class PlayerState {
 // Some number of selectCard, selectOpponent, resign
 // endTurn
 //
-class GameState {
+exports.GameState = function() {
 
   // name is the name of the human at the controls.
-  constructor(data) {
+  this.constructor = function(data) {
     this.name = data.name
     this._started = data._started || false
 
     let playerInfo = data.players || [{name: this.name},
                                       {name: "waiting..."}]
-    this.players = playerInfo.map(info => new PlayerState(info))
+    this.players = playerInfo.map(info => new exports.PlayerState(info))
 
     // The name of the winner
     this.winner = data.winner || null
@@ -103,7 +101,7 @@ class GameState {
   }
 
   // The player for the provided name.
-  playerForName(name) {
+  this.playerForName = function(name) {
     let answer = undefined
     this.players.forEach(player => {
       if (player.name == name) {
@@ -116,7 +114,7 @@ class GameState {
   // A string that can be displayed to debug the game state.
   // This string should be consistent for all clients viewing the same  
   // game. In particular, it prints players by alphabetical order.
-  displayString() {
+  this.displayString = function() {
     let answer = ""
     let playerNames = this.players.map(p => p.name)
     playerNames.sort()
@@ -130,12 +128,12 @@ class GameState {
   }
 
   // The local player
-  localPlayer() {
+  this.localPlayer = function() {
     return this.players[0]
   }
 
   // The remote player
-  remotePlayer() {
+  this.remotePlayer = function() {
     return this.players[1]
   }
 
@@ -154,7 +152,7 @@ class GameState {
   // In typical operation, only the Client should call makeMove.
   //
   // Returns whether the move was understood.
-  makeMove(move) {
+  this.makeMove = function(move) {
     if (this.winner != null) {
       // You can't make normal moves when the game is over
       return false
@@ -186,15 +184,15 @@ class GameState {
     return true
   }
 
-  logHistory() {
+  this.logHistory = function() {
     console.log("" + this.history.length + " moves in history.")
     for (let move of this.history) {
       console.log(JSON.stringify(move))
     }
   }
 
-  startGame(players, seed) {
-    this.rng = new Math.seedrandom(seed)
+  this.startGame = function(players, seed) {
+    this.rng = Math.random(seed)
     if (players[0] == this.name) {
       this.remotePlayer().name = players[1]
     } else if (players[1] == this.name) {
@@ -209,11 +207,11 @@ class GameState {
     this.refreshPlayers()
   }
 
-  started() {
+  this.started = function() {
     return this._started;
   }
 
-  resolveDamage() {
+  this.resolveDamage = function() {
 
     for (var i = 0; i < this.players.length; i++) {
       var player = this.players[i]
@@ -244,7 +242,7 @@ class GameState {
   }
 
   // set the winner and trigger some animation or show if game ends
-  checkForWinner() {
+  this.checkForWinner = function() {
     if (this.localPlayer().life <= 0) {
       this.winner = this.remotePlayer().name
     } else if (this.remotePlayer().life <= 0) {
@@ -271,7 +269,7 @@ class GameState {
   }
 
   // containerType can be board, hand, or opponentBoard
-  selectCard(index, containerType, selectingPlayerName) {
+  this.selectCard = function(index, containerType, selectingPlayerName) {
     let actingPlayer
     let opponent
     if (selectingPlayerName == this.localPlayer().name) {
@@ -310,7 +308,7 @@ class GameState {
     }
   }
 
-  attackForPlayerIfBoardSelected(player, index) {
+  this.attackForPlayerIfBoardSelected = function(player, index) {
     // check for attack from board
     let boardIndex = player.board.indexOf(player.selectedCard);
     if (boardIndex != -1) {
@@ -320,7 +318,7 @@ class GameState {
     }
   }
 
-  playOnForPlayerIfHandSelected(player, index) {
+  this.playOnForPlayerIfHandSelected = function(player, index) {
     let handIndex = player.hand.indexOf(player.selectedCard);
     if (handIndex != -1) {
       player.selectedCard = null;
@@ -328,7 +326,7 @@ class GameState {
     }        
   }
 
-  faceForPlayer(player, index) {
+  this.faceForPlayer = function(player, index) {
     let card = player.getBoard(index)      
     if (card == player.selectedCard) {
       player.selectedCard = null;
@@ -336,7 +334,7 @@ class GameState {
     }
   }
 
-  playForPlayer(player, index) {
+  this.playForPlayer = function(player, index) {
     let card = player.getHand(index)
     if (card == player.selectedCard) {
       player.selectedCard = null;
@@ -345,7 +343,7 @@ class GameState {
   }
 
   // containerType can be board or hand
-  setSelectedCard(index, containerType, player) {
+  this.setSelectedCard = function(index, containerType, player) {
     if (containerType == "board") {
       let card = player.getBoard(index);
       player.selectedCard = card;
@@ -358,7 +356,7 @@ class GameState {
   }
 
   // select the opponent to cast a spell or target with attack
-  selectOpponent(player) {
+  this.selectOpponent = function(player) {
     let actingPlayer
     if (player == this.localPlayer().name) {
       actingPlayer = this.localPlayer()
@@ -379,7 +377,7 @@ class GameState {
     }        
   }    
 
-  selectTargetForAttack(from, to, player) {
+  this.selectTargetForAttack = function(from, to, player) {
     let opponent = this.localPlayer().name == player.name ? this.remotePlayer() : this.localPlayer()
     let attacker = player.getBoard(from)
     let defender = opponent.getBoard(to)
@@ -387,7 +385,7 @@ class GameState {
   }
 
   // from and to are indices into board
-  attack(from, to, player) {
+  this.attack = function(from, to, player) {
     let opponent = this.localPlayer().name == player.name ? this.remotePlayer() : this.localPlayer()
     let attacker = player.getBoard(from)
     let defender = opponent.getBoard(to)
@@ -402,7 +400,7 @@ class GameState {
   // Plays a card from the hand.
   // Throws if there's not enough mana.
   // from is an index of the hand
-  play(from, player) {
+  this.play = function(from, player) {
     let card = player.getHand(from)
     if (card.requiresTarget) {
       // Player has re-selected this.selectedCard in their hand.
@@ -487,7 +485,7 @@ class GameState {
   // have a card attack its attack target
   // if its still in play
   // returns true if the attack is legal and therefore occurs
-  attackCreature (card) {
+  this.attackCreature = function(card) {
     let cardOwner, opponent
     if (card.playerName == this.localPlayer().name) {
       cardOwner = this.localPlayer()
@@ -529,7 +527,7 @@ class GameState {
   // Plays a card from the hand, onto a target.
   // Throws if there's not enough mana.
   // from is an index of the hand
-  playOn(from, to, player) {
+  this.playOn = function(from, to, player) {
     let card = player.getHand(from)
     if (player.mana < card.cost) {
       throw `need ${card.cost} mana but only have ${player.mana}`
@@ -545,7 +543,7 @@ class GameState {
   // Plays a card from the hand, onto a player.
   // Throws if there's not enough mana.
   // from is an index of the hand
-  playFace(from, player) {
+  this.playFace = function(from, player) {
     let opponent = this.localPlayer().name == player.name ? this.remotePlayer() : this.localPlayer()
     let card = player.getHand(from)
     if (player.mana < card.cost) {
@@ -561,7 +559,7 @@ class GameState {
   }
 
   // for direct damage spells
-  damage(to, amount, player) {
+  this.damage = function(to, amount, player) {
     let actingPlayer
     if (player == this.localPlayer()) {
       actingPlayer = this.remotePlayer()
@@ -574,17 +572,17 @@ class GameState {
   }
 
   // whether the game has started
-  started() {
+  this.started = function() {
     return this._started
   }
 
   // attacks face
-  face(from, player) {
+  this.face = function(from, player) {
     let card = player.getBoard(from)
     this.faceForCard(card, player)
   }
 
-  faceForCard(card, player) {
+  this.faceForCard = function(card, player) {
     let opponent = this.localPlayer().name == player.name ? this.remotePlayer() : this.localPlayer()
     opponent.life -= card.attack
 
@@ -596,7 +594,7 @@ class GameState {
     this.showPlayerDamage(opponent)
   }
 
-  showCardDamage(card) {
+  this.showCardDamage = function(card) {
     // opponent damage animation
     card.showDamage = true
     card.damageAnimation = setInterval(() => {
@@ -605,7 +603,7 @@ class GameState {
     }, this.damageDuration) 
   }
 
-  showPlayerDamage(player) {
+  this.showPlayerDamage = function(player) {
     // card damage animation
     player.showDamage = true
     player.damageAnimation = setInterval(() => {
@@ -616,10 +614,10 @@ class GameState {
   }
 
   // this is only used in testing right now
-  draw(player, card) {
+  this.draw = function(player, card) {
     for (var i = 0; i < this.players.length; i++) {
       var p = this.players[i]
-      if (p.name == player.name) {
+      if (p.name == player.name && p.hand) {
         p.hand.push(card) 
         break;   
       }
@@ -627,7 +625,7 @@ class GameState {
   }
 
   // let all cards act, give everyone a mana, and restore everyone's mana
-  refreshPlayers() {
+  this.refreshPlayers = function() {
     this.localPlayer().maxMana = Math.min(1 + this.localPlayer().maxMana, 10)
     this.remotePlayer().maxMana = Math.min(1 + this.remotePlayer().maxMana, 10)
 
@@ -640,13 +638,16 @@ class GameState {
     this.remotePlayer().mana = this.remotePlayer().maxMana
 
     this.selectedCard = null;
-    if (this.localPlayer().board.length) {
-      for (let i = 0; i < this.localPlayer().board.length; i++) {
-        let card = this.localPlayer().board[i];
-        card.canAct = true;
-      }      
+    if (this.localPlayer().board) {
+      if (this.localPlayer().board) {
+        for (let i = 0; i < this.localPlayer().board.length; i++) {
+          let card = this.localPlayer().board[i];
+          card.canAct = true;
+        }      
+
+      }
     }
-    if (this.remotePlayer().board.length) {
+    if (this.remotePlayer().board) {
       for (let i = 0; i < this.remotePlayer().board.length; i++) {
         let card = this.remotePlayer().board[i];
         card.canAct = true;
@@ -654,12 +655,10 @@ class GameState {
     }
   }
 
-  resign(move) {
+  this.resign = function(move) {
     let player = this.localPlayer().name == move.player ? this.localPlayer() : this.remotePlayer()
     player.life = 0
     this.resolveDamage()
   }
 
 }
-
-module.exports = GameState;

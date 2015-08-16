@@ -6,8 +6,8 @@
 
 var gs = require('./js/gamestate.js');
 var cl = require('./js/client.js');
-var LobbyView = require('./js/lobbyview.js');
-var GameView = require('./js/gameview.js');
+var LobbyView = require('./js/views/lobbyview/lobbyview.js');
+var GameView = require('./js/views/gameview/gameview.js');
 
 var React = require('react-native');
 var {
@@ -40,7 +40,7 @@ var SpacetimeReactNative = React.createClass({
   },
 
   findGame() {
-    window.client.register();
+    window.client.register(true);
     window.client.forceUpdate();
   },
 

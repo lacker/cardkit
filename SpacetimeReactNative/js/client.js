@@ -1,9 +1,9 @@
 // This websocket client runs in the browser and talks to the
 // websocket server that's defined in server.js.
 
-class Client {
+exports.Client = function() {
   // game is a GameState and should start at the beginning of the game.
-  constructor(name, game) {
+  this.constructor = function(name, game) {
     this.name = name
     this.game = game
     this.hasComputerOpponent = false
@@ -17,8 +17,9 @@ class Client {
     this.nextID = 1
   }
 
-  makeSocket() {
-    let url = document.URL.replace("http", "ws").replace(/\/$/, "").replace(":8080", "") + ":9090"
+  this.makeSocket = function() {
+    //let url = document.URL.replace("http", "ws").replace(/\/$/, "").replace(":8080", "") + ":9090"
+    let url = "ws://localhost:9090"
     console.log(`connecting to ${url}`)
     // TODO: needs a more aggressive timeout
     this.ws = new WebSocket(url)
@@ -29,7 +30,7 @@ class Client {
   }
 
   // When data is received from the server
-  receive(messageData) {
+  this.receive = function(messageData) {
     let message = JSON.parse(messageData)
 
     if (message.op == "hello") {
@@ -56,12 +57,12 @@ class Client {
   }
 
   // Sends a message object upstream.
-  send(message) {
+  this.send = function(message) {
     this.ws.send(JSON.stringify(message))
   }
 
   // Send a looking-for-game message.
-  register(hasComputerOpponent) {
+  this.register = function(hasComputerOpponent) {
     this.registered = true; // UI checks this to refresh on game seek
     console.log("registering as " + this.name)
     if (this.game) {
@@ -85,13 +86,13 @@ class Client {
     }   
   }
 
-  forceUpdate() {
+  this.forceUpdate = function() {
     console.log("forceUpdate on the client was not overridden")
   }
 
   // Handles a move being reported from the server.
   // Returns whether we knew what to do with it.
-  handleRemoteMove(move) {
+  this.handleRemoteMove = function(move) {
     if (!move.op || !move.player) {
       return false
     }
@@ -113,14 +114,14 @@ class Client {
 
   // Sends a move to the server.
   // This does *not* display the move until the server confirms it.
-  makeLocalMove(move) {
+  this.makeLocalMove = function(move) {
     move.player = this.name
     move.gameID = this.gameID
     this.send(move)
   }
 
   // send a move from the computer player
-  makeComputerMove(move) {
+  this.makeComputerMove = function(move) {
     move.player = 'cpu'
     move.gameID = this.gameID
     this.send(move)
@@ -128,13 +129,13 @@ class Client {
 
   // This is called locally when the server decides remotely that a
   // game should start.
-  handleStart(message) {
+  this.handleStart = function(message) {
     this.buffer = []
     let players = message.players
     this.gameID = message.gameID
 
     console.log(`starting game: ${players[0]} vs ${players[1]}`)
-    window.track("startGame")
+    // window.track("startGame")
     
     // Just use the gameID as the seed
     this.game.startGame(players, this.gameID)
@@ -142,17 +143,15 @@ class Client {
     this.forceUpdate()
   }
 
-  handleError() {
+  this.handleError = function() {
     this.ws.close()
   }
 
   // Whenever the socket closes we just make a new one
-  handleClose() {
+  this.handleClose = function() {
     console.log("the socket closed")
     
     // Wait 2 seconds to reconnect
     setTimeout(() => this.makeSocket(), 2000)
   }
 }
-
-module.exports = Client

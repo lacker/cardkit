@@ -1,7 +1,12 @@
 // React view of a card
-import React from "react";
-import "./_cardview.scss";
-import { shieldImg, swordsImg } from '../../../assets/img'
+// require("../scss/style.scss");
+
+var React = require('react-native');
+var {
+  Text,
+  View,
+  Image,
+} = React;
 
 let Card = React.createClass({
 
@@ -12,41 +17,42 @@ let Card = React.createClass({
     let attackPart;
     if (this.props.cardInfo.attack) {
       attackPart = (
-        <div className="card-details">
-            {this.props.cardInfo.description}
-          <div className="attack-label">
-            {this.props.cardInfo.attack}
-            <img className="card-icon-image" src={swordsImg} />
-          </div>
-          <div className="health-label">
-            {this.props.cardInfo.defense}
-            <img className="card-icon-image" src={shieldImg} />
-          </div>
-        </div> 
-      )
+        <View className="card-details">
+            <Text>{this.props.cardInfo.description}</Text>
+          <View className="attack-label">
+            <Text>{this.props.cardInfo.attack}</Text>
+            <Image className="card-icon-image" src="img/crossed-swords.svg" />
+          </View>
+          <View className="health-label">
+            <Text>{this.props.cardInfo.defense}</Text>
+            <Image className="card-icon-image" src="img/shield.svg" />
+          </View>
+        </View> 
+)
     } else {
       attackPart = (
-        <div div className="card-details">
-          <div className="spell-text-label">
-            {this.props.cardInfo.description}
-          </div>
-          <div className="spell-flavor">
-            {this.props.cardInfo.flavor}
-          </div>
-        </div>
-      )
+        <View className="card-details">
+          <View className="spell-text-label">
+            <Text>{this.props.cardInfo.description}</Text>
+          </View>
+          <View className="spell-flavor">
+            <Text>{this.props.cardInfo.flavor}</Text>
+          </View>
+        </View>
+        )
     }
 
     return (
-      <div className={combinedCSS} onClick={this.selectCard}>
-        <div className="card-top"> 
-          {this.props.cardInfo.name}
-          <div className="mana-label">{this.props.cardInfo.cost}</div>
-        </div>
-        <div className="card-bottom"> 
+      <View className={combinedCSS} onClick={this.selectCard}>
+        <View className="card-top"> 
+          <Text>{this.props.cardInfo.name}</Text>
+          <Text className="mana-label">{this.props.cardInfo.cost}</Text>
+        </View>
+        <View className="card-bottom"> 
           {attackPart}
-        </div> 
-      </div>
+        </View>
+        
+      </View>
     );
   
   },
@@ -64,26 +70,15 @@ let Card = React.createClass({
     let cssClassCanAct = !this.props.cardInfo.canAct && fromIndex != -1 ? 
                            'has-attacked-card' : '';
 
-    let cssClassDamage = '';
-    if (this.props.cardInfo.showDamage) {
-      cssClassDamage = "damage-player";
-    }
-
-    if (this.props.cardInfo.warm) {
-      cssClassDamage = "warm-" + this.props.cardInfo.warm;
-    }
-
-
     let combinedCSS = cssClass + ' ' + 
-                      cssClassDamage + ' ' + 
                       cssClassCanPlay + ' ' + 
                       cssClassCanAct; 
     return combinedCSS;
   },
   
-  // select cards in local player's hand or board
+  // select cards in current player's hand or board
   selectCard: function() {
-    let boardIndex = window.game.localPlayer().board.indexOf(this.props.cardInfo);
+    let boardIndex = window.game.current().board.indexOf(this.props.cardInfo);
     if (boardIndex != -1) {
       let selectMove = {
                     "op": "selectCard", 
@@ -93,7 +88,7 @@ let Card = React.createClass({
       window.client.makeLocalMove(selectMove);
     }
 
-    let handIndex = window.game.localPlayer().hand.indexOf(this.props.cardInfo);
+    let handIndex = window.game.current().hand.indexOf(this.props.cardInfo);
     if (handIndex != -1) {
       let selectMove = {
                     "op":"selectCard", 
@@ -103,7 +98,7 @@ let Card = React.createClass({
       window.client.makeLocalMove(selectMove);
     }
 
-    let opponentBoardIndex = window.game.remotePlayer().board.indexOf(this.props.cardInfo);
+    let opponentBoardIndex = window.game.opponent().board.indexOf(this.props.cardInfo);
     if (opponentBoardIndex != -1) {
       let selectMove = {
                     "op":"selectCard", 
@@ -113,6 +108,10 @@ let Card = React.createClass({
       window.client.makeLocalMove(selectMove);
     }
 
+    if (window.game.winner) {
+      alert("WINNER");
+
+    }
   },
 
 });
