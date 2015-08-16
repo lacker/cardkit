@@ -113,6 +113,7 @@ class Connection {
         Connection.waiting.set(this.name, this)
       }
     } else if (message.op == "resign") {
+      clearInterval(this.timeLoop)
       clearInterval(this.drawLoop)
     } else if (message.gameID) {
       // Give the message an id depending on its game
@@ -206,6 +207,7 @@ class Connection {
     if (this.name != null && Connection.waiting.has(this.name)) {
       Connection.waiting.delete(this.name)
     }
+    clearInterval(this.timeLoop)
     clearInterval(this.drawLoop)
   }
 }
