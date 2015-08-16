@@ -441,7 +441,7 @@ class GameState {
         card.warm += 1
         window.client.forceUpdate()
       } ,card.attackRate/10);
-
+      
       card.attackLoop = setInterval(() => {
         // card is set to attack a creatiure
         if (card.attackTarget && this.attackCreature(card)) {
@@ -607,7 +607,6 @@ class GameState {
 
   showPlayerDamage(player) {
     // card damage animation
-    console.log(player.name)
     player.showDamage = true
     player.damageAnimation = setInterval(() => {
       player.showDamage = null;
