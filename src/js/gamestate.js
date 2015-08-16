@@ -391,6 +391,8 @@ class GameState {
     let opponent = this.localPlayer().name == player.name ? this.remotePlayer() : this.localPlayer()
     let attacker = player.getBoard(from)
     let defender = opponent.getBoard(to)
+    this.showCardDamage(attacker)
+    this.showCardDamage(defender)
     attacker.defense -= defender.attack
     defender.defense -= attacker.attack
     attacker.canAct = false;
