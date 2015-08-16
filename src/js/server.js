@@ -150,7 +150,7 @@ class Connection {
       Connection.waiting.clear()
 
       // everyone starts with three cards
-      for (let i=0; i<STARTING_HAND_SIZE; i++) {        
+      for (let i = 0; i < STARTING_HAND_SIZE; i++) {        
         this.everyoneDraws()
       }
       
