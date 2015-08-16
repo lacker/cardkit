@@ -21,11 +21,11 @@
 
 // some json for cards
 import {
-  
+
          CARDS, 
          DECKS, 
          STARTING_HAND_SIZE, 
-         DRAW_SPEED_IN_MILLIS 
+         DRAW_MS 
        
        } from './cards.js';
 
@@ -113,6 +113,7 @@ class Connection {
         Connection.waiting.set(this.name, this)
       }
     } else if (message.op == "resign") {
+      clearInterval(this.timeLoop)
       clearInterval(this.drawLoop)
     } else if (message.gameID) {
       // Give the message an id depending on its game
@@ -149,14 +150,20 @@ class Connection {
       Connection.waiting.clear()
 
       // everyone starts with three cards
-      for (let i=0; i<STARTING_HAND_SIZE; i++) {        
+      for (let i = 0; i < STARTING_HAND_SIZE; i++) {        
         this.everyoneDraws()
       }
       
       // you are always drawing cards in spacetime
       this.drawLoop = setInterval(() => {
         this.tickTurn();
-      }, DRAW_SPEED_IN_MILLIS);
+      }, DRAW_MS);
+
+      this.currentGameSecond = DRAW_MS / 1000;
+      this.timeLoop = setInterval(() => {
+        this.currentGameSecond--;
+        this.broadcast({ op: "tickTime", time: this.currentGameSecond, player: "no_player"})
+      }, 1000);
 
     }
   }
@@ -165,6 +172,7 @@ class Connection {
   tickTurn() {
     this.everyoneDraws()
     this.broadcast({ op: "refreshPlayers", "player": "no_player" })
+    this.currentGameSecond = DRAW_MS / 1000
   }
 
   // in spacetime, we simul-draw!
@@ -189,7 +197,7 @@ class Connection {
     }
 
     copy.canAct = false
-    copy.player = player.name
+    copy.playerName = player.name
     return copy
   }
 
@@ -199,6 +207,7 @@ class Connection {
     if (this.name != null && Connection.waiting.has(this.name)) {
       Connection.waiting.delete(this.name)
     }
+    clearInterval(this.timeLoop)
     clearInterval(this.drawLoop)
   }
 }

@@ -39,6 +39,7 @@ class PlayerState {
     let card = this.getBoard(index)
     if (card.attackLoop) {
       clearInterval(card.attackLoop)
+      clearInterval(card.warmLoop)
     }
     this.board.splice(index, 1)
     this.trash.push(card)
@@ -67,6 +68,7 @@ class PlayerState {
     return this.board[index]
   }
 }
+
 
 // A turn goes like
 //
@@ -172,6 +174,9 @@ class GameState {
       this.selectOpponent(move.player)
     } else if (move.op == "draw") {
       this.draw(move.player, move.card)
+    } else if (move.op == "tickTime") {
+      this.currentGameSecond = move.time
+      window.client.forceUpdate()
     } else {
       console.log("ignoring op: " + move.op)
       return false
@@ -257,6 +262,7 @@ class GameState {
           var card = player.board[j]
           if (card.attackLoop) {
             clearInterval(card.attackLoop)
+            clearInterval(card.warmLoop)
           }
         }
       }
@@ -309,7 +315,7 @@ class GameState {
     let boardIndex = player.board.indexOf(player.selectedCard);
     if (boardIndex != -1) {
       player.selectedCard = null;
-      this.attack(boardIndex, index, player);
+      this.selectTargetForAttack(boardIndex, index, player)
     }
   }
 
@@ -341,7 +347,7 @@ class GameState {
   setSelectedCard(index, containerType, player) {
     if (containerType == "board") {
       let card = player.getBoard(index);
-      player.selectedCard = card.canAct ? card : null;
+      player.selectedCard = card;
     } else if (containerType == "hand") { 
       let card = player.getHand(index);
       if (player.mana >= card.cost) {
@@ -372,15 +378,23 @@ class GameState {
     }        
   }    
 
+  selectTargetForAttack(from, to, player) {
+    let opponent = this.localPlayer().name == player.name ? this.remotePlayer() : this.localPlayer()
+    let attacker = player.getBoard(from)
+    let defender = opponent.getBoard(to)
+    attacker.attackTarget = defender   
+  }
+
   // from and to are indices into board
   attack(from, to, player) {
     let opponent = this.localPlayer().name == player.name ? this.remotePlayer() : this.localPlayer()
     let attacker = player.getBoard(from)
     let defender = opponent.getBoard(to)
+    this.showCardDamage(attacker)
+    this.showCardDamage(defender)
     attacker.defense -= defender.attack
     defender.defense -= attacker.attack
     attacker.canAct = false;
-    attacker.needsAttackDisplay = true;
     this.resolveDamage()
   }
 
@@ -419,8 +433,22 @@ class GameState {
           break;
         }
       }
+      
+      card.warm = 0
+
+      card.warmLoop = setInterval(() => {
+        card.warm += 1
+        window.client.forceUpdate()
+      } ,card.attackRate/10);
+      
       card.attackLoop = setInterval(() => {
-        this.faceForCard(card, card.attacker)
+        // card is set to attack a creatiure
+        if (card.attackTarget && this.attackCreature(card)) {
+        } else {
+          // card is set to attack a player
+          this.faceForCard(card, card.attacker)
+        }
+        card.warm = 0
         window.client.forceUpdate()
       } ,card.attackRate);
     } 
@@ -439,7 +467,7 @@ class GameState {
         actingPlayer.boardToTrash(randomIndex)
       }
     }
- 
+
     // let all permanents act again
     if (card.refreshPlayers) { 
       this.refreshPlayers()
@@ -454,6 +482,48 @@ class GameState {
       }
     }
   }
+
+  // have a card attack its attack target
+  // if its still in play
+  // returns true if the attack is legal and therefore occurs
+  attackCreature (card) {
+    let cardOwner, opponent
+    if (card.playerName == this.localPlayer().name) {
+      cardOwner = this.localPlayer()
+      opponent = this.remotePlayer()
+    } else {
+      cardOwner = this.remotePlayer()
+      opponent = this.localPlayer()
+    }
+
+    let from = -1, to = -1
+
+    // could this happen? is the architecture just bad?
+    for (let i = 0; i < cardOwner.board.length; i++) {
+      let c = cardOwner.board[i];
+      if (c == card) {
+        from = i 
+        break;
+      }
+    }
+    
+    // check if the attackTarget still exists
+    for (let i = 0; i < opponent.board.length; i++) {
+      let c = opponent.board[i];
+      if (c == card.attackTarget) {
+        to = i
+        break;
+      }
+    }
+
+    if (from >= 0 && to >= 0) {
+      this.attack(from, to, cardOwner)
+      return true
+    }
+    card.attackTarget = null
+    return false
+  }
+
 
   // Plays a card from the hand, onto a target.
   // Throws if there's not enough mana.

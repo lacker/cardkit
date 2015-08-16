@@ -69,6 +69,11 @@ let Card = React.createClass({
       cssClassDamage = "damage-player";
     }
 
+    if (this.props.cardInfo.warm) {
+      cssClassDamage = "warm-" + this.props.cardInfo.warm;
+    }
+
+
     let combinedCSS = cssClass + ' ' + 
                       cssClassDamage + ' ' + 
                       cssClassCanPlay + ' ' + 

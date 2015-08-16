@@ -39,16 +39,13 @@ export default class LobbyView extends Component {
       'home-img'
     ]);
 
-    let classNames = require('classnames');
-    let classes = classNames(elm.basicBtn);
-
     return (
       <div className={block}>
         <h1 className={elm.heading}>Welcome to Spacetime</h1>
         <button className={elm.basicBtn} onClick={this.playCampaign}>
           Campaign 1: BiBot Attack
         </button>
-        <button className={classes} onClick={this.showRules}>
+        <button className={elm.basicBtn} onClick={this.showRules}>
           How to Play
         </button>
         <p>
