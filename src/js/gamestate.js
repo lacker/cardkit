@@ -315,7 +315,6 @@ class GameState {
     let boardIndex = player.board.indexOf(player.selectedCard);
     if (boardIndex != -1) {
       player.selectedCard = null;
-      // this.attack(boardIndex, index, player);
       this.selectTargetForAttack(boardIndex, index, player)
     }
   }
