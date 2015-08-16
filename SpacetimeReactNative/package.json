@@ -1,0 +1,14 @@
+{
+  "name": "SpacetimeReactNative",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node_modules/react-native/packager/packager.sh"
+  },
+  "dependencies": {
+    "crypto": "0.0.3",
+    "react-native": "^0.8.0",
+    "react-native-button": "^1.2.0",
+    "seedrandom": "^2.4.2"
+  }
+}
