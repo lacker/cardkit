@@ -607,6 +607,7 @@ class GameState {
 
   showPlayerDamage(player) {
     // card damage animation
+    console.log(player.name)
     player.showDamage = true
     player.damageAnimation = setInterval(() => {
       player.showDamage = null;

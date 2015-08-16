@@ -18,6 +18,7 @@ let GameView = React.createClass({
     let homePlayerBoardCards = homePlayer.board.map((cardInfo, i) =>
           <Card cardInfo={cardInfo} player={homePlayer} key={i} />);
 
+    let homePlayerDamageCSS = homePlayer.showDamage ? 'player-avatar damage-player' : 'player-avatar';
     let opponentDamageCSS = opponent.showDamage ? 'player-avatar damage-player' : 'player-avatar';
     let currentTime = window.game.currentGameSecond ? window.game.currentGameSecond : 10;
     return (
@@ -44,7 +45,7 @@ let GameView = React.createClass({
           <div className="resign-button" onClick={this.resign}>Resign</div>
 
           {/* HOME PLAYER */}
-          <div className="player-avatar home-avatar" style={this.avatarStyle(0)}>
+          <div className={homePlayerDamageCSS} style={this.avatarStyle(0)}>
             <div className="vital-stats-container">Life: {homePlayer.life}</div>
             <h2>{homePlayer.name}</h2>
             <div className="vital-stats-container">Mana: {homePlayer.mana} / {homePlayer.maxMana}</div>
