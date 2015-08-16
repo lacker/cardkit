@@ -252,7 +252,7 @@ class GameState {
     }
     if (this.winner != null && this.declaredWinner == false) {
       console.log(this.winner + " wins!")
-      // alert(this.winner + " wins!")
+      alert(this.winner + " wins!")
       this.declaredWinner = true
       
       // stop all cards from attacking
