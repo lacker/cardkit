@@ -396,7 +396,6 @@ class GameState {
     attacker.defense -= defender.attack
     defender.defense -= attacker.attack
     attacker.canAct = false;
-    attacker.needsAttackDisplay = true;
     this.resolveDamage()
   }
 
