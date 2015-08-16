@@ -7,7 +7,6 @@ let Card = React.createClass({
 
   // layout and style the card
   render() {
-    console.log(this.props)
     let combinedCSS = this.cssClassesForCard();
 
     let attackPart;
@@ -24,7 +23,7 @@ let Card = React.createClass({
             <img className="card-icon-image" src={shieldImg} />
           </div>
         </div> 
-)
+      )
     } else {
       attackPart = (
         <div div className="card-details">
@@ -35,7 +34,7 @@ let Card = React.createClass({
             {this.props.cardInfo.flavor}
           </div>
         </div>
-        )
+      )
     }
 
     return (
@@ -46,8 +45,7 @@ let Card = React.createClass({
         </div>
         <div className="card-bottom"> 
           {attackPart}
-        </div>
-        
+        </div> 
       </div>
     );
   

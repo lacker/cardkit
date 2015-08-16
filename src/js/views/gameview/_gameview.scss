@@ -1,5 +1,7 @@
 @import "../../../assets/styles/base";
 
+$end-turn-button-width: 10vw;
+
 /* 
    styles for play area 
 */
@@ -41,7 +43,7 @@
 .hand-container {
   height:$card-height + $default-vertical-padding*4;
   position: relative;
-  right: $end-turn-button-width/2;
+  right: medium-button-width/2;
 }
 
 /* 

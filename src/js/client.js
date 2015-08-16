@@ -82,15 +82,12 @@ class Client {
         this.makeComputerMove(selectMove);
         this.makeComputerMove(selectMove);    
       }, 5000);
-    }
-        
+    }   
   }
-
 
   forceUpdate() {
     console.log("forceUpdate on the client was not overridden")
   }
-
 
   // Handles a move being reported from the server.
   // Returns whether we knew what to do with it.
@@ -119,7 +116,6 @@ class Client {
   makeLocalMove(move) {
     move.player = this.name
     move.gameID = this.gameID
-
     this.send(move)
   }
 
@@ -128,7 +124,6 @@ class Client {
     move.player = 'cpu'
     move.gameID = this.gameID
     this.send(move)
-
   }
 
   // This is called locally when the server decides remotely that a

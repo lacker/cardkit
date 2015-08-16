@@ -1,3 +1,6 @@
+export const DRAW_SPEED_IN_MILLIS = 10000;
+export const STARTING_HAND_SIZE = 3;
+
 export const CARDS = {
   BiBot: {
     permanent: true,
