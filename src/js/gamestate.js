@@ -98,7 +98,7 @@ class GameState {
     this.damageDuration = 900
 
     // set this to true for plenty of mana, for testing
-    this.godMode = true
+    this.godMode = false
     
   }
 

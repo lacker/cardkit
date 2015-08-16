@@ -45,7 +45,7 @@
     "seedrandom": "^2.4.0",
     "style-loader": "^0.12.3",
     "ws": "~0.7.2",
-    "loader-utils": "~0.2.10",
+    "loader-utils": "~0.2.10"
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
