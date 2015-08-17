@@ -1,4 +1,5 @@
 export const DRAW_MS = 10000;
+export const DEFAULT_ATTACK_RATE = 3000;
 export const STARTING_HAND_SIZE = 3;
 
 export const CARDS = {
@@ -6,28 +7,28 @@ export const CARDS = {
     permanent: true,
     attack: 2,
     defense: 2,
-    attackRate: 3000,
+    attackRate: DEFAULT_ATTACK_RATE,
     cost: 2
   },
   TriBot: {
     permanent: true,
     attack: 3,
     defense: 3,
-    attackRate: 3000,
+    attackRate: DEFAULT_ATTACK_RATE,
     cost: 3
   },
   QuadBot: {
     permanent: true,
     attack: 4,
     defense: 4,
-    attackRate: 3000,
+    attackRate: DEFAULT_ATTACK_RATE,
     cost: 4
   },
   PentaBot: {
     permanent: true,
     attack: 5,
     defense: 5,
-    attackRate: 3000,
+    attackRate: DEFAULT_ATTACK_RATE,
     cost: 5
   },
   "Laser Blast": {
