@@ -1,17 +1,23 @@
-How to deploy this.
+#How To Deploy
 
-Digital Ocean is at 45.55.220.119
+## Connect to Digital Ocean
 
-ssh in there, cd to cardkit
+ssh to 45.55.220.119
+(talk to Kevin for access)
+  
+## Update the Code
 
-`git pull` to update the code
+    `cd cardkit`
+    `git pull`
+    `npm install` # in case you need new node dependencies
+    `npm run build` # update the static files for nginx
 
-`npm install` in case you need new node dependencies
+## Kill and Restart Server
 
-`npm run build` to update the static files for nginx
+To run the node server, first kill any running one.
 
-to run the node server, first kill any running one.
-check with `ps aux | grep server` to see what's running.
-use `kill -9 <process id>` to kill things.
+    `ps aux | grep server`
+    `kill -9 <process id>`
 
-`nohup ./runserver &` runs the node server in the background.
+Start the server in the background:
+    `nohup ./runserver &`
