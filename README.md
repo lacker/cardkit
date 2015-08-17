@@ -1,5 +1,14 @@
-# cardkit
-A bunch of tools for building card games.
+# Spacetime
+
+A real-time, space-themed, ccg-genre game. 
+
+# Pure Javascript
+
+This is both a great game, and an experiment in pure Javascript.
+
+Spacetime uses ES6, React, BabelJS, and Node.
+
+# Setup
 
 Set up with `npm install`
 
