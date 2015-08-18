@@ -2,9 +2,6 @@
 // this is the default rate in milliseconds
 export const DEFAULT_ATTACK_RATE = 3000;
 
-// the number of cards each player starts with 
-export const STARTING_HAND_SIZE = 3;
-
 /* 
    define the cards that are legal as JSON
    
