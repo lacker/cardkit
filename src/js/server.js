@@ -91,7 +91,6 @@ class Connection {
   broadcast(message, gameID) {
     for (let conn of Connection.all.values()) {
       if (conn.gameID != gameID) {
-        console.log("no match, cont " + conn.gameID + " != " + gameID)
         continue
       }
       try {
@@ -225,7 +224,6 @@ class Connection {
     let players = Array.from(Connection.all.values())
     for (let player of players) {
       if (player.gameID == gameID) {
-        console.log('player match')
         let card = this.cardCopy(player);
         let message = { op: "draw" , player: {name: player.name}, card, gameID}
         this.addToMoveListAndBroadcast(message, gameID)        
