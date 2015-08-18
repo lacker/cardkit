@@ -5,7 +5,7 @@
 // { "op": "register", "name": "yourPlayerName", "seeking": true }
 
 // Server protocol:
-// The server bounces client messages to all clients, except register an resign
+// The server bounces client messages to all clients, except register and resign
 // It assigns a numerical "id" field to each op, ascending for each
 // game. This is based on the past moves, kept in Connection.games.
 // NOTE: this means that when the server reboots, it borks games in
