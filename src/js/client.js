@@ -1,6 +1,9 @@
 // This websocket client runs in the browser and talks to the
 // websocket server that's defined in server.js.
 
+// the rate at which the computer opponent plays out cards
+var COMPUTER_PLAY_SPEED = 5000;
+
 class Client {
   // game is a GameState and should start at the beginning of the game.
   constructor(name, game) {
@@ -59,11 +62,13 @@ class Client {
 
   // Send a looking-for-game message.
   register(hasComputerOpponent) {
-    this.registered = true; // UI checks this to refresh on game seek
-    console.log("registering as " + this.name)
+    // UI checks this to refresh on game seek
+    this.registered = true; 
     if (this.game) {
+      console.log("joining game as " + this.name)
       this.send({op: "register", name: this.name, seeking: !this.game.started(), hasComputerOpponent:hasComputerOpponent})
     } else {
+      console.log("joining game as " + this.name)
       this.send({op: "register", name: this.name, seeking: true, hasComputerOpponent})
     }
 
@@ -78,7 +83,7 @@ class Client {
                          };    
         this.makeComputerMove(selectMove);
         this.makeComputerMove(selectMove);    
-      }, 5000);
+      }, COMPUTER_PLAY_SPEED);
     }   
   }
 
