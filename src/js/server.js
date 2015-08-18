@@ -135,21 +135,21 @@ class Connection {
         console.log(`${this.name} waiting for game with gameID: ${this.gameID}`)
         Connection.waiting.set(this.name, this)
       }
+      // Consider starting a new game
+      if (Connection.waiting.size == 2 || message.hasComputerOpponent) {
+        // this.gameID was defined by game seeker
+        this.startGame(message, this.gameID)
+      }
     } else if (message.op == "resign") {
       clearInterval(Connection.timeLoops.get(gameID))
       clearInterval(Connection.drawLoops.get(gameID))
       // might not need this
-      Connection.currentGameSeconds.get(gameID) = null
+      Connection.currentGameSeconds.set(gameID, null)
     } else if (message.gameID) {
       // Bounce anything but registers
       this.addToMoveListAndBroadcast(message, message.gameID)
     }
 
-    // Consider starting a new game
-    if (Connection.waiting.size == 2 || message.hasComputerOpponent) {
-      // this.gameID was defined by game seeker
-      this.startGame(message, this.gameID)
-    }
 
   }
 
