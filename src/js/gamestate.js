@@ -1,5 +1,5 @@
 /* 
-   The state of a ccg type card game.
+   The state of a ccg type card game, specifically Spacetime.
 */
 
 require("seedrandom")
@@ -73,7 +73,8 @@ class PlayerState {
 // A turn goes like
 //
 // beginTurn
-// Some number of selectCard, selectOpponent, resign
+// Some number of: 
+//  selectCard, selectOpponent, resign, refreshPlayers, tickTime
 // endTurn
 //
 class GameState {
@@ -89,12 +90,14 @@ class GameState {
 
     // The name of the winner
     this.winner = data.winner || null
+    
     // a flag to do an alert just once
     this.declaredWinner = false
 
     // A list of all moves we have ever made on the game state
     this.history = []
 
+    // the time (ms) to animate damage effects
     this.damageDuration = 900
 
     // set this to true for plenty of mana, for testing
@@ -142,7 +145,7 @@ class GameState {
   // Each type of move has a JSON representation.
   //
   // The useful keys include:
-  // op: the method name. selectCard, selectOpponent, refreshPlayers
+  // op: the method name (selectCard, selectOpponent, refreshPlayers, resign, tickTime)
   // from: the index a card is coming from
   // to: the index a card is going to
   //
@@ -159,22 +162,31 @@ class GameState {
       // You can't make normal moves when the game is over
       return false
     }
-
+    
     if (move.op == "refreshPlayers") {
+      // the server sends this on a continuous loop
       this.refreshPlayers()
     } else if (move.op == "resign") {
+      // either player may resign at any time
       this.resign(move)
     } else if (move.op == "selectCard") {
       /*
+        this is the most common action in a game
+        selecting a card twice usually means to takean action with it
+        
         the possible container types are board, hand, trash, 
         as well as the opponentFoo for each type
       */
       this.selectCard(move.index, move.containerType, move.player)
     } else if (move.op == "selectOpponent") {
+      // players can select an opponent to use cards on them
+      // or target permanents they have in play
       this.selectOpponent(move.player)
     } else if (move.op == "draw") {
+      // the draw key is only used in tests
       this.draw(move.player, move.card)
     } else if (move.op == "tickTime") {
+      // the server sends the current time for the client to display
       this.currentGameSecond = move.time
       window.client.forceUpdate()
     } else {
@@ -186,6 +198,7 @@ class GameState {
     return true
   }
 
+  // log all moves in the game so far
   logHistory() {
     console.log("" + this.history.length + " moves in history.")
     for (let move of this.history) {
@@ -193,6 +206,7 @@ class GameState {
     }
   }
 
+  // seed the game and start giving players cards/energy
   startGame(players, seed) {
     this.rng = new Math.seedrandom(seed)
     if (players[0] == this.name) {
@@ -213,6 +227,8 @@ class GameState {
     return this._started;
   }
 
+  // at the end of a combat or a damage spell,
+  // kill anything that died
   resolveDamage() {
 
     for (var i = 0; i < this.players.length; i++) {
