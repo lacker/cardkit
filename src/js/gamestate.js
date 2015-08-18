@@ -188,7 +188,7 @@ class GameState {
       // or target permanents they have in play
       this.selectOpponent(move.player)
     } else if (move.op == "draw") {
-      // the draw key is only used in tests
+      // the server tells the players to draw occasionally
       this.draw(move.player, move.card)
     } else if (move.op == "tickTime") {
       // the server sends the current time for the client to display

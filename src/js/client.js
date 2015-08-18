@@ -45,7 +45,8 @@ class Client {
     if (message.op == "start") {
       this.handleStart(message)
     } else if (message.id != this.nextID) {
-      console.log("out of order, returning: " + message)
+      console.log(message.id + " != " + this.nextID)
+      console.log("out of order, returning: " + JSON.stringify(message))
       // This is a dupe, or out-of-order. Ignore it
     } else if (this.handleRemoteMove(message)) {
       // It was a remote move

@@ -30,9 +30,7 @@ export const DRAW_MS = 10000;
 import {
 
          CARDS, 
-         DECKS, 
-         STARTING_HAND_SIZE, 
-         DRAW_MS 
+         DECKS
        
        } from './cards.js';
 
@@ -120,6 +118,7 @@ class Connection {
         Connection.waiting.set(this.name, this)
       }
     } else if (message.op == "resign") {
+      // \TODO use gameID
       clearInterval(this.timeLoop)
       clearInterval(this.drawLoop)
     } else if (message.gameID) {
@@ -158,37 +157,45 @@ class Connection {
 
       // everyone starts with three cards
       for (let i = 0; i < STARTING_HAND_SIZE; i++) {        
-        this.everyoneDraws()
+        this.everyoneDraws(gameID)
       }
       
-      // you are always drawing cards in spacetime
       this.drawLoop = setInterval(() => {
-        this.tickTurn();
+        this.tickTurn(gameID);
       }, DRAW_MS);
 
       this.currentGameSecond = DRAW_MS / 1000;
       this.timeLoop = setInterval(() => {
         this.currentGameSecond--;
-        this.broadcast({ op: "tickTime", time: this.currentGameSecond, player: "no_player"})
+        this.broadcast({ op: "tickTime", time: this.currentGameSecond, player: "no_player", gameID:gameID})
       }, 1000);
 
     }
   }
 
-  // in spacetime, we simul-draw!
-  tickTurn() {
+  // \TODO only send to players with approrpiate gameID
+  // Update the timer every second or so.
+  tickTurn(gameID) {
     this.everyoneDraws()
-    this.broadcast({ op: "refreshPlayers", "player": "no_player" })
+    let message = { op: "refreshPlayers", "player": "no_player" }
+    let moves = Connection.games.get(gameID)
+    message.id = moves.length + 1
+    moves.push(message)    
+    this.broadcast(message)
     this.currentGameSecond = DRAW_MS / 1000
   }
 
-  // in spacetime, we simul-draw!
-  everyoneDraws() {
+  // \TODO only send to players with approrpiate gameID
+  // Broadcast to all players to draw a card
+  everyoneDraws(gameID) {
     let players = Array.from(Connection.all.values())
+    let moves = Connection.games.get(gameID)
     for (let player of players) {
       let card = this.cardCopy(player);
-      let draw = { op: "draw" , player: {name: player.name}, card}
-      this.broadcast(draw)
+      let message = { op: "draw" , player: {name: player.name}, card, gameID:gameID}
+      message.id = moves.length + 1
+      moves.push(message)    
+      this.broadcast(message)
     }
   }
 
@@ -196,6 +203,7 @@ class Connection {
   cardCopy(player) {
     let cardName = choice(player.deck.cards)
     let card = CARDS[cardName]
+
     // Make a copy so that we can edit this card        
     let copy = {}     
     copy['name'] = cardName    
@@ -217,6 +225,7 @@ class Connection {
     clearInterval(this.timeLoop)
     clearInterval(this.drawLoop)
   }
+  
 }
 
 wss.on("connection", function(ws) {
