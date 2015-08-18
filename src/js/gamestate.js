@@ -105,6 +105,11 @@ class GameState {
     
   }
 
+  // whether the game has started
+  started() {
+    return this._started
+  }
+
   // The player for the provided name.
   playerForName(name) {
     let answer = undefined
@@ -218,13 +223,7 @@ class GameState {
       return
     }
 
-    // always your turn in spacetime
-    this._started = true
     this.refreshPlayers()
-  }
-
-  started() {
-    return this._started;
   }
 
   // at the end of a combat or a damage spell,
@@ -586,11 +585,6 @@ class GameState {
     let target = actingPlayer.getBoard(to)
     target.defense -= amount
     this.resolveDamage()
-  }
-
-  // whether the game has started
-  started() {
-    return this._started
   }
 
   // attacks face
