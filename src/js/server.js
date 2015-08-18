@@ -136,9 +136,10 @@ class Connection {
         Connection.waiting.set(this.name, this)
       }
     } else if (message.op == "resign") {
-      // \TODO use gameID
-      clearInterval(this.timeLoop)
-      clearInterval(this.drawLoop)
+      clearInterval(Connection.timeLoops.get(gameID))
+      clearInterval(Connection.drawLoops.get(gameID))
+      // might not need this
+      Connection.currentGameSeconds.get(gameID) = null
     } else if (message.gameID) {
       // Bounce anything but registers
       this.addToMoveListAndBroadcast(message, message.gameID)
