@@ -122,10 +122,6 @@ class Connection {
       clearInterval(this.timeLoop)
       clearInterval(this.drawLoop)
     } else if (message.gameID) {
-      // Give the message an id depending on its game
-      if (!Connection.games.has(message.gameID)) {
-        Connection.games.set(message.gameID, [])
-      }
       let moves = Connection.games.get(message.gameID)
       message.id = moves.length + 1
       moves.push(message)
@@ -154,6 +150,8 @@ class Connection {
       let start = { op: "start", players, gameID }
       this.broadcast(start)
       Connection.waiting.clear()
+      
+      Connection.games.set(gameID, [])
 
       // everyone starts with three cards
       for (let i = 0; i < STARTING_HAND_SIZE; i++) {        
@@ -167,7 +165,7 @@ class Connection {
       this.currentGameSecond = DRAW_MS / 1000;
       this.timeLoop = setInterval(() => {
         this.currentGameSecond--;
-        this.broadcast({ op: "tickTime", time: this.currentGameSecond, player: "no_player", gameID:gameID})
+        this.broadcast({ op: "tickTime", time: this.currentGameSecond, player: "no_player", gameID})
       }, 1000);
 
     }
@@ -176,8 +174,8 @@ class Connection {
   // \TODO only send to players with approrpiate gameID
   // Update the timer every second or so.
   tickTurn(gameID) {
-    this.everyoneDraws()
-    let message = { op: "refreshPlayers", "player": "no_player" }
+    this.everyoneDraws(gameID)
+    let message = { op: "refreshPlayers", "player": "no_player", gameID}
     let moves = Connection.games.get(gameID)
     message.id = moves.length + 1
     moves.push(message)    
@@ -192,7 +190,7 @@ class Connection {
     let moves = Connection.games.get(gameID)
     for (let player of players) {
       let card = this.cardCopy(player);
-      let message = { op: "draw" , player: {name: player.name}, card, gameID:gameID}
+      let message = { op: "draw" , player: {name: player.name}, card, gameID}
       message.id = moves.length + 1
       moves.push(message)    
       this.broadcast(message)
@@ -225,7 +223,7 @@ class Connection {
     clearInterval(this.timeLoop)
     clearInterval(this.drawLoop)
   }
-  
+
 }
 
 wss.on("connection", function(ws) {
