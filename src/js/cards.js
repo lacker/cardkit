@@ -1,7 +1,36 @@
-export const DRAW_MS = 10000;
+// each creature attacks a certain rate
+// this is the default rate in milliseconds
 export const DEFAULT_ATTACK_RATE = 3000;
+
+// the number of cards each player starts with 
 export const STARTING_HAND_SIZE = 3;
 
+/* 
+   define the cards that are legal as JSON
+   
+   keys in the CARDS dict are the Names of the card
+
+   cards must have these properties: 
+     cost             - INT        (>=0)
+
+   cards may have these optional properties:
+     permanent        - BOOL       stays in play when used
+     attack           - INT        (>=0)
+     defense          - INT        (>=1)
+     attackRate       - INT        (millis)
+     kill             - BOOL       kills a random permanent when used
+     emp              - BOOL       kills everything when used
+     requiresTarget   - BOOL       select a permanent/player to use
+     description      - STRING     what the card does
+     flavor           - STRING     text just for fun 
+
+   a typical card that stays in play when used will have: 
+     cost, permanent, attack, defense, attackRate
+
+   a typical card that doesn't stay in play when used will have: 
+     cost, description
+
+*/
 export const CARDS = {
   BiBot: {
     permanent: true,
@@ -50,6 +79,10 @@ export const CARDS = {
   },
 }
 
+
+// define a couple of decks, still very simple
+// the current computer player always gets Weenie
+// the human player always gets control
 export var DECKS = [
   {
     name: "Weenie",
@@ -59,8 +92,4 @@ export var DECKS = [
     name: "Control",
     cards: ["EMP", "QuadBot", "PentaBot", "TriBot"],
   },
-  //{
-  //  name: "Midrange",
-  //  cards: ["QuadBot", "Errant Blast"],
-  //},
 ]

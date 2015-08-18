@@ -19,6 +19,13 @@
 // { "op": "checkSync", "key": key, "value": value }
 // and if the same key ever goes to multiple values, the server logs an error.
 
+// the number of cards each player starts with 
+export const STARTING_HAND_SIZE = 3;
+
+// when a turn passes, each player draws and adds mana
+// this is the time (milliseconds) it takes for the turn to tick
+export const DRAW_MS = 10000;
+
 // some json for cards
 import {
 
