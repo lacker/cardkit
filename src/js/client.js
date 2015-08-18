@@ -81,8 +81,8 @@ class Client {
                           "index": 0,
                           "containerType": "hand"
                          };    
-        this.makeComputerMove(selectMove);
-        this.makeComputerMove(selectMove);    
+        this.makeLocalComputerMove(selectMove);
+        this.makeLocalComputerMove(selectMove);    
       }, COMPUTER_PLAY_SPEED);
     }   
   }
@@ -121,15 +121,15 @@ class Client {
     this.send(move)
   }
 
-  // send a move from the computer player
-  makeComputerMove(move) {
+  // Send a move from the computer player to the server.
+  makeLocalComputerMove(move) {
     move.player = 'cpu'
     move.gameID = this.gameID
     this.send(move)
   }
 
-  // This is called locally when the server decides remotely that a
-  // game should start.
+  // This is called locally when the server decides remotely 
+  // that a game should start.
   handleStart(message) {
     this.buffer = []
     let players = message.players
