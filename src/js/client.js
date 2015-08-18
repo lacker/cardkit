@@ -124,7 +124,7 @@ class Client {
 
   // Send a move from the computer player to the server.
   makeLocalComputerMove(move) {
-    move.player = 'cpu'
+    move.player = 'cpu' + this.gameID
     move.gameID = this.gameID
     this.send(move)
   }
