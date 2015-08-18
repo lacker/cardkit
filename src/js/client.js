@@ -135,6 +135,7 @@ class Client {
     this.buffer = []
     let players = message.players
     this.gameID = message.gameID
+    this.nextID++
 
     console.log(`starting game: ${players[0]} vs ${players[1]}`)
     window.track("startGame")
