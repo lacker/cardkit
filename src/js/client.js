@@ -39,9 +39,6 @@ class Client {
       return
     }
 
-    // AJ - does this just undo all the id-ordering checks? Hmph
-    message.id = this.nextID
-    
     if (message.op == "start") {
       this.handleStart(message)
     } else if (message.id != this.nextID) {

@@ -5,7 +5,7 @@ export const DEFAULT_ATTACK_RATE = 3000;
 /* 
    define the cards that are legal as JSON
    
-   keys in the CARDS dict are the Names of the card
+   keys in the CARDS dict are the Names of the cards
 
    cards must have these properties: 
      cost             - INT        (>=0)
