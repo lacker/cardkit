@@ -144,7 +144,7 @@ class Connection {
   }
 
   endGame(gameID) {
-    clearInterval(Connection.timeLoops.get(message.gameID))
+    clearInterval(Connection.timeLoops.get(gameID))
     clearInterval(Connection.drawLoops.get(gameID))
     // might not need this
     Connection.currentGameSeconds.set(gameID, null)
