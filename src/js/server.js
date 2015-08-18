@@ -3,10 +3,9 @@
 // Client protocol:
 // To sign up for a game:
 // { "op": "register", "name": "yourPlayerName", "seeking": true }
-// To reconnect when already in a game, just say seeking = false.
 
 // Server protocol:
-// The server bounces client messages to all clients, except registers.
+// The server bounces client messages to all clients, except register an resign
 // It assigns a numerical "id" field to each op, ascending for each
 // game. This is based on the past moves, kept in Connection.games.
 // NOTE: this means that when the server reboots, it borks games in
@@ -149,7 +148,6 @@ class Connection {
       // Bounce anything but registers
       this.addToMoveListAndBroadcast(message, message.gameID)
     }
-
 
   }
 
