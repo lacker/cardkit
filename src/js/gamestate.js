@@ -490,9 +490,7 @@ class GameState {
                  card.target == TARGETS.ANY_PERMANENT) {
         // kill all permanents
         for (let player of this.players) {
-        console.log("kill all let")
           while (player.board.length > 0) {
-        console.log("kill all while")
             player.boardToTrash(0)
           }
         }
