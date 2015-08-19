@@ -3,10 +3,9 @@
 // Client protocol:
 // To sign up for a game:
 // { "op": "register", "name": "yourPlayerName", "seeking": true }
-// To reconnect when already in a game, just say seeking = false.
 
 // Server protocol:
-// The server bounces client messages to all clients, except registers.
+// The server bounces client messages to all clients, except register and resign
 // It assigns a numerical "id" field to each op, ascending for each
 // game. This is based on the past moves, kept in Connection.games.
 // NOTE: this means that when the server reboots, it borks games in
@@ -19,25 +18,25 @@
 // { "op": "checkSync", "key": key, "value": value }
 // and if the same key ever goes to multiple values, the server logs an error.
 
-// some json for cards
-import {
+// some JSON definitions for cards and decks
+import { CARDS, DECKS } from './cards.js';
 
-         CARDS, 
-         DECKS, 
-         STARTING_HAND_SIZE, 
-         DRAW_MS 
-       
-       } from './cards.js';
-
+// for shuffling
 require("seedrandom")
 Math.seedrandom()
 
 const WebSocketServer = require("ws").Server
-
 let wss = new WebSocketServer({port: 9090})
 
+// the number of cards each player starts with 
+export const STARTING_HAND_SIZE = 3;
+
+// when a turn passes, each player draws and adds mana
+// this is the time (milliseconds) it takes for the turn to tick
+export const DRAW_MS = 10000;
+
+// random card from deck
 function choice(list) {
-  // random card from deck
   return list[Math.floor(Math.random() * list.length)]
 }
 
@@ -46,7 +45,7 @@ class Connection {
     this.ws = ws
     this.name = null
     this.address = `${ws._socket.remoteAddress}:${ws._socket.remotePort}`
-
+    
     console.log(`connected to ${this.address}`)
 
     if (Connection.all === undefined) {
@@ -61,22 +60,36 @@ class Connection {
       // have been made in the game.
       Connection.games = new Map()
 
+      // Track these to clear them at end of game.
+      // Connection.drawLoops maps each gameID to a drawLoop
+      Connection.drawLoops = new Map()
+      // Connection.timeLoops maps each gameID to a timeLoop
+      Connection.timeLoops = new Map()
+      // Connection.currentGameSeconds maps each gameID to a currentGameSecond
+      Connection.currentGameSeconds = new Map()
+
       // Connection.checkSync maps generic keys to generic
       // values. Clients can use this to check for synchronization
       // bugs. Each client should log the same value for a particular
       // key. The server just logs if it ever sees multiple values for
       // the same key.
       Connection.checkSync = new Map()
+
+
     }
     Connection.all.set(this.address, this)
   }
 
   // Message should be JSON
-  broadcast(message) {
+  // broadcast to any clients with the given gameID
+  broadcast(message, gameID) {
     for (let conn of Connection.all.values()) {
+      if (conn.gameID != gameID) {
+        continue
+      }
       try {
         // computer players don't have sockets
-        if (conn.ws) {
+        if (conn.ws) {          
           conn.ws.send(JSON.stringify(message))
           console.log("broadcast " + JSON.stringify(message))
         }
@@ -86,6 +99,8 @@ class Connection {
     }
   }
 
+  // messages with special handling: checkSync, register, resign
+  // other messages just get bounced to all clients for message.gameID
   receive(messageData) {
     console.log("received: " + messageData)
 
@@ -110,85 +125,123 @@ class Connection {
       }
       this.hasComputerOpponent = message.hasComputerOpponent
       if (message.seeking) {
+        this.gameID = Math.floor(Math.random() * 1000000)
+        console.log(`${this.name} waiting for game with gameID: ${this.gameID}`)
         Connection.waiting.set(this.name, this)
       }
+      // Consider starting a new game
+      if (Connection.waiting.size == 2 || message.hasComputerOpponent) {
+        // this.gameID was defined by game seeker
+        this.startGame(message, this.gameID)
+      }
     } else if (message.op == "resign") {
-      clearInterval(this.timeLoop)
-      clearInterval(this.drawLoop)
+      this.endGame(message.gameID)
     } else if (message.gameID) {
-      // Give the message an id depending on its game
-      if (!Connection.games.has(message.gameID)) {
-        Connection.games.set(message.gameID, [])
-      }
-      let moves = Connection.games.get(message.gameID)
-      message.id = moves.length + 1
-      moves.push(message)
-
       // Bounce anything but registers
-      this.broadcast(message)
+      this.addToMoveListAndBroadcast(message, message.gameID)
     }
 
-    // Consider starting a new game
-    if (Connection.waiting.size == 2 || message.hasComputerOpponent) {
-      let players = Array.from(Connection.waiting.keys())
-      if (message.hasComputerOpponent) {
-        players.push('cpu')
+  }
 
-        let cpuPlayer = {
-          'ws': null, //unneeded maybe I should delete
-          'hasComputerOpponent': false,  //unneeded maybe I should delete
-          'address': null,  //unneeded maybe I should delete
-          'name': 'cpu',
-          'deck': DECKS[0], //the bibot deck
-        }
-        Connection.all.set('cpuAddress', cpuPlayer)
-      }
-      let gameID = Math.floor(Math.random() * 1000000)
-      console.log(`starting ${players[0]} vs ${players[1]}. gameID: ${gameID}`)
-      let start = { op: "start", players, gameID }
-      this.broadcast(start)
-      Connection.waiting.clear()
+  endGame(gameID) {
+    clearInterval(Connection.timeLoops.get(gameID))
+    clearInterval(Connection.drawLoops.get(gameID))
+    // might not need this
+    Connection.currentGameSeconds.set(gameID, null)
+  }
 
-      // everyone starts with three cards
-      for (let i = 0; i < STARTING_HAND_SIZE; i++) {        
-        this.everyoneDraws()
-      }
-      
-      // you are always drawing cards in spacetime
-      this.drawLoop = setInterval(() => {
-        this.tickTurn();
-      }, DRAW_MS);
+  // Deal cards, and start game loop.
+  startGame(message, gameID) {
+     
+    // set a blank list for the moves for the game
+    Connection.games.set(gameID, [])
 
-      this.currentGameSecond = DRAW_MS / 1000;
-      this.timeLoop = setInterval(() => {
-        this.currentGameSecond--;
-        this.broadcast({ op: "tickTime", time: this.currentGameSecond, player: "no_player"})
-      }, 1000);
+    // add a computer player if needed  
+    let players = Array.from(Connection.waiting.keys())
+    if (message.hasComputerOpponent) {
+      let cpuName = 'cpu' + gameID
+      players.push(cpuName)
+      let cpuPlayer = this.defaultComputerPlayer(gameID)
+      Connection.all.set('cpuAddress', cpuPlayer)
+    }
+   
+    // send the start move
+    console.log(`starting ${players[0]} vs ${players[1]}. gameID: ${gameID}`)
+    let start = { op: "start", players, gameID}
+    this.addToMoveListAndBroadcast(start, gameID)
+    Connection.waiting.clear()
+    
+    // everyone starts with three cards
+    for (let i = 0; i < STARTING_HAND_SIZE; i++) {        
+      this.everyoneDraws(gameID)
+    }
+    
+    // Players draw and receive mana occasionally.
+    // Some cards played trigger on timers.
+    this.startGameLoop(gameID)
 
+  }
+
+  // A computer player that pumps out simple attacking cards.
+  defaultComputerPlayer(gameID) {
+    return {
+      'name': 'cpu' + gameID,
+      'gameID': gameID,
+      'deck': DECKS[0], //the bibot deck
     }
   }
 
-  // in spacetime, we simul-draw!
-  tickTurn() {
-    this.everyoneDraws()
-    this.broadcast({ op: "refreshPlayers", "player": "no_player" })
-    this.currentGameSecond = DRAW_MS / 1000
+  // Refresh players mana and draw cards every DRAW_MS.
+  // Update the timer every second or so.
+  startGameLoop(gameID) {
+
+    // draw a card every DRAW_MS period
+    let drawLoop = setInterval(() => {
+      this.everyoneDraws(gameID)
+      let message = { op: "refreshPlayers", "player": "no_player", gameID}    
+      this.addToMoveListAndBroadcast(message, gameID)
+      Connection.currentGameSeconds.set(gameID, DRAW_MS / 1000)
+    }, DRAW_MS);
+    Connection.drawLoops.set(gameID, drawLoop)
+
+    // for ticking down whole seconds in game display
+    Connection.currentGameSeconds.set(gameID, DRAW_MS / 1000)
+
+    // tick down time every second
+    let timeLoop = setInterval(() => {
+      let currentGameSecond = Connection.currentGameSeconds.get(gameID)
+      Connection.currentGameSeconds.set(gameID, --currentGameSecond)
+      let message = { op: "tickTime", time: currentGameSecond, player: "no_player", gameID}
+      this.addToMoveListAndBroadcast(message, gameID)
+    }, 1000);
+    Connection.timeLoops.set(gameID, timeLoop)
   }
 
-  // in spacetime, we simul-draw!
-  everyoneDraws() {
+  // Broadcast to all players for a gameID to draw a card
+  everyoneDraws(gameID) {
     let players = Array.from(Connection.all.values())
     for (let player of players) {
-      let card = this.cardCopy(player);
-      let draw = { op: "draw" , player: {name: player.name}, card}
-      this.broadcast(draw)
+      if (player.gameID == gameID) {
+        let card = this.cardCopy(player);
+        let message = { op: "draw" , player: {name: player.name}, card, gameID}
+        this.addToMoveListAndBroadcast(message, gameID)        
+      }
     }
   }
 
-  // Gets the actual card object to use for a player drawing a card.
+  // Push the move and broadcast to all clients for the gameID
+  addToMoveListAndBroadcast(move, gameID) {
+    let moves = Connection.games.get(gameID)
+    move.id = moves.length + 1
+    this.broadcast(move, gameID)
+    moves.push(move)    
+  }
+
+  // Get a card object to use for a player drawing a card.
   cardCopy(player) {
     let cardName = choice(player.deck.cards)
     let card = CARDS[cardName]
+
     // Make a copy so that we can edit this card        
     let copy = {}     
     copy['name'] = cardName    
@@ -201,17 +254,20 @@ class Connection {
     return copy
   }
 
+  // Close the connection and clear timers
   close() {
     console.log(`disconnected from ${this.address}`)
     Connection.all.delete(this.address)
     if (this.name != null && Connection.waiting.has(this.name)) {
       Connection.waiting.delete(this.name)
     }
-    clearInterval(this.timeLoop)
-    clearInterval(this.drawLoop)
+    this.endGame(this.gameID)
   }
+
 }
 
+// Make a new WebSocket, and send "hello" mostly for debugging.
+// Listen for message and close events
 wss.on("connection", function(ws) {
   let connection = new Connection(ws)
 

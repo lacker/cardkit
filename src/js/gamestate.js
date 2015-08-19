@@ -1,8 +1,16 @@
 /* 
-   The state of a ccg type card game.
+   The state of a Spacetime game.
+   It's realtime, but not twitchy, and loosely based
+   on the concept of a CCG like Magic, Pokemon, or Hearthstone.
+
+   It's also like a PvP version of Plants vs. Zombies.
+
+   It's so rad, it's hard to even stuff into a genre.
 */
 
 require("seedrandom")
+
+import { TARGETS } from './cards.js';
 
 // The state of a single player.
 class PlayerState {
@@ -37,10 +45,7 @@ class PlayerState {
   // Moves a card from board to trash.
   boardToTrash(index) {
     let card = this.getBoard(index)
-    if (card.attackLoop) {
-      clearInterval(card.attackLoop)
-      clearInterval(card.warmLoop)
-    }
+    deactivateAttack(card)
     this.board.splice(index, 1)
     this.trash.push(card)
   }
@@ -73,7 +78,8 @@ class PlayerState {
 // A turn goes like
 //
 // beginTurn
-// Some number of selectCard, selectOpponent, resign
+// Some number of: 
+//  selectCard, selectOpponent, resign, refreshPlayers, tickTime
 // endTurn
 //
 class GameState {
@@ -89,17 +95,24 @@ class GameState {
 
     // The name of the winner
     this.winner = data.winner || null
+    
     // a flag to do an alert just once
     this.declaredWinner = false
 
     // A list of all moves we have ever made on the game state
     this.history = []
 
+    // the time (ms) to animate damage effects
     this.damageDuration = 900
 
     // set this to true for plenty of mana, for testing
     this.godMode = false
     
+  }
+
+  // whether the game has started
+  started() {
+    return this._started
   }
 
   // The player for the provided name.
@@ -142,7 +155,7 @@ class GameState {
   // Each type of move has a JSON representation.
   //
   // The useful keys include:
-  // op: the method name. selectCard, selectOpponent, refreshPlayers
+  // op: the method name (selectCard, selectOpponent, refreshPlayers, resign, tickTime)
   // from: the index a card is coming from
   // to: the index a card is going to
   //
@@ -159,22 +172,31 @@ class GameState {
       // You can't make normal moves when the game is over
       return false
     }
-
+    
     if (move.op == "refreshPlayers") {
+      // the server sends this on a continuous loop
       this.refreshPlayers()
     } else if (move.op == "resign") {
+      // either player may resign at any time
       this.resign(move)
     } else if (move.op == "selectCard") {
       /*
+        this is the most common action in a game
+        selecting a card twice usually means to takean action with it
+        
         the possible container types are board, hand, trash, 
         as well as the opponentFoo for each type
       */
       this.selectCard(move.index, move.containerType, move.player)
     } else if (move.op == "selectOpponent") {
+      // players can select an opponent to use cards on them
+      // or target permanents they have in play
       this.selectOpponent(move.player)
     } else if (move.op == "draw") {
+      // the server tells the players to draw occasionally
       this.draw(move.player, move.card)
     } else if (move.op == "tickTime") {
+      // the server sends the current time for the client to display
       this.currentGameSecond = move.time
       window.client.forceUpdate()
     } else {
@@ -186,6 +208,7 @@ class GameState {
     return true
   }
 
+  // log all moves in the game so far
   logHistory() {
     console.log("" + this.history.length + " moves in history.")
     for (let move of this.history) {
@@ -193,6 +216,7 @@ class GameState {
     }
   }
 
+  // seed the game and start giving players cards/energy
   startGame(players, seed) {
     this.rng = new Math.seedrandom(seed)
     if (players[0] == this.name) {
@@ -204,15 +228,11 @@ class GameState {
       return
     }
 
-    // always your turn in spacetime
-    this._started = true
     this.refreshPlayers()
   }
 
-  started() {
-    return this._started;
-  }
-
+  // at the end of a combat or a damage spell,
+  // kill anything that died
   resolveDamage() {
 
     for (var i = 0; i < this.players.length; i++) {
@@ -235,6 +255,7 @@ class GameState {
         if (card == player.selectedCard) {
           player.selectedCard = null;
         }
+        deactivateAttack(card)
       }
       player.board = player.board.filter(c => cardsToRemove.indexOf(c) < 0)
 
@@ -260,10 +281,7 @@ class GameState {
         var player = this.players[i]
         for (var j = 0; j < player.board.length; j++) {
           var card = player.board[j]
-          if (card.attackLoop) {
-            clearInterval(card.attackLoop)
-            clearInterval(card.warmLoop)
-          }
+          deactivateAttack(card)
         }
       }
 
@@ -403,10 +421,9 @@ class GameState {
   // from is an index of the hand
   play(from, player) {
     let card = player.getHand(from)
-    if (card.requiresTarget) {
-      // Player has re-selected this.selectedCard in their hand.
-      // In this case, this.selectedCard requiresTarget, 
-      // so no action occurs besides unselecting the card,
+    if (card.target && !card.randomTarget) {
+      // Player has re-selected this.selectedCard in their hand,
+      // but the card needs a target, so nothing happens.
       return;
     }
     if (player.mana < card.cost) {
@@ -453,7 +470,7 @@ class GameState {
       } ,card.attackRate);
     } 
 
-    // kill a permanent at random
+    // kill permanents
     if (card.kill) { 
       let actingPlayer
       if (player == this.localPlayer()) {
@@ -462,9 +479,23 @@ class GameState {
         actingPlayer = this.localPlayer()
       }
 
-      if (actingPlayer.board.length) {
-        let randomIndex = this.rng() * (actingPlayer.board.length-1);
-        actingPlayer.boardToTrash(randomIndex)
+      // kill a random opponent permanent
+      if (card.randomTarget && 
+          card.target == TARGETS.OPPONENT_PERMANENT) {
+        if (actingPlayer.board.length) {
+          let randomIndex = this.rng() * (actingPlayer.board.length - 1);
+          actingPlayer.boardToTrash(randomIndex)
+        }
+      } else if (card.targetCount == TARGETS.ALL_PERMANENTS && 
+                 card.target == TARGETS.ANY_PERMANENT) {
+        // kill all permanents
+        for (let player of this.players) {
+          while (player.board.length > 0) {
+            player.boardToTrash(0)
+          }
+        }
+      } else {
+        throw 'kill ability is only implemented for random OPPONENT and ALL_PERMANENTS'
       }
     }
 
@@ -473,14 +504,6 @@ class GameState {
       this.refreshPlayers()
     }
 
-    // kill all permanents
-    if (card.emp) {
-      for (let player of this.players) {
-        while (player.board.length > 0) {
-          player.boardToTrash(0)
-        }
-      }
-    }
   }
 
   // have a card attack its attack target
@@ -572,11 +595,6 @@ class GameState {
     this.resolveDamage()
   }
 
-  // whether the game has started
-  started() {
-    return this._started
-  }
-
   // attacks face
   face(from, player) {
     let card = player.getBoard(from)
@@ -659,6 +677,14 @@ class GameState {
     this.resolveDamage()
   }
 
+}
+
+// stop a card from attacking
+function deactivateAttack(card) {
+  if (card.attackLoop) {
+    clearInterval(card.attackLoop)
+    clearInterval(card.warmLoop)
+  }
 }
 
 module.exports = GameState;
