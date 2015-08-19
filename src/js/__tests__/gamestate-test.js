@@ -56,7 +56,7 @@ describe("GameState", function() {
     state.startGame(["bob", "eve"], 123)
 
     // draw the simplest permanent
-    state.draw({"name":"bob"}, {"cost":0, "permanent": true})
+    state.draw({name:"bob"}, {cost:0, permanent: true})
     expect(state.localPlayer().hand.length).toEqual(1)
 
     // play last card drawn
@@ -68,7 +68,8 @@ describe("GameState", function() {
     state.makeMove({op: "refreshPlayers"})
 
     // get a card that implements kill
-    state.draw({"name":"eve"}, {"kill":true, "cost":0, "target":TARGETS.OPPONENT_PERMANENT, randomTarget:true})    
+    state.draw({name:"eve"}, 
+               {kill:true, cost:0, target:TARGETS.OPPONENT_PERMANENT, randomTarget:true})    
     // play last card drawn
     state.selectCard(0, "hand", "eve")
     state.selectCard(0, "hand", "eve")
@@ -85,8 +86,8 @@ describe("GameState", function() {
     state.startGame(["bob", "eve"], 123)
 
     // draw the simplest 2/2
-    state.draw({"name":"bob"}, 
-               {"cost":0, "permanent": true, "attack": 2, "defense": 2})
+    state.draw({name:"bob"}, 
+               {cost:0, permanent: true, attack: 2, defense: 2})
 
     // play last card drawn
     state.selectCard(0, "hand", "bob")
@@ -96,7 +97,7 @@ describe("GameState", function() {
     state.makeMove({op: "refreshPlayers"})
    
     // get a card that implements direct damage
-    state.draw({"name":"eve"}, {"damage":2, "cost":0})    
+    state.draw({name:"eve"}, {damage:2, cost:0})    
    
     // play last card drawn
     state.selectCard(0, "hand", "eve")
