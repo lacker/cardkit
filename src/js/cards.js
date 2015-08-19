@@ -16,6 +16,7 @@ export const DEFAULT_ATTACK_RATE = 3000;
      target         - enum TARGETS   what permanents/players can be targeted
      targetCount    - INT            how many targets, or TARGETS.ALL_PERMANENTS
      randomTarget   - BOOL           whether the target(s) are chosen randomly
+     damage         - INT            deals damage to target(s)
      kill           - BOOL           kills permanents when used
      description    - STRING         what the card does (TODO: this should actually be auto-genned)
      flavor         - STRING         text just for fun 
