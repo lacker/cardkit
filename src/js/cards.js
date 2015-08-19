@@ -41,6 +41,7 @@ export const TARGETS = {
     SELF_ANY            : 8,
 }
 
+// Legal cards for Spacetime.
 export const CARDS = {
   BiBot: {
     cost: 2,
