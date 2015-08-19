@@ -4,6 +4,8 @@
 
 require("seedrandom")
 
+import { TARGETS } from './cards.js';
+
 // The state of a single player.
 class PlayerState {
   constructor(data) {
@@ -37,10 +39,7 @@ class PlayerState {
   // Moves a card from board to trash.
   boardToTrash(index) {
     let card = this.getBoard(index)
-    if (card.attackLoop) {
-      clearInterval(card.attackLoop)
-      clearInterval(card.warmLoop)
-    }
+    deactivateAttack(card)
     this.board.splice(index, 1)
     this.trash.push(card)
   }
@@ -250,10 +249,7 @@ class GameState {
         if (card == player.selectedCard) {
           player.selectedCard = null;
         }
-        if (card.attackLoop) {
-          clearInterval(card.attackLoop)
-          clearInterval(card.warmLoop)
-        }
+        deactivateAttack(card)
       }
       player.board = player.board.filter(c => cardsToRemove.indexOf(c) < 0)
 
@@ -279,10 +275,7 @@ class GameState {
         var player = this.players[i]
         for (var j = 0; j < player.board.length; j++) {
           var card = player.board[j]
-          if (card.attackLoop) {
-            clearInterval(card.attackLoop)
-            clearInterval(card.warmLoop)
-          }
+          deactivateAttack(card)
         }
       }
 
@@ -422,10 +415,9 @@ class GameState {
   // from is an index of the hand
   play(from, player) {
     let card = player.getHand(from)
-    if (card.requiresTarget) {
-      // Player has re-selected this.selectedCard in their hand.
-      // In this case, this.selectedCard requiresTarget, 
-      // so no action occurs besides unselecting the card,
+    if (card.target && !card.randomTarget) {
+      // Player has re-selected this.selectedCard in their hand,
+      // but the card needs a target, so nothing happens.
       return;
     }
     if (player.mana < card.cost) {
@@ -472,7 +464,7 @@ class GameState {
       } ,card.attackRate);
     } 
 
-    // kill a permanent at random
+    // kill permanents
     if (card.kill) { 
       let actingPlayer
       if (player == this.localPlayer()) {
@@ -481,9 +473,25 @@ class GameState {
         actingPlayer = this.localPlayer()
       }
 
-      if (actingPlayer.board.length) {
-        let randomIndex = this.rng() * (actingPlayer.board.length-1);
-        actingPlayer.boardToTrash(randomIndex)
+      // kill a random opponent permanent
+      if (card.randomTarget && 
+          card.target == TARGETS.OPPONENT_PERMANENT) {
+        if (actingPlayer.board.length) {
+          let randomIndex = this.rng() * (actingPlayer.board.length-1);
+          actingPlayer.boardToTrash(randomIndex)
+        }
+      } else if (card.targetCount == TARGETS.ALL_PERMANENTS && 
+                 card.target == TARGETS.ANY_PERMANENT) {
+        // kill all permanents
+        for (let player of this.players) {
+        console.log("kill all let")
+          while (player.board.length > 0) {
+        console.log("kill all while")
+            player.boardToTrash(0)
+          }
+        }
+      } else {
+        throw `kill ability is only implemented for random OPPONENT and ALL_PERMANENTS`
       }
     }
 
@@ -492,14 +500,6 @@ class GameState {
       this.refreshPlayers()
     }
 
-    // kill all permanents
-    if (card.emp) {
-      for (let player of this.players) {
-        while (player.board.length > 0) {
-          player.boardToTrash(0)
-        }
-      }
-    }
   }
 
   // have a card attack its attack target
@@ -673,6 +673,14 @@ class GameState {
     this.resolveDamage()
   }
 
+}
+
+// stop a card from attacking
+function deactivateAttack(card) {
+  if (card.attackLoop) {
+    clearInterval(card.attackLoop)
+    clearInterval(card.warmLoop)
+  }
 }
 
 module.exports = GameState;

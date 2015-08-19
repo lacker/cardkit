@@ -8,74 +8,91 @@ export const DEFAULT_ATTACK_RATE = 3000;
    Keys in the CARDS dict are the Names of the cards.
 
    Cards must have these properties: 
-     cost             - INT        (>=0)
+     cost           - INT            (>=0)
+     permanent      - BOOL           stays in play when used
 
    Cards may have these optional properties:
-     permanent        - BOOL       stays in play when used
-     attack           - INT        (>=0)
-     defense          - INT        (>=1)
-     attackRate       - INT        (millis)
-     kill             - BOOL       kills a random permanent when used
-     emp              - BOOL       kills everything when used
-     requiresTarget   - BOOL       select a permanent/player to use
-     description      - STRING     what the card does
-     flavor           - STRING     text just for fun 
+     attack         - INT            (>=0)
+     defense        - INT            (>=1)
+     attackRate     - INT            (millis)
+     target         - enum TARGETS   what permanents/players can be targeted
+     targetCount    - INT            how many targets, or TARGETS.ALL_PERMANENTS
+     randomTarget   - BOOL           whether the target(s) are chosen randomly
+     kill           - BOOL           kills permanents when used
+     description    - STRING         what the card does (TODO: this should actually be auto-genned)
+     flavor         - STRING         text just for fun 
 
    A typical card that stays in play when used will have at least: 
-     cost, permanent, attack, defense, attackRate
+     cost, permanent=true, attack, defense, attackRate
 
    A typical card that doesn't stay in play when used will have at least: 
-     cost, description
+     cost, permanent=false, target, targetCount, description
 */
+
+// Possible values for target property
+export const TARGETS = {
+    ALL_PERMANENTS      : -1,
+    ANY_PERMANENT       : 0,
+    ANY_PLAYER          : 1,
+    ANY_ANY             : 2,
+    OPPONENT_PLAYER     : 3,
+    OPPONENT_PERMANENT  : 4,
+    OPPONENT_ANY        : 5,
+    SELF_PLAYER         : 6,
+    SELF_PERMANENT      : 7,
+    SELF_ANY            : 8,
+}
 
 export const CARDS = {
   BiBot: {
+    cost: 2,
     permanent: true,
     attack: 2,
     defense: 2,
     attackRate: DEFAULT_ATTACK_RATE,
-    cost: 2
   },
   TriBot: {
+    cost: 3,
     permanent: true,
     attack: 3,
     defense: 3,
     attackRate: DEFAULT_ATTACK_RATE,
-    cost: 3
   },
   QuadBot: {
+    cost: 4,
     permanent: true,
     attack: 4,
     defense: 4,
     attackRate: DEFAULT_ATTACK_RATE,
-    cost: 4
-  },
-  PentaBot: {
-    permanent: true,
-    attack: 5,
-    defense: 5,
-    attackRate: DEFAULT_ATTACK_RATE,
-    cost: 5
   },
   "Laser Blast": {
+    cost: 2,
+    permanent: false,
+    target: TARGETS.ANY_PERMANENT,
+    targetCount: 1,
+    randomTarget: false,
     description: "Deal 3 damage to a creature or player.",
-    requiresTarget: true,
     damage: 3,
-    cost: 2
   },
   "Errant Blast": {
+    cost: 3,
+    permanent: false,
+    target: TARGETS.OPPONENT_PERMANENT,
+    targetCount: 1,
+    randomTarget: true,
     description: "Kill one of your opponent's fleet at random.",
     kill: true,
-    cost: 3
   },
   EMP: {
+    cost: 2,
+    permanent: false,
+    target: TARGETS.ANY_PERMANENT,
+    targetCount: TARGETS.ALL_PERMANENTS,
     description: "Destroy all cards in play.",
     flavor: "Watch that basket.",
-    emp: true,
-    cost: 2
+    kill: true,
   },
 }
-
 
 // Define a couple of simple decks.
 // The current computer player always gets Weenie.
@@ -87,6 +104,6 @@ export var DECKS = [
   },
   {
     name: "Control",
-    cards: ["EMP", "QuadBot", "PentaBot", "TriBot"],
+    cards: ["EMP", "QuadBot", "TriBot"],
   },
 ]
