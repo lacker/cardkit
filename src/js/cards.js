@@ -1,16 +1,16 @@
-// each creature attacks a certain rate
-// this is the default rate in milliseconds
+// Each creature attacks at a certain rate.
+// This is the default rate in milliseconds.
 export const DEFAULT_ATTACK_RATE = 3000;
 
 /* 
-   define the cards that are legal as JSON
+   Define the cards that are legal as JSON.
    
-   keys in the CARDS dict are the Names of the cards
+   Keys in the CARDS dict are the Names of the cards.
 
-   cards must have these properties: 
+   Cards must have these properties: 
      cost             - INT        (>=0)
 
-   cards may have these optional properties:
+   Cards may have these optional properties:
      permanent        - BOOL       stays in play when used
      attack           - INT        (>=0)
      defense          - INT        (>=1)
@@ -21,13 +21,13 @@ export const DEFAULT_ATTACK_RATE = 3000;
      description      - STRING     what the card does
      flavor           - STRING     text just for fun 
 
-   a typical card that stays in play when used will have: 
+   A typical card that stays in play when used will have at least: 
      cost, permanent, attack, defense, attackRate
 
-   a typical card that doesn't stay in play when used will have: 
+   A typical card that doesn't stay in play when used will have at least: 
      cost, description
-
 */
+
 export const CARDS = {
   BiBot: {
     permanent: true,
@@ -77,9 +77,9 @@ export const CARDS = {
 }
 
 
-// define a couple of decks, still very simple
-// the current computer player always gets Weenie
-// the human player always gets control
+// Define a couple of simple decks.
+// The current computer player always gets Weenie.
+// The human player always gets Control.
 export var DECKS = [
   {
     name: "Weenie",
