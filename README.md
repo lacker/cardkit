@@ -2,6 +2,8 @@
 
 A real-time, space-themed, ccg-genre game. 
 
+Try it at [spacetime.tv](http://spacetime.tv)
+
 # Pure Javascript
 
 This is both a great game, and an experiment in pure Javascript.
