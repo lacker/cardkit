@@ -275,7 +275,11 @@ class GameState {
       console.log(this.winner + " wins!")
       alert(this.winner + " wins!")
       this.declaredWinner = true
-      
+      if (this.localPlayer().life <= 0) {
+        window.track("computer wins")
+      } else if (this.remotePlayer().life <= 0) {
+        window.track("human wins")
+      }      
       // stop all cards from attacking
       for (var i = 0; i < this.players.length; i++) {
         var player = this.players[i]
