@@ -250,6 +250,10 @@ class GameState {
         if (card == player.selectedCard) {
           player.selectedCard = null;
         }
+        if (card.attackLoop) {
+          clearInterval(card.attackLoop)
+          clearInterval(card.warmLoop)
+        }
       }
       player.board = player.board.filter(c => cardsToRemove.indexOf(c) < 0)
 
