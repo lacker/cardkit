@@ -10,6 +10,11 @@ class Client {
     this.name = name
     this.game = game
     this.hasComputerOpponent = false
+
+    // when a client requests a game, this is set to true
+    // the UI displays a game view instead of the lobby when this is set
+    this.registered = false
+
     this.makeSocket()
 
     // The next op id we expect.
@@ -61,7 +66,6 @@ class Client {
 
   // Send a looking-for-game message.
   register(hasComputerOpponent) {
-    // UI checks this to refresh on game seek
     this.registered = true; 
     if (this.game) {
       console.log("joining game as " + this.name)
