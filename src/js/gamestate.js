@@ -483,7 +483,7 @@ class GameState {
       if (card.randomTarget && 
           card.target == TARGETS.OPPONENT_PERMANENT) {
         if (actingPlayer.board.length) {
-          let randomIndex = this.rng() * (actingPlayer.board.length-1);
+          let randomIndex = this.rng() * (actingPlayer.board.length - 1);
           actingPlayer.boardToTrash(randomIndex)
         }
       } else if (card.targetCount == TARGETS.ALL_PERMANENTS && 
@@ -495,7 +495,7 @@ class GameState {
           }
         }
       } else {
-        throw `kill ability is only implemented for random OPPONENT and ALL_PERMANENTS`
+        throw 'kill ability is only implemented for random OPPONENT and ALL_PERMANENTS'
       }
     }
 

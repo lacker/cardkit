@@ -188,9 +188,6 @@ class Connection {
       'name': 'cpu' + gameID,
       'gameID': gameID,
       'deck': DECKS[0], //the bibot deck
-      'ws': null, //unneeded maybe I should delete
-      'address': null,  //unneeded maybe I should delete
-      'hasComputerOpponent': false,  //unneeded maybe I should delete
     }
   }
 
