@@ -1,5 +1,11 @@
 /* 
-   The state of a ccg type card game, specifically Spacetime.
+   The state of a Spacetime game.
+   It's realtime, but not twitchy, and loosely based
+   on the concept of a CCG like Magic, Pokemon, or Hearthstone.
+
+   It's also like a PvP version of Plants vs. Zombies.
+
+   It's so rad, it's hard to even stuff into a genre.
 */
 
 require("seedrandom")
