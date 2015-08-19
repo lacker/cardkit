@@ -2,6 +2,8 @@ jest.dontMock("../gamestate")
 
 let GameState = require("../gamestate")
 
+import { TARGETS } from '../cards.js';
+
 describe("GameState", function() {
   it("can be created", function() {
     let state = new GameState({name: "bob"})
@@ -66,7 +68,7 @@ describe("GameState", function() {
     state.makeMove({op: "refreshPlayers"})
 
     // get a card that implements kill
-    state.draw({"name":"eve"}, {"kill":true, "cost":0})    
+    state.draw({"name":"eve"}, {"kill":true, "cost":0, "target":TARGETS.OPPONENT_PERMANENT, randomTarget:true})    
     // play last card drawn
     state.selectCard(0, "hand", "eve")
     state.selectCard(0, "hand", "eve")
