@@ -129,6 +129,19 @@ class GameState {
     return answer
   }
 
+  // The opponent player object for the provided name.
+  // Only works for two player games, which Spacetime is.
+  opponentForName(name) {
+    let answer = undefined
+    this.players.forEach(player => {
+      if (player.name != name) {
+        answer = player
+      }
+    })
+    return answer
+  }
+
+
   // A string that can be displayed to debug the game state.
   // This string should be consistent for all clients viewing the same  
   // game. In particular, it prints players by alphabetical order.
@@ -200,7 +213,8 @@ class GameState {
       this.draw(move.player, move.card)
     } else if (move.op == "tickTime") {
       // the server sends the current time for the client to display
-      this.currentGameSecond = move.time
+      this.gameTime = move.gameTime
+      this.currentGameSecond = move.currentGameSecond
       window.client.forceUpdate()
     } else {
       console.log("ignoring op: " + move.op)
@@ -211,7 +225,7 @@ class GameState {
     return true
   }
 
-  // log all moves in the game so far
+  // Log all moves in the game so far.
   logHistory() {
     console.log("" + this.history.length + " moves in history.")
     for (let move of this.history) {
@@ -219,7 +233,7 @@ class GameState {
     }
   }
 
-  // seed the game and start giving players cards/energy
+  // Seed the game and start giving players cards/energy.
   startGame(players, seed) {
     this.rng = new Math.seedrandom(seed)
     if (players[0] == this.name) {
@@ -234,8 +248,8 @@ class GameState {
     this.refreshPlayers()
   }
 
-  // at the end of a combat or a damage spell,
-  // kill anything that died
+  // At the end of a combat or a damage spell,
+  // kill anything that died.
   resolveDamage() {
 
     for (var i = 0; i < this.players.length; i++) {
@@ -275,7 +289,6 @@ class GameState {
       this.winner = this.localPlayer().name
     }
     if (this.winner != null && this.declaredWinner == false) {
-      console.log(this.winner + " wins!")
       alert(this.winner + " wins!")
       this.declaredWinner = true
       if (this.localPlayer().life <= 0) {
@@ -382,13 +395,8 @@ class GameState {
   }
 
   // select the opponent to cast a spell or target with attack
-  selectOpponent(player) {
-    let actingPlayer
-    if (player == this.localPlayer().name) {
-      actingPlayer = this.localPlayer()
-    } else {
-      actingPlayer = this.remotePlayer()
-    }
+  selectOpponent(playerName) {
+    let actingPlayer = this.playerForName(playerName)
 
     if (!actingPlayer.selectedCard) {
       return;
@@ -404,7 +412,7 @@ class GameState {
   }    
 
   selectTargetForAttack(from, to, player) {
-    let opponent = this.localPlayer().name == player.name ? this.remotePlayer() : this.localPlayer()
+    let opponent = this.opponentForName(player.name)
     let attacker = player.getBoard(from)
     let defender = opponent.getBoard(to)
     attacker.attackTarget = defender   
@@ -412,7 +420,7 @@ class GameState {
 
   // from and to are indices into board
   attack(from, to, player) {
-    let opponent = this.localPlayer().name == player.name ? this.remotePlayer() : this.localPlayer()
+    let opponent = this.opponentForName(player.name)
     let attacker = player.getBoard(from)
     let defender = opponent.getBoard(to)
     this.showCardDamage(attacker)
@@ -479,12 +487,7 @@ class GameState {
 
     // kill permanents
     if (card.kill) { 
-      let actingPlayer
-      if (player == this.localPlayer()) {
-        actingPlayer = this.remotePlayer()
-      } else {
-        actingPlayer = this.localPlayer()
-      }
+      let actingPlayer = opponentForName(player.name)
 
       // kill a random opponent permanent
       if (card.randomTarget && 
@@ -517,14 +520,8 @@ class GameState {
   // if its still in play
   // returns true if the attack is legal and therefore occurs
   attackCreature (card) {
-    let cardOwner, opponent
-    if (card.playerName == this.localPlayer().name) {
-      cardOwner = this.localPlayer()
-      opponent = this.remotePlayer()
-    } else {
-      cardOwner = this.remotePlayer()
-      opponent = this.localPlayer()
-    }
+    let cardOwner = this.playerForName(card.playerName)
+    let opponent = this.opponentForName(card.playerName)
 
     let from = -1, to = -1
 
@@ -575,7 +572,7 @@ class GameState {
   // Throws if there's not enough energy.
   // from is an index of the hand
   playFace(from, player) {
-    let opponent = this.localPlayer().name == player.name ? this.remotePlayer() : this.localPlayer()
+    let opponent = this.opponentForName(player.name)
     let card = player.getHand(from)
     if (player.energy < card.cost) {
       throw `need ${card.cost} energy but only have ${player.energy}`
@@ -591,13 +588,8 @@ class GameState {
 
   // for direct damage spells
   damage(to, amount, player) {
-    let actingPlayer
-    if (player == this.localPlayer()) {
-      actingPlayer = this.remotePlayer()
-    } else {
-      actingPlayer = this.localPlayer()
-    }
-    let target = actingPlayer.getBoard(to)
+    let opponent = this.opponentForName(player.name)
+    let target = opponent.getBoard(to)
     target.defense -= amount
     this.resolveDamage()
   }
@@ -609,7 +601,7 @@ class GameState {
   }
 
   faceForCard(card, player) {
-    let opponent = this.localPlayer().name == player.name ? this.remotePlayer() : this.localPlayer()
+    let opponent = this.opponentForName(player.name)
     opponent.life -= card.attack
 
     card.canAct = false

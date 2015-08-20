@@ -65,8 +65,12 @@ class Connection {
       Connection.drawLoops = new Map()
       // Connection.timeLoops maps each gameID to a timeLoop
       Connection.timeLoops = new Map()
-      // Connection.currentGameSeconds maps each gameID to a currentGameSecond
+      // Connection.currentGameSeconds maps each gameID to a currentGameSecond in whole seconds counting down from 10
       Connection.currentGameSeconds = new Map()
+      // Connection.gameTime maps each gameID to a gameTime in millis
+      Connection.gameTime = new Map()
+      // Connection.gameStart maps each gameID to a gameStart date
+      Connection.gameStart = new Map()
 
       // Connection.checkSync maps generic keys to generic
       // values. Clients can use this to check for synchronization
@@ -146,8 +150,6 @@ class Connection {
   endGame(gameID) {
     clearInterval(Connection.timeLoops.get(gameID))
     clearInterval(Connection.drawLoops.get(gameID))
-    // might not need this
-    Connection.currentGameSeconds.set(gameID, null)
   }
 
   // Deal cards, and start game loop.
@@ -207,11 +209,16 @@ class Connection {
     // for ticking down whole seconds in game display
     Connection.currentGameSeconds.set(gameID, DRAW_MS / 1000)
 
+    // for exact time for game loop
+    Connection.gameTime.set(gameID, 0)
+    Connection.gameStart.set(gameID, Date.now())
+
     // tick down time every second
     let timeLoop = setInterval(() => {
       let currentGameSecond = Connection.currentGameSeconds.get(gameID)
+      Connection.gameTime.set(gameID, Date.now() - Connection.gameStart.get(gameID);)
       Connection.currentGameSeconds.set(gameID, --currentGameSecond)
-      let message = { op: "tickTime", time: currentGameSecond, player: "no_player", gameID}
+      let message = { op: "tickTime", gameTime:Connection.gameTime, currentGameSecond, player: "no_player", gameID}
       this.addToMoveListAndBroadcast(message, gameID)
     }, 1000);
     Connection.timeLoops.set(gameID, timeLoop)
