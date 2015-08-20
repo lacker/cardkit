@@ -67,7 +67,7 @@ $end-turn-button-width: 10vw;
 .home-avatar {
 }
 
-// life and mana
+// life and energy
 .vital-stats-container {
   color:black;
   padding-top:1vh;
@@ -94,7 +94,7 @@ $end-turn-button-width: 10vw;
   margin-left: $in-play-width + 17vw + 1vw;
 }
 
-// the time counting down for each new card/mana
+// the time counting down for each new card/energy
 .turn-timer {
   float:left;
   width: $end-turn-button-width;

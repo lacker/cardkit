@@ -31,7 +31,7 @@
   box-shadow: 1.5vh 1.5vh 3vh 0vh rgba(22,22,22,0.2);
 }
 
-// contains name and mana
+// contains name and energy
 .card-top {
   display:block;
   width: $card-width - 1vw;
@@ -44,8 +44,8 @@
   width: $card-width - 1vw;
 }
 
-// show mana cost for card
-.mana-label {
+// show energy cost for card
+.energy-label {
   float:right;
 }
 

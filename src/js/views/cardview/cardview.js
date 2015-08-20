@@ -41,7 +41,7 @@ let Card = React.createClass({
       <div className={combinedCSS} onClick={this.selectCard}>
         <div className="card-top"> 
           {this.props.cardInfo.name}
-          <div className="mana-label">{this.props.cardInfo.cost}</div>
+          <div className="energy-label">{this.props.cardInfo.cost}</div>
         </div>
         <div className="card-bottom"> 
           {attackPart}
@@ -54,7 +54,7 @@ let Card = React.createClass({
   // style the card based on if it has attacked, is castable, etc
   cssClassesForCard: function() {
     let cssClassCanPlay = '';
-    if (this.props.cardInfo.cost > this.props.player.mana) {
+    if (this.props.cardInfo.cost > this.props.player.energy) {
       cssClassCanPlay = "too-expensive";
     }
     let cssClass = window.game.localPlayer().selectedCard == this.props.cardInfo ||

@@ -1,7 +1,7 @@
 /* 
    The state of a Spacetime game.
-   It's realtime, but not twitchy, and loosely based
-   on the concept of a CCG like Magic, Pokemon, or Hearthstone.
+   It's realtime, but not twitchy, and similar
+   to card games like Magic, Pokemon, and Hearthstone.
 
    It's also like a PvP version of Plants vs. Zombies.
 
@@ -20,8 +20,8 @@ class PlayerState {
     this.board = data.board || []
     this.trash = data.trash || []
     this.life = data.life || 30
-    this.mana = data.mana || 0
-    this.maxMana = data.maxMana || 0
+    this.energy = data.energy || 0
+    this.maxEnergy = data.maxEnergy || 0
   }
   
   // Creates a string that, when printed, is a nice way to view the
@@ -31,7 +31,7 @@ class PlayerState {
             hand: ${this.hand}
             board: ${this.board}
             life: ${this.life}
-            mana: ${this.mana}/${this.maxMana}
+            energy: ${this.energy}/${this.maxEnergy}
            `
   }
 
@@ -102,20 +102,23 @@ class GameState {
     // A list of all moves we have ever made on the game state
     this.history = []
 
+    // the time of the main game loop 
+    this.gameTime = 0
+
     // the time (ms) to animate damage effects
     this.damageDuration = 900
 
-    // set this to true for plenty of mana, for testing
+    // set this to true for plenty of energy, for testing
     this.godMode = false
     
   }
 
-  // whether the game has started
+  // Whether the game has started.
   started() {
     return this._started
   }
 
-  // The player for the provided name.
+  // The player object for the provided name.
   playerForName(name) {
     let answer = undefined
     this.players.forEach(player => {
@@ -372,7 +375,7 @@ class GameState {
       player.selectedCard = card;
     } else if (containerType == "hand") { 
       let card = player.getHand(index);
-      if (player.mana >= card.cost) {
+      if (player.energy >= card.cost) {
         player.selectedCard = card
       }
     }
@@ -421,7 +424,7 @@ class GameState {
   }
 
   // Plays a card from the hand.
-  // Throws if there's not enough mana.
+  // Throws if there's not enough energy.
   // from is an index of the hand
   play(from, player) {
     let card = player.getHand(from)
@@ -430,11 +433,11 @@ class GameState {
       // but the card needs a target, so nothing happens.
       return;
     }
-    if (player.mana < card.cost) {
+    if (player.energy < card.cost) {
       player.selectedCard = null
-      // throw `need ${card.cost} mana but only have ${player.mana}`
+      // throw `need ${card.cost} energy but only have ${player.energy}`
     }
-    player.mana -= card.cost      
+    player.energy -= card.cost      
 
     // move the card to the appropriate container
     if (card.permanent) {
@@ -553,12 +556,12 @@ class GameState {
 
 
   // Plays a card from the hand, onto a target.
-  // Throws if there's not enough mana.
+  // Throws if there's not enough energy.
   // from is an index of the hand
   playOn(from, to, player) {
     let card = player.getHand(from)
-    if (player.mana < card.cost) {
-      throw `need ${card.cost} mana but only have ${player.mana}`
+    if (player.energy < card.cost) {
+      throw `need ${card.cost} energy but only have ${player.energy}`
     }
     player.handToTrash(from)
 
@@ -569,13 +572,13 @@ class GameState {
   }
 
   // Plays a card from the hand, onto a player.
-  // Throws if there's not enough mana.
+  // Throws if there's not enough energy.
   // from is an index of the hand
   playFace(from, player) {
     let opponent = this.localPlayer().name == player.name ? this.remotePlayer() : this.localPlayer()
     let card = player.getHand(from)
-    if (player.mana < card.cost) {
-      throw `need ${card.cost} mana but only have ${player.mana}`
+    if (player.energy < card.cost) {
+      throw `need ${card.cost} energy but only have ${player.energy}`
     }
     player.handToTrash(from)
 
@@ -647,18 +650,18 @@ class GameState {
     }
   }
 
-  // let all cards act, give everyone a mana, and restore everyone's mana
+  // let all cards act, give everyone a energy, and restore everyone's energy
   refreshPlayers() {
-    this.localPlayer().maxMana = Math.min(1 + this.localPlayer().maxMana, 10)
-    this.remotePlayer().maxMana = Math.min(1 + this.remotePlayer().maxMana, 10)
+    this.localPlayer().maxEnergy = Math.min(1 + this.localPlayer().maxEnergy, 10)
+    this.remotePlayer().maxEnergy = Math.min(1 + this.remotePlayer().maxEnergy, 10)
 
     if (this.godMode) {
-      this.localPlayer().maxMana = 99;
-      this.remotePlayer().maxMana = 99;
+      this.localPlayer().maxEnergy = 99;
+      this.remotePlayer().maxEnergy = 99;
     }
 
-    this.localPlayer().mana = this.localPlayer().maxMana
-    this.remotePlayer().mana = this.remotePlayer().maxMana
+    this.localPlayer().energy = this.localPlayer().maxEnergy
+    this.remotePlayer().energy = this.remotePlayer().maxEnergy
 
     this.selectedCard = null;
     if (this.localPlayer().board.length) {

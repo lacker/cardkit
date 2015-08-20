@@ -31,7 +31,7 @@ let wss = new WebSocketServer({port: 9090})
 // the number of cards each player starts with 
 export const STARTING_HAND_SIZE = 3;
 
-// when a turn passes, each player draws and adds mana
+// when a turn passes, each player draws and adds energy
 // this is the time (milliseconds) it takes for the turn to tick
 export const DRAW_MS = 10000;
 
@@ -176,7 +176,7 @@ class Connection {
       this.everyoneDraws(gameID)
     }
     
-    // Players draw and receive mana occasionally.
+    // Players draw and receive energy occasionally.
     // Some cards played trigger on timers.
     this.startGameLoop(gameID)
 
@@ -191,7 +191,7 @@ class Connection {
     }
   }
 
-  // Refresh players mana and draw cards every DRAW_MS.
+  // Refresh players energy and draw cards every DRAW_MS.
   // Update the timer every second or so.
   startGameLoop(gameID) {
 

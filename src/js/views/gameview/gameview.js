@@ -1,4 +1,4 @@
-// React view of a GameState
+energy// React view of a GameState
 import React from 'react';
 import Player from '../playerview/playerview';
 import Card from "../cardview/cardview";
@@ -29,7 +29,7 @@ let GameView = React.createClass({
           <div onClick={this.selectOpponent} className={opponentDamageCSS} style={this.avatarStyle(1)}>
             <div className="vital-stats-container life-container">Life: {opponent.life}</div>
             <h2 className="player-name">{opponent.name}</h2>
-            <div className="vital-stats-container">Mana: {opponent.mana} / {opponent.maxMana}</div>
+            <div className="vital-stats-container">Energy: {opponent.energy} / {opponent.maxEnergy}</div>
           </div>
           
           {/* MIDDLE OF BOARD */}
@@ -48,7 +48,7 @@ let GameView = React.createClass({
           <div className={homePlayerDamageCSS} style={this.avatarStyle(0)}>
             <div className="vital-stats-container">Life: {homePlayer.life}</div>
             <h2>{homePlayer.name}</h2>
-            <div className="vital-stats-container">Mana: {homePlayer.mana} / {homePlayer.maxMana}</div>
+            <div className="vital-stats-container">Energy: {homePlayer.energy} / {homePlayer.maxEnergy}</div>
           </div>
           <Player playerState={homePlayer} />
         
