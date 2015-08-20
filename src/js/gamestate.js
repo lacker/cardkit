@@ -45,7 +45,6 @@ class PlayerState {
   // Moves a card from board to trash.
   boardToTrash(index) {
     let card = this.getBoard(index)
-    deactivateAttack(card)
     this.board.splice(index, 1)
     this.trash.push(card)
   }
@@ -288,7 +287,6 @@ class GameState {
         if (card == player.selectedCard) {
           player.selectedCard = null;
         }
-        deactivateAttack(card)
       }
       player.board = player.board.filter(c => cardsToRemove.indexOf(c) < 0)
 
@@ -312,15 +310,6 @@ class GameState {
       } else if (this.remotePlayer().life <= 0) {
         window.track("human wins")
       }      
-      // stop all cards from attacking
-      for (var i = 0; i < this.players.length; i++) {
-        var player = this.players[i]
-        for (var j = 0; j < player.board.length; j++) {
-          var card = player.board[j]
-          deactivateAttack(card)
-        }
-      }
-
     }
   }
 
@@ -659,14 +648,6 @@ class GameState {
     this.resolveDamage()
   }
 
-}
-
-// stop a card from attacking
-function deactivateAttack(card) {
-  if (card.attackLoop) {
-    clearInterval(card.attackLoop)
-    clearInterval(card.warmLoop)
-  }
 }
 
 module.exports = GameState;
