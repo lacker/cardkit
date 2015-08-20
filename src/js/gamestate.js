@@ -119,10 +119,13 @@ class GameState {
   }
 
   // The player object for the provided name.
-  playerForName(name) {
+  playerForName(name, isOpponent) {
     let answer = undefined
     this.players.forEach(player => {
-      if (player.name == name) {
+      if (player.name == name && !isOpponent) {
+        answer = player
+      }
+      if (player.name != name && isOpponent) {
         answer = player
       }
     })
@@ -132,13 +135,7 @@ class GameState {
   // The opponent player object for the provided name.
   // Only works for two player games, which Spacetime is.
   opponentForName(name) {
-    let answer = undefined
-    this.players.forEach(player => {
-      if (player.name != name) {
-        answer = player
-      }
-    })
-    return answer
+    return this.playerForName(name, true)
   }
 
 
@@ -661,8 +658,7 @@ class GameState {
   }
 
   resign(move) {
-    let player = this.localPlayer().name == move.player ? this.localPlayer() : this.remotePlayer()
-    player.life = 0
+    this.playerForName(move.player).life = 0
     this.resolveDamage()
   }
 
