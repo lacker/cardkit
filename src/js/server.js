@@ -258,6 +258,7 @@ class Connection {
 
     copy.canAct = false
     copy.playerName = player.name
+    copy.creationTime = Date.now()
     return copy
   }
 

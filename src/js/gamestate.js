@@ -138,7 +138,6 @@ class GameState {
     return this.playerForName(name, true)
   }
 
-
   // A string that can be displayed to debug the game state.
   // This string should be consistent for all clients viewing the same  
   // game. In particular, it prints players by alphabetical order.
@@ -220,6 +219,26 @@ class GameState {
 
     this.history.push(move)
     return true
+  }
+
+
+  tickTime() {
+    for (let card of p.board) {
+      if (!card.attackRate) {
+        continue
+      }
+      
+      card.warm += 1000
+      if (card.warm >= card.attackRate) {
+        if (card.attackTarget && this.attackCreature(card)) {
+        } else {
+          // card is set to attack a player
+          this.faceForCard(card, card.attacker)
+        }
+        card.warm = 0        
+      }
+    }
+    window.client.forceUpdate()
   }
 
   // Log all moves in the game so far.
@@ -451,7 +470,7 @@ class GameState {
       player.handToTrash(from)
     }
 
-    // Finally, play any abilities the card has.
+    // Finally, play any abilities the card has.    
 
     // for permanents that attack on a loop
     if (card.attackRate) {
@@ -462,25 +481,8 @@ class GameState {
           break;
         }
       }
-      
       card.warm = 0
-
-      card.warmLoop = setInterval(() => {
-        card.warm += 1
-        window.client.forceUpdate()
-      } ,card.attackRate/10);
-      
-      card.attackLoop = setInterval(() => {
-        // card is set to attack a creatiure
-        if (card.attackTarget && this.attackCreature(card)) {
-        } else {
-          // card is set to attack a player
-          this.faceForCard(card, card.attacker)
-        }
-        card.warm = 0
-        window.client.forceUpdate()
-      } ,card.attackRate);
-    } 
+    }
 
     // kill permanents
     if (card.kill) { 
@@ -504,11 +506,6 @@ class GameState {
       } else {
         throw 'kill ability is only implemented for random OPPONENT and ALL_PERMANENTS'
       }
-    }
-
-    // let all permanents act again
-    if (card.refreshPlayers) { 
-      this.refreshPlayers()
     }
 
   }
