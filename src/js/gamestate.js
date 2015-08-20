@@ -644,30 +644,20 @@ class GameState {
 
   // let all cards act, give everyone a energy, and restore everyone's energy
   refreshPlayers() {
-    this.localPlayer().maxEnergy = Math.min(1 + this.localPlayer().maxEnergy, 10)
-    this.remotePlayer().maxEnergy = Math.min(1 + this.remotePlayer().maxEnergy, 10)
-
-    if (this.godMode) {
-      this.localPlayer().maxEnergy = 99;
-      this.remotePlayer().maxEnergy = 99;
+    for (let p in this.players) {
+      p.maxEnergy = Math.min(1 + p.maxEnergy, 10)
+      if (this.godMode) {
+        p.maxEnergy = 99;
+      }
+      p.energy = p.maxEnergy
+      if (p.board.length) {
+        for (let i = 0; i < p.board.length; i++) {
+          let card = p.board[i];
+          card.canAct = true;
+        }      
+      }
     }
-
-    this.localPlayer().energy = this.localPlayer().maxEnergy
-    this.remotePlayer().energy = this.remotePlayer().maxEnergy
-
     this.selectedCard = null;
-    if (this.localPlayer().board.length) {
-      for (let i = 0; i < this.localPlayer().board.length; i++) {
-        let card = this.localPlayer().board[i];
-        card.canAct = true;
-      }      
-    }
-    if (this.remotePlayer().board.length) {
-      for (let i = 0; i < this.remotePlayer().board.length; i++) {
-        let card = this.remotePlayer().board[i];
-        card.canAct = true;
-      }      
-    }
   }
 
   resign(move) {
