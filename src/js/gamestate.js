@@ -253,8 +253,12 @@ class GameState {
         if (!card.attackRate) {
           continue
         }
-        // why do I have to subtract 10000
-        let cardTime = Date.now() - card.creationTime - 10000
+        // why do I have to modulo 10000
+        let cardTime = (Date.now() - card.creationTime) % 10000
+        console.log("&&")
+        console.log("Card in play for: " + cardTime)
+        console.log(cardTime % card.attackRate + " = " + cardTime + " % " +  card.attackRate)
+        console.log("&&&&")
         if (cardTime % card.attackRate < 1000 || 
            cardTime < card.attackRate) {
           continue
