@@ -1,4 +1,4 @@
-energy// React view of a GameState
+// React view of a GameState
 import React from 'react';
 import Player from '../playerview/playerview';
 import Card from "../cardview/cardview";

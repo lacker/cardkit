@@ -166,10 +166,12 @@ class Connection {
       let cpuPlayer = this.defaultComputerPlayer(gameID)
       Connection.all.set('cpuAddress', cpuPlayer)
     }
-   
+    
     // send the start move
+    // this doesn't get bounced by server, only broadcast to client
     console.log(`starting ${players[0]} vs ${players[1]}. gameID: ${gameID}`)
-    let start = { op: "start", players, gameID}
+    let start = { op: "start", players, gameID }
+
     this.addToMoveListAndBroadcast(start, gameID)
     Connection.waiting.clear()
     
@@ -209,16 +211,23 @@ class Connection {
     // for ticking down whole seconds in game display
     Connection.currentGameSeconds.set(gameID, DRAW_MS / 1000)
 
+    // for the main game loop
+    let startTime = Date.now()
+    Connection.gameStart.set(gameID, startTime)
+    Connection.gameTime.set(gameID, startTime)
+
+    // fire a message right away
+    let message = { op: "tickTime", gameTime:startTime, currentGameSecond:DRAW_MS / 1000, player: "no_player", gameID}
+    this.addToMoveListAndBroadcast(message, gameID)
+
     // for exact time for game loop
     Connection.gameTime.set(gameID, 0)
-    Connection.gameStart.set(gameID, Date.now())
-
     // tick down time every second
     let timeLoop = setInterval(() => {
       let currentGameSecond = Connection.currentGameSeconds.get(gameID)
-      Connection.gameTime.set(gameID, Date.now() - Connection.gameStart.get(gameID);)
+      Connection.gameTime.set(gameID, Date.now())
       Connection.currentGameSeconds.set(gameID, --currentGameSecond)
-      let message = { op: "tickTime", gameTime:Connection.gameTime, currentGameSecond, player: "no_player", gameID}
+      let message = { op: "tickTime", gameTime:Connection.gameTime.get(gameID), currentGameSecond, player: "no_player", gameID}
       this.addToMoveListAndBroadcast(message, gameID)
     }, 1000);
     Connection.timeLoops.set(gameID, timeLoop)

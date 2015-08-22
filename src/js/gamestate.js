@@ -108,7 +108,7 @@ class GameState {
     this.damageDuration = 900
 
     // set this to true for plenty of energy, for testing
-    this.godMode = false
+    this.godMode = true
     
   }
 
@@ -208,36 +208,64 @@ class GameState {
       this.draw(move.player, move.card)
     } else if (move.op == "tickTime") {
       // the server sends the current time for the client to display
+      if (!this.gameStart) {
+        this.gameStart = move.gameTime
+        setInterval(() => {
+          this.tickLocalTime()
+        }, 100)
+      }
       this.gameTime = move.gameTime
       this.currentGameSecond = move.currentGameSecond
-      window.client.forceUpdate()
+      this.tickTime()
     } else {
       console.log("ignoring op: " + move.op)
       return false
     }
 
+    window.client.forceUpdate()
     this.history.push(move)
     return true
   }
 
-
-  tickTime() {
-    for (let card of p.board) {
-      if (!card.attackRate) {
-        continue
+  // Do fine-grained time locally, just for things like animations
+  // that don't affect game state.
+  tickLocalTime() {
+    for (let p of this.players) {
+      for (let card of p.board) {
+        if (!card.attackRate) {
+          continue
+        }
+        let cardTime = Date.now() - card.creationTime
+        card.warm += Math.floor(cardTime % card.attackRate / 1000)
+        if (card.warm >= 10) {
+          card.warm = 0        
+        }
       }
-      
-      card.warm += 1000
-      if (card.warm >= card.attackRate) {
+    }
+    window.client.forceUpdate()
+
+  }
+
+  // tick server time for any action that effects game state, like attacks
+  tickTime() {
+    for (let p of this.players) {
+      for (let card of p.board) {
+        if (!card.attackRate) {
+          continue
+        }
+        let cardTime = Date.now() - card.creationTime
+        console.log(cardTime)
+        if (cardTime % card.attackRate < 1000) {
+          continue
+        }
+
         if (card.attackTarget && this.attackCreature(card)) {
         } else {
           // card is set to attack a player
           this.faceForCard(card, card.attacker)
         }
-        card.warm = 0        
-      }
+      }      
     }
-    window.client.forceUpdate()
   }
 
   // Log all moves in the game so far.
@@ -325,9 +353,14 @@ class GameState {
       opponent = this.localPlayer()
     }
     if (!actingPlayer.selectedCard) {
+      if (index >= actingPlayer.hand.length) {
+        console.log("computer tried to click a card not there")
+        return
+      }
       this.setSelectedCard(index, containerType, actingPlayer)
       return;
     }
+
     let card;
     if (containerType == "board") {
       if (actingPlayer.name == selectingPlayerName) {
@@ -475,7 +508,7 @@ class GameState {
 
     // kill permanents
     if (card.kill) { 
-      let actingPlayer = opponentForName(player.name)
+      let actingPlayer = this.opponentForName(player.name)
 
       // kill a random opponent permanent
       if (card.randomTarget && 
@@ -586,11 +619,9 @@ class GameState {
   faceForCard(card, player) {
     let opponent = this.opponentForName(player.name)
     opponent.life -= card.attack
-
     card.canAct = false
     player.selectedCard = null;
     this.resolveDamage()
-
     this.showCardDamage(card)
     this.showPlayerDamage(opponent)
   }
@@ -627,12 +658,14 @@ class GameState {
 
   // let all cards act, give everyone a energy, and restore everyone's energy
   refreshPlayers() {
-    for (let p in this.players) {
+    for (let p of this.players) {
+      console.log(p.maxEnergy)
       p.maxEnergy = Math.min(1 + p.maxEnergy, 10)
       if (this.godMode) {
         p.maxEnergy = 99;
       }
       p.energy = p.maxEnergy
+      console.log(p.maxEnergy)
       if (p.board.length) {
         for (let i = 0; i < p.board.length; i++) {
           let card = p.board[i];
