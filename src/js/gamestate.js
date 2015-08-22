@@ -209,7 +209,7 @@ class GameState {
     } else if (move.op == "tickTime") {
       // the server sends the current time for the client to display
       if (!this.gameStart) {
-        this.gameStart = move.gameTime
+        this.gameTime = move.gameTime
         setInterval(() => {
           this.tickLocalTime()
         }, 100)
@@ -221,8 +221,11 @@ class GameState {
       console.log("ignoring op: " + move.op)
       return false
     }
-
-    window.client.forceUpdate()
+    
+    // client doesn't exist in tests
+    if (window.client) {
+      window.client.forceUpdate()
+    }
     this.history.push(move)
     return true
   }
@@ -663,7 +666,6 @@ class GameState {
         p.maxEnergy = 99;
       }
       p.energy = p.maxEnergy
-      console.log(p.maxEnergy)
       if (p.board.length) {
         for (let i = 0; i < p.board.length; i++) {
           let card = p.board[i];

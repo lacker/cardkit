@@ -69,8 +69,6 @@ class Connection {
       Connection.currentGameSeconds = new Map()
       // Connection.gameTime maps each gameID to a gameTime in millis
       Connection.gameTime = new Map()
-      // Connection.gameStart maps each gameID to a gameStart date
-      Connection.gameStart = new Map()
 
       // Connection.checkSync maps generic keys to generic
       // values. Clients can use this to check for synchronization
@@ -213,7 +211,6 @@ class Connection {
 
     // for the main game loop
     let startTime = Date.now()
-    Connection.gameStart.set(gameID, startTime)
     Connection.gameTime.set(gameID, startTime)
 
     // fire a message right away
