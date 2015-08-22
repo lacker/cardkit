@@ -212,7 +212,7 @@ class GameState {
         this.gameTime = move.gameTime
         setInterval(() => {
           this.tickLocalTime()
-        }, 100)
+        }, 500)
       }
       this.gameTime = move.gameTime
       this.currentGameSecond = move.currentGameSecond
@@ -239,10 +239,7 @@ class GameState {
           continue
         }
         let cardTime = Date.now() - card.creationTime
-        card.warm += Math.floor(cardTime % card.attackRate / 1000)
-        if (card.warm >= 10) {
-          card.warm = 0        
-        }
+        card.warm = Math.floor(cardTime % card.attackRate / 1000)
       }
     }
     window.client.forceUpdate()
@@ -256,8 +253,10 @@ class GameState {
         if (!card.attackRate) {
           continue
         }
-        let cardTime = Date.now() - card.creationTime
-        if (cardTime % card.attackRate < 1000) {
+        // why do I have to subtract 10000
+        let cardTime = Date.now() - card.creationTime - 10000
+        if (cardTime % card.attackRate < 1000 || 
+           cardTime < card.attackRate) {
           continue
         }
 

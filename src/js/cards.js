@@ -1,6 +1,6 @@
 // Each creature attacks at a certain rate.
 // This is the default rate in milliseconds.
-export const DEFAULT_ATTACK_RATE = 3000;
+export const DEFAULT_ATTACK_RATE = 5000;
 
 /* 
    CARDS maps names of cards to properties/definitions.
