@@ -658,7 +658,6 @@ class GameState {
   // let all cards act, give everyone a energy, and restore everyone's energy
   refreshPlayers() {
     for (let p of this.players) {
-      console.log(p.maxEnergy)
       p.maxEnergy = Math.min(1 + p.maxEnergy, 10)
       if (this.godMode) {
         p.maxEnergy = 99;
