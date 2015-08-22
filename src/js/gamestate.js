@@ -108,7 +108,7 @@ class GameState {
     this.damageDuration = 900
 
     // set this to true for plenty of energy, for testing
-    this.godMode = true
+    this.godMode = false
     
   }
 
@@ -246,7 +246,7 @@ class GameState {
 
   }
 
-  // tick server time for any action that effects game state, like attacks
+  // Tick server time for any action that effects game state, like attacks.
   tickTime() {
     for (let p of this.players) {
       for (let card of p.board) {
@@ -254,7 +254,6 @@ class GameState {
           continue
         }
         let cardTime = Date.now() - card.creationTime
-        console.log(cardTime)
         if (cardTime % card.attackRate < 1000) {
           continue
         }
