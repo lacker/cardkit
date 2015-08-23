@@ -252,24 +252,12 @@ class Connection {
       copy[key] = card[key]
     }
 
-    copy.id = this.makeid()
     copy.canAct = false
     copy.playerName = player.name
     copy.attackCount = 0
     return copy
   }
  
-  makeid()
-{
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for( var i=0; i < 64; i++ )
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    return text;
-}
-
   // Close the connection and clear timers
   close() {
     console.log(`disconnected from ${this.address}`)
