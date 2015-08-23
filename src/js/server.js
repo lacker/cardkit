@@ -211,7 +211,7 @@ class Connection {
     let message = { op: "tickTime", gameTime:startTime, player: "no_player", gameID}
     this.broadcast(message, gameID)
 
-    // broadtcast time as often as possible
+    // broadcast time as often as possible
     let timeLoop = setInterval(() => {
       Connection.gameTime.set(gameID, Date.now())
       let message = { op: "tickTime", gameTime:Connection.gameTime.get(gameID), player: "no_player", gameID}
