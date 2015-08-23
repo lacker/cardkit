@@ -212,7 +212,7 @@ class Connection {
     this.addToMoveListAndBroadcast(message, gameID)
     // for exact time for game loop
     Connection.gameTime.set(gameID, 0)
-    // tick down time every second
+    // broadtcast time as often as possible
     let timeLoop = setInterval(() => {
       Connection.gameTime.set(gameID, Date.now())
       let message = { op: "tickTime", gameTime:Connection.gameTime.get(gameID), player: "no_player", gameID}
