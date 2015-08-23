@@ -244,13 +244,13 @@ class GameState {
         if (!card.attackRate) {
           continue
         }
-        // how long teh card has been in play
+        // how long the card has been in play
         let cardTime = this.gameTime - card.creationTime
         // set this to animate the opacity of a card as it becomes ready to attack again
         card.warm = (cardTime % card.attackRate) / card.attackRate
 
         // don't attack if the it's not within 1 second of the attack time
-        // or if teh card hans't been in play long enough
+        // or if the card hasn't been in play long enough
         if ((cardTime % card.attackRate > 1000) || 
            (cardTime < card.attackRate*(card.attackCount+1))) {
           continue
