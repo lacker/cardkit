@@ -19,7 +19,9 @@
 // and if the same key ever goes to multiple values, the server logs an error.
 
 // some JSON definitions for cards and decks
-import { CARDS, DECKS } from './cards.js';
+import { CARDS, DECKS, Card } from './cards.js';
+
+import * as Util from './util';
 
 // for shuffling
 require("seedrandom")
@@ -34,11 +36,6 @@ export const STARTING_HAND_SIZE = 3;
 // when a turn passes, each player draws and adds energy
 // this is the time (milliseconds) it takes for the turn to tick
 export const DRAW_MS = 10000;
-
-// random card from deck
-function choice(list) {
-  return list[Math.floor(Math.random() * list.length)]
-}
 
 class Connection {
   constructor(ws) {
@@ -118,7 +115,7 @@ class Connection {
       }
     } else if (message.op == "register") {
       this.name = message.name
-      this.deck = choice(DECKS)
+      this.deck = Util.choice(DECKS)
       if (message.hasComputerOpponent) {
         this.deck = DECKS[1] // always get the control deck against the computer, who gets bibots
 
@@ -225,7 +222,7 @@ class Connection {
     let players = Array.from(Connection.all.values())
     for (let player of players) {
       if (player.gameID == gameID) {
-        let card = this.cardCopy(player);
+        let card = new Card(player);
         let message = { op: "draw" , player: {name: player.name}, card, gameID}
         this.addToMoveListAndBroadcast(message, gameID)        
       }
@@ -240,24 +237,6 @@ class Connection {
     moves.push(move)    
   }
 
-  // Get a card object to use for a player drawing a card.
-  cardCopy(player) {
-    let cardName = choice(player.deck.cards)
-    let card = CARDS[cardName]
-
-    // Make a copy so that we can edit this card        
-    let copy = {}     
-    copy['name'] = cardName    
-    for (let key in card) {
-      copy[key] = card[key]
-    }
-
-    copy.canAct = false
-    copy.playerName = player.name
-    copy.attackCount = 0
-    return copy
-  }
- 
   // Close the connection and clear timers
   close() {
     console.log(`disconnected from ${this.address}`)

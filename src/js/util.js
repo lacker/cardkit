@@ -4,7 +4,7 @@
  * format
  */
 
-export function buildElementClasses (block, elements) {
+export function buildElementClasses(block, elements) {
 	let bemClasses = {};
 
 	const makeName = (name) => {
@@ -19,3 +19,9 @@ export function buildElementClasses (block, elements) {
 
 	return bemClasses;
 }
+
+
+export function choice(list) {
+  return list[Math.floor(Math.random() * list.length)]
+}
+

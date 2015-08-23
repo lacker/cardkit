@@ -36,9 +36,18 @@ let Card = React.createClass({
         </div>
       )
     }
+
     let divStyle = {
       opacity: this.props.cardInfo.warm + .2
     }
+
+    if (!window.game.inPlay(this.props.cardInfo)) {
+      divStyle = {
+        opacity: 1
+      }
+    }
+
+
     return (
       <div className={combinedCSS} onClick={this.selectCard} style={divStyle}>
         <div className="card-top"> 

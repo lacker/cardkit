@@ -1,3 +1,24 @@
+import * as Util from './util';
+
+// A card for Spacetime.
+export class Card {
+  constructor(player) {
+    // Get a card to use for a player drawing a card.
+    let cardName = Util.choice(player.deck.cards)
+    let card = CARDS[cardName]
+
+    this.name = cardName    
+    for (let key in card) {
+      this[key] = card[key]
+    }
+
+    this.canAct = false
+    this.playerName = player.name
+    this.attackCount = 0
+    this.warm = .2
+  }
+}
+ 
 // Each creature attacks at a certain rate.
 // This is the default rate in milliseconds.
 export const DEFAULT_ATTACK_RATE = 5000;

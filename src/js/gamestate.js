@@ -252,7 +252,7 @@ class GameState {
   warmUpAndAttack(card) {
     // only creatures attack
     if (!card.attackRate) {
-      continue
+      return
     }
     // how long the card has been in play
     let cardTime = this.gameTime - card.creationTime
@@ -263,7 +263,7 @@ class GameState {
     // or if the card hasn't been in play long enough
     if ((cardTime % card.attackRate > CLOCK_CYCLE_MS*2) || 
        (cardTime < card.attackRate*(card.attackCount+1))) {
-      continue
+      return
     }
     card.attackCount++
 
@@ -686,6 +686,18 @@ class GameState {
     this.playerForName(move.player).life = 0
     this.resolveDamage()
   }
+
+  inPlay(card) {
+    for (let p of this.players) {
+      for (let c of p.board) {
+        if (card == c) {
+          return true
+        }
+      }
+    }
+    return false
+  }
+
 
 }
 
