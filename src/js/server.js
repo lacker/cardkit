@@ -29,7 +29,7 @@ const WebSocketServer = require("ws").Server
 let wss = new WebSocketServer({port: 9090})
 
 // the number of cards each player starts with 
-export const STARTING_HAND_SIZE = 3;
+export const STARTING_HAND_SIZE = 2;
 
 // when a turn passes, each player draws and adds energy
 // this is the time (milliseconds) it takes for the turn to tick
@@ -199,7 +199,7 @@ class Connection {
 
     // draw a card every DRAW_MS period
     let drawLoop = setInterval(() => {
-      this.everyoneDraws(gameID)
+      // this.everyoneDraws(gameID)
       let message = { op: "refreshPlayers", "player": "no_player", gameID}    
       this.addToMoveListAndBroadcast(message, gameID)
       Connection.currentGameSeconds.set(gameID, DRAW_MS / 1000)
@@ -216,7 +216,6 @@ class Connection {
     // fire a message right away
     let message = { op: "tickTime", gameTime:startTime, currentGameSecond:DRAW_MS / 1000, player: "no_player", gameID}
     this.addToMoveListAndBroadcast(message, gameID)
-
     // for exact time for game loop
     Connection.gameTime.set(gameID, 0)
     // tick down time every second
@@ -262,11 +261,24 @@ class Connection {
       copy[key] = card[key]
     }
 
+    copy.id = this.makeid()
     copy.canAct = false
     copy.playerName = player.name
     copy.creationTime = Date.now()
+    copy.attackCount = 0
     return copy
   }
+ 
+  makeid()
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < 64; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
 
   // Close the connection and clear timers
   close() {

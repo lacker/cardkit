@@ -208,15 +208,14 @@ class GameState {
       this.draw(move.player, move.card)
     } else if (move.op == "tickTime") {
       // the server sends the current time for the client to display
-      if (!this.gameStart) {
+      if (!this.gameTime) {
         this.gameTime = move.gameTime
         setInterval(() => {
           this.tickLocalTime()
-        }, 500)
+        }, 200)
       }
       this.gameTime = move.gameTime
       this.currentGameSecond = move.currentGameSecond
-      this.tickTime()
     } else {
       console.log("ignoring op: " + move.op)
       return false
@@ -235,42 +234,33 @@ class GameState {
   tickLocalTime() {
     for (let p of this.players) {
       for (let card of p.board) {
+        // only creatures attack
         if (!card.attackRate) {
           continue
         }
-        let cardTime = Date.now() - card.creationTime
+        // how long teh card has been in play
+        let cardTime = this.gameTime - card.creationTime
+        // set this to animate the opacity of a card as it becomes ready to attack again
         card.warm = Math.floor(cardTime % card.attackRate / 1000)
-      }
-    }
-    window.client.forceUpdate()
 
-  }
-
-  // Tick server time for any action that effects game state, like attacks.
-  tickTime() {
-    for (let p of this.players) {
-      for (let card of p.board) {
-        if (!card.attackRate) {
+        // don't attack if the it's not within 1 second of the attack time
+        // or if teh card hans't been in play long enough
+        if ((cardTime % card.attackRate > 1000) || 
+           (cardTime < card.attackRate*(card.attackCount+1))) {
           continue
         }
-        // why do I have to modulo 10000
-        let cardTime = (Date.now() - card.creationTime) % 10000
-        console.log("&&")
-        console.log("Card in play for: " + cardTime)
-        console.log(cardTime % card.attackRate + " = " + cardTime + " % " +  card.attackRate)
-        console.log("&&&&")
-        if (cardTime % card.attackRate < 1000 || 
-           cardTime < card.attackRate) {
-          continue
-        }
+        card.attackCount++
 
+        // attack a creature if one is targeted
+        // otherwise attack the opponent
         if (card.attackTarget && this.attackCreature(card)) {
         } else {
           // card is set to attack a player
           this.faceForCard(card, card.attacker)
         }
-      }      
+      }
     }
+    window.client.forceUpdate()
   }
 
   // Log all moves in the game so far.
@@ -493,6 +483,7 @@ class GameState {
     // move the card to the appropriate container
     if (card.permanent) {
       player.handToBoard(from)
+      card.creationTime = Date.now()
     } else {
       player.handToTrash(from)
     }
