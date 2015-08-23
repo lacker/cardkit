@@ -25,12 +25,13 @@ let GameView = React.createClass({
         <div className="game-container">
           
           {/* OPPONENT */}
-          <Player playerState={opponent} />
+          <div className="resign-button" onClick={this.resign}>Resign</div>
           <div onClick={this.selectOpponent} className={opponentDamageCSS} style={this.avatarStyle(1)}>
             <div className="vital-stats-container life-container">Life: {opponent.life}</div>
             <h2 className="player-name">{opponent.name}</h2>
             <div className="vital-stats-container">Energy: {opponent.energy} / {opponent.maxEnergy}</div>
           </div>
+          <Player playerState={opponent} />
           
           {/* MIDDLE OF BOARD */}
           <div className="in-play-area">
@@ -41,16 +42,15 @@ let GameView = React.createClass({
               {homePlayerBoardCards}
             </div>
           </div>
-          <span className="turn-timer">{currentTime}</span>
-          <div className="resign-button" onClick={this.resign}>Resign</div>
 
           {/* HOME PLAYER */}
+          <Player playerState={homePlayer} />
+          <div className="turn-timer">{currentTime}</div>
           <div className={homePlayerDamageCSS} style={this.avatarStyle(0)}>
             <div className="vital-stats-container">Life: {homePlayer.life}</div>
             <h2>{homePlayer.name}</h2>
             <div className="vital-stats-container">Energy: {homePlayer.energy} / {homePlayer.maxEnergy}</div>
           </div>
-          <Player playerState={homePlayer} />
         
         </div>
         

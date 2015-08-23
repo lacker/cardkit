@@ -78,6 +78,11 @@ let Card = React.createClass({
     let cssClassDamage = '';
     if (this.props.cardInfo.showDamage) {
       cssClassDamage = "damage-player";
+      if (this.props.cardInfo.playerName == window.game.localPlayer().name) {
+        cssClassDamage = cssClassDamage + " " + "attack-top";
+      } else {
+        cssClassDamage = cssClassDamage + " " + "attack-bottom";
+      }
     }
 
     let combinedCSS = cssClass + ' ' + 

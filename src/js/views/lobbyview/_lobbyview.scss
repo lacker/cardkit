@@ -3,14 +3,14 @@
 // the overall container for the main lobby
 .lobby {
 
-  width: 94vh;
-  height:94vh;
+  width: 94 * $default-padding;
+  height:94 * $default-padding;
   text-align: center; 
   background-color: rgba(0,0,0,.8); 
   margin: 0 auto;
-  border-radius: 1vh;
+  border-radius: $default-padding;
   border: 10px double #000; 
-  border-width: 1.5vh;
+  border-width: 1.5 * $default-padding;
   color:white;
 
   // the button to find a game in the lobby
@@ -19,7 +19,7 @@
     width: medium-button-width;
     padding:$default-padding;
     margin: 0 auto;
-    margin-right: 2vw;
+    margin-right: 2 * $default-padding;
     background-color: $palette-four;
     border-radius:6px;
     border: 1px solid black;

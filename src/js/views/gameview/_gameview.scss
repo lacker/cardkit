@@ -1,6 +1,6 @@
 @import "../../../assets/styles/base";
 
-$end-turn-button-width: 10vw;
+$end-turn-button-width: 10 * $default-padding;
 
 /* 
    styles for play area 
@@ -17,9 +17,8 @@ $end-turn-button-width: 10vw;
   text-align: center; 
   background-color:$palette-four; 
   height: $in-play-height;
-  width: $in-play-width;
+  width:100%;
   border-radius: $default-corner-radius;
-  margin-left: 16vw;
   margin-bottom: $default-vertical-padding*-4;
 }
 
@@ -35,13 +34,11 @@ $end-turn-button-width: 10vw;
 
 // the player's board who is on bottom
 .home-player-board {
-  position: relative;
-  bottom: -10px;
 }
 
 // where a player's unplayed cards go
 .hand-container {
-  height:$card-height + $default-vertical-padding*4;
+  height:$card-height;
   position: relative;
   right: medium-button-width/2;
 }
@@ -56,8 +53,8 @@ $end-turn-button-width: 10vw;
   padding-top: 0; 
   margin-bottom: $default-padding;
   width: 120px;
-  height: 120px;
-  margin-left: 43vw;
+  height: 100px;
+  margin: 0 auto;
   font-weight: fontWeight; 
   border-radius: 60px;
   background-color: rgba(245,245,245,1);
@@ -70,12 +67,12 @@ $end-turn-button-width: 10vw;
 // life and energy
 .vital-stats-container {
   color:black;
-  padding-top:1vh;
+  padding-top: $default-padding;
 }
 
 // life of player
 .life-container {
-  padding-top:2vh;
+  padding-top:2*$default-padding;
 }
 
 
@@ -85,24 +82,22 @@ $end-turn-button-width: 10vw;
 
 // the resign button that always shows in the game
 .resign-button {
+  color:white;
+  float:right;
+  margin: $default-padding;
   width: $end-turn-button-width;
   padding:$default-padding;
   border-radius:6px;
   border: 1px solid;
-  position:relative;
-  bottom:$in-play-height/2 - 1vh;
-  margin-left: $in-play-width + 17vw + 1vw;
 }
 
 // the time counting down for each new card/energy
 .turn-timer {
   float:left;
+  margin: $default-padding;
+  padding: $default-padding*2;
+  font-size:2em;
   width: $end-turn-button-width;
-  padding-top: $default-padding;
-  padding-bottom: $default-padding;
-  position: relative;
-  bottom: $in-play-height/2 + 9vh;
-  margin-left: $in-play-width + 19vw;
   background-color: black;
   color:white;
 }
@@ -121,4 +116,16 @@ $end-turn-button-width: 10vw;
 // pop up end turn button a bit on hover
 .active-player:hover {
   box-shadow: 7px 7px 17px 0px rgba(22,22,22,1);
+}
+
+.attack-top {
+  margin: 0 0;
+  position:absolute;
+  top:0;
+}
+
+.attack-bottom {
+  margin: 0 0;
+  position:absolute;
+  bottom: $card-height;
 }

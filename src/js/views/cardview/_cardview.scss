@@ -13,7 +13,7 @@
   display: inline-block;
   border: 1px solid;
   border-color:black;
-  box-shadow: 1.5vh 1.5vh 3vh 0vhx rgba(22,22,22,1);
+  box-shadow: $default-padding*1.5 $default-padding*1.5 $default-padding*3 0 rgba(22,22,22,1);
   cursor: pointer;
   text-align:left;
 }
@@ -28,20 +28,20 @@
 .playing-card:hover {
   transform: rotateX( 5deg ) rotateY(20deg);
   transition: transform 0.1s ease-in;
-  box-shadow: 1.5vh 1.5vh 3vh 0vh rgba(22,22,22,0.2);
+  box-shadow: $default-padding*1.5 $default-padding*1.5 $default-padding*3 0 rgba(22,22,22,0.2);
 }
 
 // contains name and energy
 .card-top {
   display:block;
-  width: $card-width - 1vw;
+  width: $card-width - $default-padding;
 }
 
 // contains text/abilities, and attack/defense
 .card-bottom {
   display:block;
-  height:$card-height - 5vh;
-  width: $card-width - 1vw;
+  height:$card-height - $default-padding*5;
+  width: $card-width - $default-padding;
 }
 
 // show energy cost for card
@@ -63,18 +63,18 @@
 // contains description for the card's effect
 .spell-text-label {
   font-size:.9em;
-  padding-top: 1vh;
+  padding-top: $default-padding;
   position: relative;
 }
 
 .spell-flavor {
   font-size:0.7em;
-  padding-top: 1vh;
+  padding-top: $default-padding;
   position: relative              
 }
 
 .card-details {
-  height:6vh;  
+  height:$default-padding*6;  
 }
 
 // make attack/defense svg icons small
