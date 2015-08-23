@@ -236,40 +236,44 @@ class GameState {
 
   // Tick time locally, and act based on last gameTime sent by server
   tickLocalTime() {
-
     // set currentGameSecond to 10 through 1 based on what second it is in the round
     this.currentGameSecond = Math.floor(10 - ((this.gameTime - this.startTime) % 10000)/1000)
     
     // loop over all cards in play to see if they should act
     for (let p of this.players) {
       for (let card of p.board) {
-        // only creatures attack
-        if (!card.attackRate) {
-          continue
-        }
-        // how long the card has been in play
-        let cardTime = this.gameTime - card.creationTime
-        // set this to animate the opacity of a card as it becomes ready to attack again
-        card.warm = (cardTime % card.attackRate) / card.attackRate
-
-        // don't attack if the it's not within 200 ms of the attack time
-        // or if the card hasn't been in play long enough
-        if ((cardTime % card.attackRate > CLOCK_CYCLE_MS*2) || 
-           (cardTime < card.attackRate*(card.attackCount+1))) {
-          continue
-        }
-        card.attackCount++
-
-        // attack a creature if one is targeted
-        // otherwise attack the opponent
-        if (card.attackTarget && this.attackCreature(card)) {
-        } else {
-          // card is set to attack a player
-          this.faceForCard(card, card.attacker)
-        }
+        this.warmUpAndAttack(card)
       }
     }
     window.client.forceUpdate()
+  }
+
+  // Update the card's opacity and potentially attack
+  warmUpAndAttack(card) {
+    // only creatures attack
+    if (!card.attackRate) {
+      continue
+    }
+    // how long the card has been in play
+    let cardTime = this.gameTime - card.creationTime
+    // set this to animate the opacity of a card as it becomes ready to attack again
+    card.warm = (cardTime % card.attackRate) / card.attackRate
+
+    // don't attack if the it's not within 200 ms of the attack time
+    // or if the card hasn't been in play long enough
+    if ((cardTime % card.attackRate > CLOCK_CYCLE_MS*2) || 
+       (cardTime < card.attackRate*(card.attackCount+1))) {
+      continue
+    }
+    card.attackCount++
+
+    // attack a creature if one is targeted
+    // otherwise attack the opponent
+    if (card.attackTarget && this.attackCreature(card)) {
+    } else {
+      // card is set to attack a player
+      this.faceForCard(card, card.attacker)
+    }
   }
 
   // Log all moves in the game so far.
