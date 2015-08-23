@@ -261,8 +261,7 @@ class GameState {
 
     // don't attack if the it's not within 200 ms of the attack time
     // or if the card hasn't been in play long enough
-    if ((cardTime % card.attackRate > CLOCK_CYCLE_MS*2) || 
-       (cardTime < card.attackRate*(card.attackCount+1))) {
+    if (cardTime < card.attackRate*(card.attackCount+1)) {
       return
     }
     card.attackCount++
