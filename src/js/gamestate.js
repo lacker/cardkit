@@ -512,7 +512,6 @@ class GameState {
           break;
         }
       }
-      card.warm = 0
     }
 
     // kill permanents
