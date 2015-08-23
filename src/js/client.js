@@ -49,6 +49,8 @@ class Client {
 
     if (message.op == "start") {
       this.handleStart(message)
+    } else if (message.op =="tickTime") {
+      this.game.makeMove(message)
     } else if (message.id != this.nextID) {
       console.log("out of order, returning: " + JSON.stringify(message))
       // This is a dupe, or out-of-order. Ignore it
