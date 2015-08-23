@@ -197,7 +197,7 @@ class Connection {
 
     // draw a card every DRAW_MS period
     let drawLoop = setInterval(() => {
-      // this.everyoneDraws(gameID)
+      this.everyoneDraws(gameID)
       let message = { op: "refreshPlayers", "player": "no_player", gameID}    
       this.addToMoveListAndBroadcast(message, gameID)
     }, DRAW_MS);
