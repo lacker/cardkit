@@ -231,8 +231,7 @@ class GameState {
     return true
   }
 
-  // Do fine-grained time locally, just for things like animations
-  // that don't affect game state.
+  // Tick time locally, and act based on last gameTime sent by server
   tickLocalTime() {
     this.currentGameSecond = Math.floor(10 - ((this.gameTime - this.startTime) % 10000)/1000)
     for (let p of this.players) {
@@ -245,7 +244,6 @@ class GameState {
         let cardTime = this.gameTime - card.creationTime
         // set this to animate the opacity of a card as it becomes ready to attack again
         card.warm = (cardTime % card.attackRate) / card.attackRate
-        console.log(card.warm)
 
         // don't attack if the it's not within 1 second of the attack time
         // or if teh card hans't been in play long enough
