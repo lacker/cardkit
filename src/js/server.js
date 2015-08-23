@@ -65,8 +65,6 @@ class Connection {
       Connection.drawLoops = new Map()
       // Connection.timeLoops maps each gameID to a timeLoop
       Connection.timeLoops = new Map()
-      // Connection.currentGameSeconds maps each gameID to a currentGameSecond in whole seconds counting down from 10
-      Connection.currentGameSeconds = new Map()
       // Connection.gameTime maps each gameID to a gameTime in millis
       Connection.gameTime = new Map()
 
@@ -202,30 +200,24 @@ class Connection {
       // this.everyoneDraws(gameID)
       let message = { op: "refreshPlayers", "player": "no_player", gameID}    
       this.addToMoveListAndBroadcast(message, gameID)
-      Connection.currentGameSeconds.set(gameID, DRAW_MS / 1000)
     }, DRAW_MS);
     Connection.drawLoops.set(gameID, drawLoop)
-
-    // for ticking down whole seconds in game display
-    Connection.currentGameSeconds.set(gameID, DRAW_MS / 1000)
 
     // for the main game loop
     let startTime = Date.now()
     Connection.gameTime.set(gameID, startTime)
 
     // fire a message right away
-    let message = { op: "tickTime", gameTime:startTime, currentGameSecond:DRAW_MS / 1000, player: "no_player", gameID}
+    let message = { op: "tickTime", gameTime:startTime, player: "no_player", gameID}
     this.addToMoveListAndBroadcast(message, gameID)
     // for exact time for game loop
     Connection.gameTime.set(gameID, 0)
     // tick down time every second
     let timeLoop = setInterval(() => {
-      let currentGameSecond = Connection.currentGameSeconds.get(gameID)
       Connection.gameTime.set(gameID, Date.now())
-      Connection.currentGameSeconds.set(gameID, --currentGameSecond)
-      let message = { op: "tickTime", gameTime:Connection.gameTime.get(gameID), currentGameSecond, player: "no_player", gameID}
+      let message = { op: "tickTime", gameTime:Connection.gameTime.get(gameID), player: "no_player", gameID}
       this.addToMoveListAndBroadcast(message, gameID)
-    }, 1000);
+    }, 300);
     Connection.timeLoops.set(gameID, timeLoop)
   }
 
@@ -264,7 +256,6 @@ class Connection {
     copy.id = this.makeid()
     copy.canAct = false
     copy.playerName = player.name
-    copy.creationTime = Date.now()
     copy.attackCount = 0
     return copy
   }

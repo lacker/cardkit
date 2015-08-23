@@ -36,9 +36,11 @@ let Card = React.createClass({
         </div>
       )
     }
-
+    let divStyle = {
+      opacity: this.props.cardInfo.warm + .2
+    }
     return (
-      <div className={combinedCSS} onClick={this.selectCard}>
+      <div className={combinedCSS} onClick={this.selectCard} style={divStyle}>
         <div className="card-top"> 
           {this.props.cardInfo.name}
           <div className="energy-label">{this.props.cardInfo.cost}</div>
@@ -68,11 +70,6 @@ let Card = React.createClass({
     if (this.props.cardInfo.showDamage) {
       cssClassDamage = "damage-player";
     }
-
-    if (this.props.cardInfo.warm) {
-      cssClassDamage = "warm-" + this.props.cardInfo.warm;
-    }
-
 
     let combinedCSS = cssClass + ' ' + 
                       cssClassDamage + ' ' + 

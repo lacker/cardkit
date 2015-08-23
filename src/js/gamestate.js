@@ -209,13 +209,13 @@ class GameState {
     } else if (move.op == "tickTime") {
       // the server sends the current time for the client to display
       if (!this.gameTime) {
+        this.startTime = move.gameTime
         this.gameTime = move.gameTime
         setInterval(() => {
           this.tickLocalTime()
-        }, 200)
+        }, 100)
       }
       this.gameTime = move.gameTime
-      this.currentGameSecond = move.currentGameSecond
     } else {
       console.log("ignoring op: " + move.op)
       return false
@@ -225,13 +225,16 @@ class GameState {
     if (window.client) {
       window.client.forceUpdate()
     }
-    this.history.push(move)
+    if (move.op != "tickTime") {
+      this.history.push(move)
+    }
     return true
   }
 
   // Do fine-grained time locally, just for things like animations
   // that don't affect game state.
   tickLocalTime() {
+    this.currentGameSecond = Math.floor(10 - ((this.gameTime - this.startTime) % 10000)/1000)
     for (let p of this.players) {
       for (let card of p.board) {
         // only creatures attack
@@ -241,7 +244,8 @@ class GameState {
         // how long teh card has been in play
         let cardTime = this.gameTime - card.creationTime
         // set this to animate the opacity of a card as it becomes ready to attack again
-        card.warm = Math.floor(cardTime % card.attackRate / 1000)
+        card.warm = (cardTime % card.attackRate) / card.attackRate
+        console.log(card.warm)
 
         // don't attack if the it's not within 1 second of the attack time
         // or if teh card hans't been in play long enough
