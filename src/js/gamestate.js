@@ -12,6 +12,9 @@ require("seedrandom")
 
 import { TARGETS } from './cards.js';
 
+// how often the local clock cycles
+const CLOCK_CYCLE_MS = 100;
+
 // The state of a single player.
 class PlayerState {
   constructor(data) {
@@ -213,7 +216,7 @@ class GameState {
         this.gameTime = move.gameTime
         setInterval(() => {
           this.tickLocalTime()
-        }, 100)
+        }, CLOCK_CYCLE_MS)
       }
       this.gameTime = move.gameTime
     } else {
@@ -249,9 +252,9 @@ class GameState {
         // set this to animate the opacity of a card as it becomes ready to attack again
         card.warm = (cardTime % card.attackRate) / card.attackRate
 
-        // don't attack if the it's not within 1 second of the attack time
+        // don't attack if the it's not within 200 ms of the attack time
         // or if the card hasn't been in play long enough
-        if ((cardTime % card.attackRate > 1000) || 
+        if ((cardTime % card.attackRate > CLOCK_CYCLE_MS*2) || 
            (cardTime < card.attackRate*(card.attackCount+1))) {
           continue
         }
