@@ -14,7 +14,7 @@ $end-turn-button-width: 10 * $default-padding;
 
 // area for cards to be played in center
 .in-play-area {
-  text-align: center; 
+  text-align: left; 
   background-color:$palette-four; 
   height: $in-play-height;
   width:100%;
@@ -116,16 +116,4 @@ $end-turn-button-width: 10 * $default-padding;
 // pop up end turn button a bit on hover
 .active-player:hover {
   box-shadow: 7px 7px 17px 0px rgba(22,22,22,1);
-}
-
-.attack-top {
-  margin: 0 0;
-  position:absolute;
-  top:0;
-}
-
-.attack-bottom {
-  margin: 0 0;
-  position:absolute;
-  bottom: $card-height;
 }

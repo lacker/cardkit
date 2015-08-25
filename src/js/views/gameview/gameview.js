@@ -2,6 +2,7 @@
 import React from 'react';
 import Player from '../playerview/playerview';
 import Card from "../cardview/cardview";
+import Bullet from "../bullet/bullet";
 import './_gameview.scss';
 
 
@@ -17,6 +18,9 @@ let GameView = React.createClass({
           <Card cardInfo={cardInfo} player={opponent} key={i} />);
     let homePlayerBoardCards = homePlayer.board.map((cardInfo, i) =>
           <Card cardInfo={cardInfo} player={homePlayer} key={i} />);
+
+    let bullets = this.props.state.bullets.map((bullet, i) =>
+          <Bullet bullet={bullet} key={i} />);
 
     let homePlayerDamageCSS = homePlayer.showDamage ? 'player-avatar damage-player' : 'player-avatar';
     let opponentDamageCSS = opponent.showDamage ? 'player-avatar damage-player' : 'player-avatar';
@@ -38,6 +42,7 @@ let GameView = React.createClass({
             <div className="player-board">
               {opponentBoardCards}
             </div>
+            {bullets}
             <div className="player-board home-player-board">
               {homePlayerBoardCards}
             </div>

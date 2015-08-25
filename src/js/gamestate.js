@@ -112,7 +112,10 @@ class GameState {
 
     // set this to true for plenty of energy, for testing
     this.godMode = false
-    
+
+    // animated projectiles whizzing through the game
+    this.bullets = []
+
   }
 
   // Whether the game has started.
@@ -468,7 +471,7 @@ class GameState {
     let opponent = this.opponentForName(player.name)
     let attacker = player.getBoard(from)
     let defender = opponent.getBoard(to)
-    this.showCardDamage(attacker)
+    this.showCardDamage(attacker, to)
     this.showCardDamage(defender)
     attacker.defense -= defender.attack
     defender.defense -= attacker.attack
@@ -631,15 +634,38 @@ class GameState {
     this.resolveDamage()
     this.showCardDamage(card)
     this.showPlayerDamage(opponent)
-  }
-
-  showCardDamage(card) {
-    // opponent damage animation
-    card.showDamage = true
-    card.damageAnimation = setInterval(() => {
-      card.showDamage = null;
+    let bulletDict = {player, 
+                      startIndex: player.board.indexOf(card)} 
+    this.bullets.push(bulletDict)
+    bulletDict.damageAnimation = setInterval(() => {
+      for (var i =0; i < this.bullets.length; i++) {
+        if (this.bullets[i] === bulletDict) {
+          this.bullets.splice(i,1);
+          break;
+        }
+      }
       window.client.forceUpdate()
     }, this.damageDuration) 
+
+  }
+
+  showCardDamage(card, index) {
+    if (index) {
+
+      let bulletDict = {player, 
+                        startIndex: player.board.indexOf(card), 
+                        attackIndex: index} 
+      this.bullets.push(bulletDict)
+      bulletDict.damageAnimation = setInterval(() => {
+        for (var i =0; i < this.bullets.length; i++) {
+          if (this.bullets[i] === bulletDict) {
+            this.bullets.splice(i,1);
+            break;
+          }
+        }
+        window.client.forceUpdate()
+      }, this.damageDuration) 
+    }
   }
 
   showPlayerDamage(player) {

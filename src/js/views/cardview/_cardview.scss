@@ -123,3 +123,115 @@
   animation-iteration-count: 1;
   animation-timing-function: ease-in-out;
 }
+
+.card-slot-0 {
+  position: absolute;
+  left: $game-width/2 - $card-width / 2;
+}
+
+.card-slot-1 {
+  position: absolute;
+  left: $game-width/2 - $card-width / 2 - $card-width;
+}
+
+.card-slot-2 {
+  position: absolute;
+  left: $game-width/2 - $card-width / 2 + $card-width;
+}
+
+.card-slot-3 {
+  position: absolute;
+  left: $game-width/2 - $card-width / 2 - $card-width * 2;
+}
+
+.card-slot-4 {
+  position: absolute;
+  left: $game-width/2 - $card-width / 2 + $card-width * 2;
+}
+
+.card-slot-5 {
+  position: absolute;
+  left: $game-width/2 - $card-width / 2 - $card-width * 3;
+}
+
+.card-slot-6 {
+  position: absolute;
+  left: $game-width/2 - $card-width / 2 + $card-width * 3;
+}
+
+.card-slot-7 {
+  position: absolute;
+  left: $game-width/2 - $card-width / 2 - $card-width * 4;
+}
+
+.attack-up {
+  z-index: 99999;
+  animation-name: attack-up;
+  animation-duration: 900ms;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in-out;
+}
+
+.attack-down {
+  z-index: 99999;
+  animation-name: attack-down;
+  animation-duration: 900ms;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes attack-up {
+    50% {
+        top: $game-height/2;
+    }
+    100% {
+        top: $game-height/2 - $card-height * 1.5;
+    }
+}
+
+@keyframes attack-down {
+    50% {
+        top: $game-height/2;
+    }
+    100% {
+        top: $game-height/2 + $card-height * 1.5;
+    }
+}
+
+.attack-top {
+  position:absolute;
+  left: $game-width/2 - $card-width/2;
+  animation-name: attack-top;
+  animation-duration: 900ms;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in-out;
+}
+
+.attack-bottom {
+  position:absolute;
+  left: $game-width/2 - $card-width/2;
+  animation-name: attack-bottom;
+  animation-duration: 900ms;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes attack-top {
+    50% {
+        top: $game-height/2;
+    }
+    100% {
+        top: 0;
+    }
+}
+
+@keyframes attack-bottom {
+    50% {
+        bottom: $game-height/2;
+    }
+    100% {
+        bottom: $card-height/2;
+    }
+}
+
+

@@ -68,26 +68,23 @@ let Card = React.createClass({
     if (this.props.cardInfo.cost > this.props.player.energy) {
       cssClassCanPlay = "too-expensive";
     }
-    let cssClass = window.game.localPlayer().selectedCard == this.props.cardInfo ||
-                   window.game.remotePlayer().selectedCard == this.props.cardInfo ? 
+
+    let player = this.props.cardInfo.playerName == window.game.localPlayer().name ? window.game.localPlayer() : window.game.remotePlayer();
+    let cssClass = player.selectedCard == this.props.cardInfo ? 
                    'playing-card active-card' : 'playing-card';
-    let fromIndex = window.game.localPlayer().board.indexOf(this.props.cardInfo);    
+    let fromIndex = player.board.indexOf(this.props.cardInfo);    
     let cssClassCanAct = !this.props.cardInfo.canAct && fromIndex != -1 ? 
                            'has-attacked-card' : '';
 
-    let cssClassDamage = '';
-    if (this.props.cardInfo.showDamage) {
-      cssClassDamage = "damage-player";
-      if (this.props.cardInfo.playerName == window.game.localPlayer().name) {
-        cssClassDamage = cssClassDamage + " " + "attack-top";
-      } else {
-        cssClassDamage = cssClassDamage + " " + "attack-bottom";
-      }
+    let cssPlacementClass = '';
+    if (fromIndex != -1) {
+      cssPlacementClass = "card-slot-" + fromIndex;
+      console.log("place index " + cssPlacementClass)
     }
 
     let combinedCSS = cssClass + ' ' + 
-                      cssClassDamage + ' ' + 
                       cssClassCanPlay + ' ' + 
+                      cssPlacementClass + ' ' + 
                       cssClassCanAct; 
     return combinedCSS;
   },
