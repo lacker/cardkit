@@ -198,40 +198,4 @@
     }
 }
 
-.attack-top {
-  position:absolute;
-  left: $game-width/2 - $card-width/2;
-  animation-name: attack-top;
-  animation-duration: 900ms;
-  animation-iteration-count: 1;
-  animation-timing-function: ease-in-out;
-}
-
-.attack-bottom {
-  position:absolute;
-  left: $game-width/2 - $card-width/2;
-  animation-name: attack-bottom;
-  animation-duration: 900ms;
-  animation-iteration-count: 1;
-  animation-timing-function: ease-in-out;
-}
-
-@keyframes attack-top {
-    50% {
-        top: $game-height/2;
-    }
-    100% {
-        top: 0;
-    }
-}
-
-@keyframes attack-bottom {
-    50% {
-        bottom: $game-height/2;
-    }
-    100% {
-        bottom: $card-height/2;
-    }
-}
-
 

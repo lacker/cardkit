@@ -1,27 +1,42 @@
 // React view of a bullet
 import React from "react";
 
-let Bullet = React.createClass({
+import Animate from '../../../../node_modules/react-animate';
+
+let Bullet = Animate.extend(class Bullet extends React.Component {
+  fadeIn() {
+    Animate.animate.call(this,
+      'my-custom-animation', // animation name
+      { borderRadius:15, left:this.props.startLeft, top:this.props.startTop, backgroundColor: '#000', width: '30px', height: '30px',position: 'absolute'}, // initial style
+      { left:this.props.endLeft, top:this.props.endTop, backgroundColor: '#000', width: '30px', height: '30px',position: 'absolute' }, // final style
+      1000, // animation duration (in ms)
+      { easing: 'linear' } // other options
+    );
+  };
+  
+
+/*      let animationName = 'bullet-zing-' + i
+      animations[i] = function () {
+        Animate.animate.call(this,
+        animationName, 
+        { position:'absolute', top:tops[i], left:lefts[i] }, // initial style
+        { position:'absolute', top:0, left:0  }, // final style
+        1000, 
+        { easing: 'linear' } 
+      );
+      }*/
+
 
   render() {
-    
-    let divStyle = {
-      backgroundColor: '#000',
-      width: '30px',
-      height: '30px',
-      position: 'absolute'
-    }
-
-    let combinedCSS = this.cssClassesForBullet();
-
+    this.fadeIn()
     return (
-      <div className={combinedCSS} style={divStyle}>
+      <div style={Animate.getAnimatedStyle.call(this, 'my-custom-animation')}>
       </div>
     );
   
-  },
+  }
 
-  cssClassesForBullet: function() {
+  cssClassesForBullet() {
 
     let player = this.props.bullet.player;
     let fromIndex = this.props.bullet.startIndex;
@@ -50,7 +65,7 @@ let Bullet = React.createClass({
     let combinedCSS = cssPlacementClass + ' ' + 
                       cssClassDamage; 
     return combinedCSS;
-  },
+  }
 
 });
 
