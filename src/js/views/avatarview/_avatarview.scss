@@ -4,28 +4,23 @@
 .avatar {
   padding: 10px;
   padding-top: 0; 
-  margin-bottom: $default-padding;
+  margin: 45px 0;
   width: 120px;
-  height: 120px;
-  margin-left: 43vw;
-  font-weight: fontWeight; 
-  border-radius: 60px;
+  height: 80px;
   background-color: rgba(245,245,245,1);
 
   // life and mana
   &__stats {
     color:black;
-    padding-top:1vh;
   }
 
   // life of player
   &__life {
     color:black;
-    padding-top:1vh;
   }
 
   &__name {
-    
+
   }
 
 }
