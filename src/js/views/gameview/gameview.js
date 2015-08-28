@@ -1,11 +1,13 @@
 // React view of a GameState
-import React from 'react';
+import React, { Component } from 'react';
 import Player from '../playerview/playerview';
-import Card from "../cardview/cardview";
+import Card from '../cardview/cardview';
+import Avatar from '../avatarview/avatarview';
+import classNames from 'classnames';
 import './_gameview.scss';
 
 
-let GameView = React.createClass({
+export default class GameView extends Component {
     render() {
    
     window.client.forceUpdate = (() => this.forceUpdate())
@@ -19,18 +21,19 @@ let GameView = React.createClass({
           <Card cardInfo={cardInfo} player={homePlayer} key={i} />);
 
     let homePlayerDamageCSS = homePlayer.showDamage ? 'player-avatar damage-player' : 'player-avatar';
-    let opponentDamageCSS = opponent.showDamage ? 'player-avatar damage-player' : 'player-avatar';
+    let opponentClasses = classNames(
+      'avatar'
+    )
+
+    opponent.showDamage ? 'player-avatar damage-player' : 'player-avatar';
     let currentTime = window.game.currentGameSecond ? window.game.currentGameSecond : 10;
     return (
         <div className="game-container">
-          
+
           {/* OPPONENT */}
           <Player playerState={opponent} />
-          <div onClick={this.selectOpponent} className={opponentDamageCSS} style={this.avatarStyle(1)}>
-            <div className="vital-stats-container life-container">Life: {opponent.life}</div>
-            <h2 className="player-name">{opponent.name}</h2>
-            <div className="vital-stats-container">Mana: {opponent.mana} / {opponent.maxMana}</div>
-          </div>
+
+          <Avatar player={game.remotePlayer} onClick={this.selectOpponent} />
           
           {/* MIDDLE OF BOARD */}
           <div className="in-play-area">
@@ -45,21 +48,17 @@ let GameView = React.createClass({
           <div className="resign-button" onClick={this.resign}>Resign</div>
 
           {/* HOME PLAYER */}
-          <div className={homePlayerDamageCSS} style={this.avatarStyle(0)}>
-            <div className="vital-stats-container">Life: {homePlayer.life}</div>
-            <h2>{homePlayer.name}</h2>
-            <div className="vital-stats-container">Mana: {homePlayer.mana} / {homePlayer.maxMana}</div>
-          </div>
+          <Avatar player={game.localPlayer} />
+
           <Player playerState={homePlayer} />
-        
         </div>
         
     );
-  },
+  }
 
   resign() {
     window.client.makeLocalMove({"op":"resign"});
-  },
+  }
 
   // highlight the active player
   avatarStyle(playerNumber) {
@@ -73,7 +72,7 @@ let GameView = React.createClass({
              color:color,
              fontWeight:fontWeight,
            };
-  },
+  }
 
   selectOpponent() {
     let selectMove = {
@@ -82,6 +81,4 @@ let GameView = React.createClass({
     window.client.makeLocalMove(selectMove);
   }
 
-});
-
-module.exports = GameView;
+}

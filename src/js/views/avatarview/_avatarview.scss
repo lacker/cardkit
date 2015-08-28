@@ -1,0 +1,32 @@
+@import "../../../assets/styles/base";
+
+// the representation of the player
+.avatar {
+  padding: 10px;
+  padding-top: 0; 
+  margin-bottom: $default-padding;
+  width: 120px;
+  height: 120px;
+  margin-left: 43vw;
+  font-weight: fontWeight; 
+  border-radius: 60px;
+  background-color: rgba(245,245,245,1);
+
+  // life and mana
+  &__stats {
+    color:black;
+    padding-top:1vh;
+  }
+
+  // life of player
+  &__life {
+    color:black;
+    padding-top:1vh;
+  }
+
+  &__name {
+    
+  }
+
+}
+
