@@ -471,12 +471,13 @@ class GameState {
     let opponent = this.opponentForName(player.name)
     let attacker = player.getBoard(from)
     let defender = opponent.getBoard(to)
-    this.showCardDamage(attacker, to)
-    this.showCardDamage(defender)
+    this.showCardDamage(attacker, to, player)
+    this.showCardDamage(defender, null, null)
     attacker.defense -= defender.attack
     defender.defense -= attacker.attack
     attacker.canAct = false;
     this.resolveDamage()
+    console.log("ATTACKING from " + from + " to " + to + " by " + player.name)
   }
 
   // Plays a card from the hand.
@@ -568,8 +569,9 @@ class GameState {
         break;
       }
     }
-
+    console.log("maybe attack")
     if (from >= 0 && to >= 0) {
+    console.log("ATTACK")
       this.attack(from, to, cardOwner)
       return true
     }
@@ -649,13 +651,13 @@ class GameState {
 
   }
 
-  showCardDamage(card, index) {
-    if (index) {
-
+  showCardDamage(card, index, player) {
+    if (index >= 0 && player) {
       let bulletDict = {player, 
                         startIndex: player.board.indexOf(card), 
                         attackIndex: index} 
       this.bullets.push(bulletDict)
+      // remove the bullet after attack;
       bulletDict.damageAnimation = setInterval(() => {
         for (var i =0; i < this.bullets.length; i++) {
           if (this.bullets[i] === bulletDict) {
@@ -669,7 +671,6 @@ class GameState {
   }
 
   showPlayerDamage(player) {
-    // card damage animation
     player.showDamage = true
     player.damageAnimation = setInterval(() => {
       player.showDamage = null;
@@ -678,7 +679,6 @@ class GameState {
     
   }
 
-  // this is only used in testing right now
   draw(player, card) {
     for (var i = 0; i < this.players.length; i++) {
       var p = this.players[i]

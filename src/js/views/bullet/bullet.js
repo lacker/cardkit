@@ -48,13 +48,50 @@ let Bullet = Animate.extend(class Bullet extends React.Component {
       break;
     }
     let endTop;
-    let endLeft = gameWidth/2 - cardWidth/2
     if (this.props.info.player == window.game.localPlayer()) {
       top = gameHeight / 2 + cardHeight / 2
       endTop = 0 + playerHeight/2
     } else {
       top = gameHeight / 2 - cardHeight / 2
       endTop = gameHeight - playerHeight/2
+    }
+    
+    let endLeft = gameWidth/2 - cardWidth/2
+    if (this.props.info.attackIndex >= 0) {
+      switch (this.props.info.attackIndex) {
+        case 0:
+        endLeft = gameWidth/2 - cardWidth/2
+        break;
+        case 1:
+        endLeft = gameWidth/2 - cardWidth/2 - cardWidth
+        break;
+        case 2:
+        endLeft = gameWidth/2 - cardWidth/2 + cardWidth
+        break;
+        case 3:
+        endLeft = gameWidth/2 - cardWidth/2 - cardWidth * 2
+        break;
+        case 4:
+        endLeft = gameWidth/2 - cardWidth/2 + cardWidth * 2
+        break;
+        case 5:
+        endLeft = gameWidth/2 - cardWidth/2 - cardWidth * 3
+        break;
+        case 6:
+        endLeft = gameWidth/2 - cardWidth/2 + cardWidth * 3
+        break;
+        case 7:
+        endLeft = gameWidth/2 - cardWidth/2 - cardWidth * 4
+        break;
+      }
+      if (this.props.info.player == window.game.localPlayer()) {
+        top = gameHeight / 2 + cardHeight / 2
+        endTop = gameHeight / 2 - cardHeight / 2
+      } else {
+        top = gameHeight / 2 - cardHeight / 2
+        endTop = gameHeight / 2 + cardHeight / 2
+      }
+
     }
 
     this.animationName = 'bullet-zing' + this.animationKey()
