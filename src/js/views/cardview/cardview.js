@@ -79,7 +79,6 @@ let Card = React.createClass({
     let cssPlacementClass = '';
     if (fromIndex != -1) {
       cssPlacementClass = "card-slot-" + fromIndex;
-      console.log("place index " + cssPlacementClass)
     }
 
     let combinedCSS = cssClass + ' ' + 

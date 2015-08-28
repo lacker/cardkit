@@ -21,53 +21,8 @@ let GameView = React.createClass({
     let homePlayerBoardCards = homePlayer.board.map((cardInfo, i) =>
           <Card cardInfo={cardInfo} player={homePlayer} key={i} />);
 
-    let bullets = []
-    let gameHeight = 768;
-    let gameWidth = 1024;
-    let cardWidth = 80;
-    let cardHeight = 120;
-    let lefts = [];
-    let tops = [];
-    for (let i=0;i<this.props.state.bullets.length;i++) {
-      let b = this.props.state.bullets[i]
-      switch (b.startIndex) {
-        case 0:
-          lefts[i] = gameWidth/2 - cardWidth/2
-          break;
-        case 1:
-          lefts[i] = gameWidth/2 - cardWidth/2 - cardWidth
-          break;
-        case 2:
-          lefts[i] = gameWidth/2 - cardWidth/2 + cardWidth
-          break;
-        case 3:
-          lefts[i] = gameWidth/2 - cardWidth/2 - cardWidth * 2
-          break;
-        case 4:
-          lefts[i] = gameWidth/2 - cardWidth/2 + cardWidth * 2
-          break;
-        case 5:
-          lefts[i] = gameWidth/2 - cardWidth/2 - cardWidth * 3
-          break;
-        case 6:
-          lefts[i] = gameWidth/2 - cardWidth/2 + cardWidth * 3
-          break;
-        case 7:
-          lefts[i] = gameWidth/2 - cardWidth/2 - cardWidth * 4
-          break;
-      }
-      let endTop;
-      let endLeft = gameWidth/2 - cardWidth/2
-      if (b.player == window.game.localPlayer()) {
-        tops[i] = gameHeight / 2 + cardHeight / 2
-        endLeft = gameWidth/2
-        endTop = 0
-      } else {
-        tops[i] = gameHeight / 2 - cardHeight / 2
-        endTop = gameHeight
-      }
-      bullets[i] = <Bullet bullet={b} key={i} startLeft={lefts[i]} startTop={tops[i]} endLeft={endLeft} endTop={endTop} />;
-    }
+    let bullets = this.props.state.bullets.map((info, i) =>
+      <Bullet key={i} info={info} />);
 
     let homePlayerDamageCSS = homePlayer.showDamage ? 'player-avatar damage-player' : 'player-avatar';
     let opponentDamageCSS = opponent.showDamage ? 'player-avatar damage-player' : 'player-avatar';

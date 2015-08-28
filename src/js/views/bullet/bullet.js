@@ -1,70 +1,94 @@
 // React view of a bullet
 import React from "react";
 
+// https://github.com/elierotenberg/react-animate
 import Animate from '../../../../node_modules/react-animate';
 
 let Bullet = Animate.extend(class Bullet extends React.Component {
-  fadeIn() {
+
+  animationKey() {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    for( let i=0; i < 32; i++ )
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    return text;
+  }
+
+  setAnimation() {
+    let gameHeight = 768;
+    let gameWidth = 1024;
+    let cardWidth = 80;
+    let cardHeight = 120;
+    let playerHeight = 120;
+    let left, top;
+    switch (this.props.info.startIndex) {
+      case 0:
+      left = gameWidth/2 - cardWidth/2
+      break;
+      case 1:
+      left = gameWidth/2 - cardWidth/2 - cardWidth
+      break;
+      case 2:
+      left = gameWidth/2 - cardWidth/2 + cardWidth
+      break;
+      case 3:
+      left = gameWidth/2 - cardWidth/2 - cardWidth * 2
+      break;
+      case 4:
+      left = gameWidth/2 - cardWidth/2 + cardWidth * 2
+      break;
+      case 5:
+      left = gameWidth/2 - cardWidth/2 - cardWidth * 3
+      break;
+      case 6:
+      left = gameWidth/2 - cardWidth/2 + cardWidth * 3
+      break;
+      case 7:
+      left = gameWidth/2 - cardWidth/2 - cardWidth * 4
+      break;
+    }
+    let endTop;
+    let endLeft = gameWidth/2 - cardWidth/2
+    if (this.props.info.player == window.game.localPlayer()) {
+      top = gameHeight / 2 + cardHeight / 2
+      endTop = 0 + playerHeight/2
+    } else {
+      top = gameHeight / 2 - cardHeight / 2
+      endTop = gameHeight - playerHeight/2
+    }
+
+    this.animationName = 'bullet-zing' + this.animationKey()
+    let startStyle = { borderRadius:'10px', 
+      left:left, 
+      top:top, 
+      backgroundColor: '#000', 
+      width: '20px', 
+      height: '20px',
+      position: 'absolute'
+    }
+
+    let endStyle = { left:endLeft, 
+      top:endTop, 
+      backgroundColor: '#FFF', 
+    } 
+
     Animate.animate.call(this,
-      'my-custom-animation', // animation name
-      { borderRadius:15, left:this.props.startLeft, top:this.props.startTop, backgroundColor: '#000', width: '30px', height: '30px',position: 'absolute'}, // initial style
-      { left:this.props.endLeft, top:this.props.endTop, backgroundColor: '#000', width: '30px', height: '30px',position: 'absolute' }, // final style
+      this.animationName, 
+      startStyle,
+      endStyle,
       1000, // animation duration (in ms)
       { easing: 'linear' } // other options
     );
-  };
-  
-
-/*      let animationName = 'bullet-zing-' + i
-      animations[i] = function () {
-        Animate.animate.call(this,
-        animationName, 
-        { position:'absolute', top:tops[i], left:lefts[i] }, // initial style
-        { position:'absolute', top:0, left:0  }, // final style
-        1000, 
-        { easing: 'linear' } 
-      );
-      }*/
-
-
-  render() {
-    this.fadeIn()
-    return (
-      <div style={Animate.getAnimatedStyle.call(this, 'my-custom-animation')}>
-      </div>
-    );
-  
   }
 
-  cssClassesForBullet() {
-
-    let player = this.props.bullet.player;
-    let fromIndex = this.props.bullet.startIndex;
-    let cssPlacementClass = '';
-    if (fromIndex != -1) {
-      cssPlacementClass = "card-slot-" + fromIndex;
+  render() {
+    if (!this.animationName) {
+      this.setAnimation()
     }
-    let cssClassDamage = '';
-        if (this.props.bullet.attackIndex) {
-      console.log("attacking index " + this.props.cardInfo.attackIndex)
-      cssClassDamage = "card-slot-" + this.props.cardInfo.attackIndex;      
-      if (player.name == window.game.localPlayer().name) {
-        cssClassDamage = cssClassDamage + " " + "attack-up";
-      } else {
-        cssClassDamage = cssClassDamage + " " + "attack-down";
-      }
-    } else {
-      cssClassDamage = "damage-player";
-      if (player.name == window.game.localPlayer().name) {
-        cssClassDamage = cssClassDamage + " " + "attack-top";
-      } else {
-        cssClassDamage = cssClassDamage + " " + "attack-bottom";
-      }      
-    }
-    
-    let combinedCSS = cssPlacementClass + ' ' + 
-                      cssClassDamage; 
-    return combinedCSS;
+    return (
+      <div style={Animate.getAnimatedStyle.call(this, this.animationName)}>
+      </div>
+    );
   }
 
 });
