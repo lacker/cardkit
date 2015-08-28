@@ -1,8 +1,9 @@
 // React view of a PlayerState
-import React from "react";
+import React, { Component } from "react";
 import Card from "../cardview/cardview"
+import './_playerview.scss';
 
-let Player = React.createClass({
+export default class Player extends Component {
   render() {
     let handCards = this.props.playerState.hand.map((cardInfo, i) =>
       <Card cardInfo={cardInfo} player={this.props.playerState} key={i} />);
@@ -12,6 +13,5 @@ let Player = React.createClass({
         </div> 
     );
   }
-});
+}
 
-module.exports = Player;

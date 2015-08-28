@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 import Card from '../cardview/cardview';
 import Avatar from '../avatarview/avatarview';
+import Button from '../buttonview/buttonview';
 import './_boardview.scss';
 
 export default class GameBoard extends Component {
 
   resign() {
+    alert('You have resigned!');
     window.client.makeLocalMove({"op":"resign"});
   }
 
@@ -41,7 +43,7 @@ export default class GameBoard extends Component {
         </div>
         <div className='game-board__info'>
           <span className='game-board__timer'>{currentTime}</span>
-          <div className='game-board__resign' onClick={this.resign}>Resign</div>
+          <Button onClick={this.resign} label='Resign' />
         </div>
       </div>
 		  
