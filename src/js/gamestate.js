@@ -477,7 +477,6 @@ class GameState {
     defender.defense -= attacker.attack
     attacker.canAct = false;
     this.resolveDamage()
-    console.log("ATTACKING from " + from + " to " + to + " by " + player.name)
   }
 
   // Plays a card from the hand.
@@ -569,9 +568,7 @@ class GameState {
         break;
       }
     }
-    console.log("maybe attack")
     if (from >= 0 && to >= 0) {
-    console.log("ATTACK")
       this.attack(from, to, cardOwner)
       return true
     }

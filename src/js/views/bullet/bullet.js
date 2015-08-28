@@ -4,108 +4,29 @@ import React from "react";
 // https://github.com/elierotenberg/react-animate
 import Animate from '../../../../node_modules/react-animate';
 
+import * as Util from '../../util';
+
 let Bullet = Animate.extend(class Bullet extends React.Component {
 
-  animationKey() {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    for( let i=0; i < 32; i++ )
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-    return text;
-  }
+  // set up the animation for the bullet whizzing from
+  // this.startLeft(), this.startTop() to 
+  // this.endLeft(), this.endTop()
+  setAnimation() {    
+    this.animationName = 'bullet-zing'
 
-  setAnimation() {
-    let gameHeight = 768;
-    let gameWidth = 1024;
-    let cardWidth = 80;
-    let cardHeight = 120;
-    let playerHeight = 120;
-    let left, top;
-    switch (this.props.info.startIndex) {
-      case 0:
-      left = gameWidth/2 - cardWidth/2
-      break;
-      case 1:
-      left = gameWidth/2 - cardWidth/2 - cardWidth
-      break;
-      case 2:
-      left = gameWidth/2 - cardWidth/2 + cardWidth
-      break;
-      case 3:
-      left = gameWidth/2 - cardWidth/2 - cardWidth * 2
-      break;
-      case 4:
-      left = gameWidth/2 - cardWidth/2 + cardWidth * 2
-      break;
-      case 5:
-      left = gameWidth/2 - cardWidth/2 - cardWidth * 3
-      break;
-      case 6:
-      left = gameWidth/2 - cardWidth/2 + cardWidth * 3
-      break;
-      case 7:
-      left = gameWidth/2 - cardWidth/2 - cardWidth * 4
-      break;
-    }
-    let endTop;
-    if (this.props.info.player == window.game.localPlayer()) {
-      top = gameHeight / 2 + cardHeight / 2
-      endTop = 0 + playerHeight/2
-    } else {
-      top = gameHeight / 2 - cardHeight / 2
-      endTop = gameHeight - playerHeight/2
-    }
-    
-    let endLeft = gameWidth/2 - cardWidth/2
-    if (this.props.info.attackIndex >= 0) {
-      switch (this.props.info.attackIndex) {
-        case 0:
-        endLeft = gameWidth/2 - cardWidth/2
-        break;
-        case 1:
-        endLeft = gameWidth/2 - cardWidth/2 - cardWidth
-        break;
-        case 2:
-        endLeft = gameWidth/2 - cardWidth/2 + cardWidth
-        break;
-        case 3:
-        endLeft = gameWidth/2 - cardWidth/2 - cardWidth * 2
-        break;
-        case 4:
-        endLeft = gameWidth/2 - cardWidth/2 + cardWidth * 2
-        break;
-        case 5:
-        endLeft = gameWidth/2 - cardWidth/2 - cardWidth * 3
-        break;
-        case 6:
-        endLeft = gameWidth/2 - cardWidth/2 + cardWidth * 3
-        break;
-        case 7:
-        endLeft = gameWidth/2 - cardWidth/2 - cardWidth * 4
-        break;
-      }
-      if (this.props.info.player == window.game.localPlayer()) {
-        top = gameHeight / 2 + cardHeight / 2
-        endTop = gameHeight / 2 - cardHeight / 2
-      } else {
-        top = gameHeight / 2 - cardHeight / 2
-        endTop = gameHeight / 2 + cardHeight / 2
-      }
-
-    }
-
-    this.animationName = 'bullet-zing' + this.animationKey()
-    let startStyle = { borderRadius:'10px', 
-      left:left, 
-      top:top, 
+    let startStyle = { 
+      borderRadius:'10px', 
+      left: this.leftForIndex(this.props.info.startIndex), 
+      top: this.startTop(), 
       backgroundColor: '#000', 
       width: '20px', 
       height: '20px',
       position: 'absolute'
     }
 
-    let endStyle = { left:endLeft, 
-      top:endTop, 
+    let endStyle = { 
+      left: this.endLeft(), 
+      top: this.endTop(), 
       backgroundColor: '#FFF', 
     } 
 
@@ -113,9 +34,66 @@ let Bullet = Animate.extend(class Bullet extends React.Component {
       this.animationName, 
       startStyle,
       endStyle,
-      1000, // animation duration (in ms)
+      1000,                // animation duration (in ms)
       { easing: 'linear' } // other options
     );
+  }
+
+  // return the y coordinate for where the bullet starts
+  startTop() {
+    if (this.props.info.player == window.game.localPlayer()) {
+      return Util.gameHeight / 2 + Util.cardHeight / 2
+    }
+    return Util.gameHeight / 2 - Util.cardHeight / 2
+  }
+
+  // return the y coordinate for where the bullet lands
+  endTop() {
+    // this branch means an in-play permanent is being attacked
+    if (this.props.info.attackIndex >= 0) {
+      if (this.props.info.player == window.game.localPlayer()) {
+        return Util.gameHeight / 2 - Util.cardHeight / 2
+      } else {
+        return Util.gameHeight / 2 + Util.cardHeight / 2
+      }
+    }
+    // attack the top (remote) player
+    if (this.props.info.player == window.game.localPlayer()) {
+        return Util.playerHeight/2
+    }
+    // attack the bottom (local) player
+    return Util.gameHeight - Util.playerHeight/2
+  }
+
+  // return the x coordinate for where the bullet lands
+  endLeft() {
+    if (this.props.info.attackIndex >= 0) {
+      return this.leftForIndex(this.props.info.attackIndex)
+    } else {
+      return Util.gameWidth/2 - Util.cardWidth/2
+    }
+  }
+
+  // starting or ending left pixel position given an index
+  leftForIndex(index) {
+    switch (index) {
+      case 0:
+        return Util.gameWidth/2 - Util.cardWidth/2
+      case 1:
+        return Util.gameWidth/2 - Util.cardWidth/2 - Util.cardWidth
+      case 2:
+        return Util.gameWidth/2 - Util.cardWidth/2 + Util.cardWidth
+      case 3:
+        return Util.gameWidth/2 - Util.cardWidth/2 - Util.cardWidth * 2
+      case 4:
+        return Util.gameWidth/2 - Util.cardWidth/2 + Util.cardWidth * 2
+      case 5:
+        return Util.gameWidth/2 - Util.cardWidth/2 - Util.cardWidth * 3
+      case 6:
+        return Util.gameWidth/2 - Util.cardWidth/2 + Util.cardWidth * 3
+      case 7:
+        return Util.gameWidth/2 - Util.cardWidth/2 - Util.cardWidth * 4
+    }
   }
 
   render() {
