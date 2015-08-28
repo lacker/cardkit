@@ -164,38 +164,3 @@
   left: $game-width/2 - $card-width / 2 - $card-width * 4;
 }
 
-.attack-up {
-  z-index: 99999;
-  animation-name: attack-up;
-  animation-duration: 900ms;
-  animation-iteration-count: 1;
-  animation-timing-function: ease-in-out;
-}
-
-.attack-down {
-  z-index: 99999;
-  animation-name: attack-down;
-  animation-duration: 900ms;
-  animation-iteration-count: 1;
-  animation-timing-function: ease-in-out;
-}
-
-@keyframes attack-up {
-    50% {
-        top: $game-height/2;
-    }
-    100% {
-        top: $game-height/2 - $card-height * 1.5;
-    }
-}
-
-@keyframes attack-down {
-    50% {
-        top: $game-height/2;
-    }
-    100% {
-        top: $game-height/2 + $card-height * 1.5;
-    }
-}
-
-

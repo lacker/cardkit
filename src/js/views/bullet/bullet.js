@@ -21,7 +21,8 @@ let Bullet = Animate.extend(class Bullet extends React.Component {
       backgroundColor: '#000', 
       width: '20px', 
       height: '20px',
-      position: 'absolute'
+      position: 'absolute',
+      zIndex: '99999', 
     }
 
     let endStyle = { 
