@@ -71,7 +71,7 @@ export const CARDS = {
     target: TARGETS.ANY_PERMANENT,
     targetCount: 1,
     randomTarget: false,
-    description: "Deal 3 damage to a creature or player.",
+    description: ["Deal 3 damage to a creature or player."],
     damage: 3,
   },
   "Errant Blast": {
@@ -80,7 +80,7 @@ export const CARDS = {
     target: TARGETS.OPPONENT_PERMANENT,
     targetCount: 1,
     randomTarget: true,
-    description: "Kill one of your opponent's fleet at random.",
+    description: ["Kill one of your opponent's fleet at random."],
     kill: true,
   },
   EMP: {
@@ -88,8 +88,7 @@ export const CARDS = {
     permanent: false,
     target: TARGETS.ANY_PERMANENT,
     targetCount: TARGETS.ALL_PERMANENTS,
-    description: "Destroy all cards in play.",
-    flavor: "Watch that basket.",
+    description: ["Destroy all cards in play.", "Watch that basket."],
     kill: true,
   },
 }
@@ -97,7 +96,7 @@ export const CARDS = {
 // Define a couple of simple decks.
 // The current computer player always gets Weenie.
 // The human player always gets Control.
-export var DECKS = [
+export const DECKS = [
   {
     name: "Weenie",
     cards: ["BiBot"],

@@ -1,106 +1,106 @@
 @import "../../../assets/styles/base";
 
 // cards in play and in hand
-.playing-card {
+.card {
+  $this: &;
+
   background-color: $palette-three; 
-  width: $card-width - $default-padding;
-  height: $card-height - $default-vertical-padding;
-  padding-left: $default-padding/2;
-  padding-right: $default-padding/2;
-  padding-top: $default-vertical-padding/2;
-  padding-bottom: $default-vertical-padding/2;
+  width: $default-card-width;
+  height: $default-card-height;
+  padding: 5px;
   border-radius: $default-corner-radius;
   display: inline-block;
-  border: 1px solid;
-  border-color:black;
+  margin: 25px 3px;
+  border: 1px solid black;
   box-shadow: 1.5vh 1.5vh 3vh 0vhx rgba(22,22,22,1);
   cursor: pointer;
-  text-align:left;
-}
-
-// cards should inline next to each other
-.playing-card div, .playing-card img {
-  display: inline-block;
+  transition: all 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+  box-shadow: 0 1px 1px rgba(0,0,0,0.3);
+  transform: translateY(0) scale(0.95, 0.95);
+  text-align: left;
   vertical-align: middle;
+
+  &:hover {
+    box-shadow: 0 11px 18px rgba(0,0,0,0.2);
+    transform: translateY(-20px) scale(1, 1);
+  }
+
+  &__title {
+    height: 10%;
+  }
+
+  &__name {
+    float: left;
+  }
+
+  &__mana {
+    float: right;
+  }
+
+  &__body {
+    height: 90%;
+    position: relative;
+  }
+
+  &__icon {
+    display: inline-block;
+    float: left;
+    width: 24px;
+  }
+
+  @mixin stats {
+    position: absolute;
+    bottom: 0;
+  }
+
+  &__attack-stat {
+    @include stats;
+    left: 0;
+  }
+
+  &__defense-stat {
+    @include stats;
+    right: 0; 
+  }
+
+  &__main-info {
+    margin: 10px auto;
+  }
+
+  &__sub-info {
+    margin: 10px auto;
+    font-size: 0.8em;
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    color: grey;
+    &:hover {
+      transform: translateY(0px);
+      box-shadow: none;
+    }
+  }
+
+  &--active {
+    background-color: $palette-two; 
+  }
+
+  &--used {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--damaged {
+    transform-origin: 50% 20%;
+    animation-name: damage;
+    animation-duration: 900ms;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+  }
+
 }
 
-// pop up a bit on hover
-.playing-card:hover {
-  transform: rotateX( 5deg ) rotateY(20deg);
-  transition: transform 0.1s ease-in;
-  box-shadow: 1.5vh 1.5vh 3vh 0vh rgba(22,22,22,0.2);
-}
-
-// contains name and mana
-.card-top {
-  display:block;
-  width: $card-width - 1vw;
-}
-
-// contains text/abilities, and attack/defense
-.card-bottom {
-  display:block;
-  height:$card-height - 5vh;
-  width: $card-width - 1vw;
-}
-
-// show mana cost for card
-.mana-label {
-  float:right;
-}
-
-// position label at bottom of card
-.attack-label {
-  margin-top: $card-height - $default-vertical-padding*6;
-}
-
-// position label at bottom of card, oddly
-.health-label {
-  margin-top: $card-height - $default-vertical-padding*6;
-}
-
-
-// contains description for the card's effect
-.spell-text-label {
-  font-size:.9em;
-  padding-top: 1vh;
-  position: relative;
-}
-
-.spell-flavor {
-  font-size:0.7em;
-  padding-top: 1vh;
-  position: relative              
-}
-
-.card-details {
-  height:6vh;  
-}
-
-// make attack/defense svg icons small
-.card-icon-image {
-  width:24px;
-  float: left;
-}
-
-// when a card has been selected
-.active-card {
-  background-color: $palette-two; 
-}
-
-// fade out used cards
-.has-attacked-card {
-  opacity: .5;
-}
-
-// fade out cards in hand a tiny bit, if they can't be played
-.too-expensive {
-  opacity: .9;
-  color:gray;
-  box-shadow: 5px 5px 12px 0px rgba(22,22,22,0);
-}
-
-@keyframes damage-player {
+@keyframes damage {
     0% {
         background-color: Yellow;
         opacity:1;
@@ -115,15 +115,6 @@
         background-color: #777;
     }
 }
-
-.damage-player {
-  transform-origin: 50% 20%;
-  animation-name: damage-player;
-  animation-duration: 900ms;
-  animation-iteration-count: 1;
-  animation-timing-function: ease-in-out;
-}   
-
 
 .warm-1 {
   opacity:.3

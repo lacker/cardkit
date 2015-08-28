@@ -8,16 +8,19 @@ $end-turn-button-width: 10vw;
 
 // the overall container with all elements
 .game-container {
-  text-align: center; 
   background-color: $palette-four; 
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  overflow: hidden;
 }
 
 // area for cards to be played in center
 .in-play-area {
   text-align: center; 
   background-color:$palette-four; 
-  height: $in-play-height;
-  width: $in-play-width;
+  height: $default-card-height + 10px;
+  width: 75%;
   border-radius: $default-corner-radius;
   margin-left: 16vw;
   margin-bottom: $default-vertical-padding*-4;
@@ -29,7 +32,7 @@ $end-turn-button-width: 10vw;
   width:100%;
   border: 1px solid;
   background-color: rgba(245,245,245,1);
-  height: $card-height;
+  height: $default-card-height;
   border-radius: $default-corner-radius;
 }
 
@@ -41,12 +44,10 @@ $end-turn-button-width: 10vw;
 
 // where a player's unplayed cards go
 .hand-container {
-  height:$card-height + $default-vertical-padding*4;
-  position: relative;
-  right: medium-button-width/2;
+  text-align: center;
 }
 
-/* 
+/*
    styles for player avatar 
 */
 
@@ -90,8 +91,8 @@ $end-turn-button-width: 10vw;
   border-radius:6px;
   border: 1px solid;
   position:relative;
-  bottom:$in-play-height/2 - 1vh;
-  margin-left: $in-play-width + 17vw + 1vw;
+  bottom:$in-play-height/2;
+  margin-left: $in-play-width;
 }
 
 // the time counting down for each new card/mana
@@ -101,13 +102,11 @@ $end-turn-button-width: 10vw;
   padding-top: $default-padding;
   padding-bottom: $default-padding;
   position: relative;
-  bottom: $in-play-height/2 + 9vh;
-  margin-left: $in-play-width + 19vw;
+  bottom: $in-play-height;
+  margin-left: $in-play-width;
   background-color: black;
   color:white;
 }
-
-
 
 // highlight end of turn button for active player
 .active-player {

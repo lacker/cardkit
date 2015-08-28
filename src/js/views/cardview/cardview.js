@@ -1,120 +1,112 @@
 // React view of a card
-import React from "react";
+import React, { Component, PropTypes } from "react";
+import classNames from 'classnames';
 import "./_cardview.scss";
 import { shieldImg, swordsImg } from '../../../assets/img'
 
-let Card = React.createClass({
+export default class Card extends Component{
 
-  // layout and style the card
+  static propTypes = {
+    cardInfo: PropTypes.shape({
+      canAct: PropTypes.bool.isRequired,
+      warm: PropTypes.number,
+      name: PropTypes.string.isRequired,
+      cost: PropTypes.number.isRequired,
+      permanent: PropTypes.bool.isRequired,
+    })
+  }
+
   render() {
-    let combinedCSS = this.cssClassesForCard();
 
-    let attackPart;
-    if (this.props.cardInfo.attack) {
-      attackPart = (
-        <div className="card-details">
-            {this.props.cardInfo.description}
-          <div className="attack-label">
-            {this.props.cardInfo.attack}
-            <img className="card-icon-image" src={swordsImg} />
+    const localCard = game.localPlayer.selectedCard;
+
+    let classes = classNames(
+      'card',
+      {'card--disabled': this.props.cardInfo.cost > this.props.player.mana},
+      {'card--active': (localCard && localCard.guid == this.props.cardInfo.guid)},
+      {'card--used': !this.props.cardInfo.canAct && (game.localPlayer.board.indexOf(this.props.cardInfo) !== -1)},
+      {'card--damaged': this.props.cardInfo.showDamage},
+      this.getWarmClass(),
+    );
+
+    let cardBody = this.props.cardInfo.permanent ?
+      (<div>
+        <div className="card__attack-stat">
+          {this.props.cardInfo.attack}
+          <img className="card__icon" src={swordsImg} />
+        </div>
+        <div className="card__defense-stat">
+          {this.props.cardInfo.defense}
+          <img className="card__icon" src={shieldImg} />
+        </div>
+      </div> 
+    ) : (
+        <div>
+          <div className="card__main-info">
+            {this.props.cardInfo.description[0]}
           </div>
-          <div className="health-label">
-            {this.props.cardInfo.defense}
-            <img className="card-icon-image" src={shieldImg} />
-          </div>
-        </div> 
-      )
-    } else {
-      attackPart = (
-        <div div className="card-details">
-          <div className="spell-text-label">
-            {this.props.cardInfo.description}
-          </div>
-          <div className="spell-flavor">
-            {this.props.cardInfo.flavor}
+          <div className="card__sub-info">
+            {this.props.cardInfo.description[1]}
           </div>
         </div>
-      )
-    }
+    );
 
     return (
-      <div className={combinedCSS} onClick={this.selectCard}>
-        <div className="card-top"> 
-          {this.props.cardInfo.name}
-          <div className="mana-label">{this.props.cardInfo.cost}</div>
+      <div className={classes} onClick={this.selectCard}>
+        <div className="card__title"> 
+          <span className="card__name">{this.props.cardInfo.name}</span>
+          <span className="card__mana">{this.props.cardInfo.cost}</span>
         </div>
-        <div className="card-bottom"> 
-          {attackPart}
+        <div className="card__body"> 
+          {cardBody}
         </div> 
       </div>
     );
   
-  },
+  }
 
-  // style the card based on if it has attacked, is castable, etc
-  cssClassesForCard: function() {
-    let cssClassCanPlay = '';
-    if (this.props.cardInfo.cost > this.props.player.mana) {
-      cssClassCanPlay = "too-expensive";
-    }
-    let cssClass = window.game.localPlayer().selectedCard == this.props.cardInfo ||
-                   window.game.remotePlayer().selectedCard == this.props.cardInfo ? 
-                   'playing-card active-card' : 'playing-card';
-    let fromIndex = window.game.localPlayer().board.indexOf(this.props.cardInfo);    
-    let cssClassCanAct = !this.props.cardInfo.canAct && fromIndex != -1 ? 
-                           'has-attacked-card' : '';
-
-    let cssClassDamage = '';
-    if (this.props.cardInfo.showDamage) {
-      cssClassDamage = "damage-player";
-    }
+  getWarmClass () {
+    let warmClass;
 
     if (this.props.cardInfo.warm) {
-      cssClassDamage = "warm-" + this.props.cardInfo.warm;
+      warmClass = "warm-" + this.props.cardInfo.warm;
     }
 
-
-    let combinedCSS = cssClass + ' ' + 
-                      cssClassDamage + ' ' + 
-                      cssClassCanPlay + ' ' + 
-                      cssClassCanAct; 
-    return combinedCSS;
-  },
+    return warmClass;
+  }
   
   // select cards in local player's hand or board
-  selectCard: function() {
-    let boardIndex = window.game.localPlayer().board.indexOf(this.props.cardInfo);
-    if (boardIndex != -1) {
+  selectCard = () => {
+    let boardIndex = game.localPlayer.board.indexOf(this.props.cardInfo);
+    if (boardIndex !== -1) {
       let selectMove = {
                     "op": "selectCard", 
                     "index": boardIndex,
                     "containerType": "board"
                  };
-      window.client.makeLocalMove(selectMove);
+      client.makeLocalMove(selectMove);
     }
 
-    let handIndex = window.game.localPlayer().hand.indexOf(this.props.cardInfo);
-    if (handIndex != -1) {
+    let handIndex = game.localPlayer.hand.indexOf(this.props.cardInfo);
+    if (handIndex !== -1) {
       let selectMove = {
                     "op":"selectCard", 
                     "index":handIndex,
                     "containerType": "hand"
                  };
-      window.client.makeLocalMove(selectMove);
+      client.makeLocalMove(selectMove);
     }
 
-    let opponentBoardIndex = window.game.remotePlayer().board.indexOf(this.props.cardInfo);
-    if (opponentBoardIndex != -1) {
+    let opponentBoardIndex = game.remotePlayer.board.indexOf(this.props.cardInfo);
+    if (opponentBoardIndex !== -1) {
       let selectMove = {
                     "op":"selectCard", 
                     "index":opponentBoardIndex,
                     "containerType": "opponentBoard"
                  };
-      window.client.makeLocalMove(selectMove);
+      client.makeLocalMove(selectMove);
     }
 
-  },
+  }
 
-});
-
-module.exports = Card;
+}

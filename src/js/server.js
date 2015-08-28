@@ -19,7 +19,8 @@
 // and if the same key ever goes to multiple values, the server logs an error.
 
 // some JSON definitions for cards and decks
-import { CARDS, DECKS } from './cards.js';
+import { CARDS, DECKS } from './cards';
+import { makeGuid } from './util';
 
 // for shuffling
 require("seedrandom")
@@ -241,6 +242,7 @@ class Connection {
   cardCopy(player) {
     let cardName = choice(player.deck.cards)
     let card = CARDS[cardName]
+    card.guid = makeGuid()
 
     // Make a copy so that we can edit this card        
     let copy = {}     

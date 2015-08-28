@@ -101,7 +101,7 @@ class Client {
       return false
     }
 
-    console.log("making move: " + JSON.stringify(move))
+   // console.log("making move: " + JSON.stringify(move))
     if (this.game.makeMove(move)) {
       // Have the server check for out-of-sync bugs
       let key = `game${this.gameID}-move${move.id}`
