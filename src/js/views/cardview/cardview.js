@@ -37,11 +37,22 @@ let Card = React.createClass({
       )
     }
 
+    let divStyle = {
+      opacity: this.props.cardInfo.warm + .2
+    }
+
+    if (!window.game.inPlay(this.props.cardInfo)) {
+      divStyle = {
+        opacity: 1
+      }
+    }
+
+
     return (
-      <div className={combinedCSS} onClick={this.selectCard}>
+      <div className={combinedCSS} onClick={this.selectCard} style={divStyle}>
         <div className="card-top"> 
           {this.props.cardInfo.name}
-          <div className="mana-label">{this.props.cardInfo.cost}</div>
+          <div className="energy-label">{this.props.cardInfo.cost}</div>
         </div>
         <div className="card-bottom"> 
           {attackPart}
@@ -54,29 +65,25 @@ let Card = React.createClass({
   // style the card based on if it has attacked, is castable, etc
   cssClassesForCard: function() {
     let cssClassCanPlay = '';
-    if (this.props.cardInfo.cost > this.props.player.mana) {
+    if (this.props.cardInfo.cost > this.props.player.energy) {
       cssClassCanPlay = "too-expensive";
     }
-    let cssClass = window.game.localPlayer().selectedCard == this.props.cardInfo ||
-                   window.game.remotePlayer().selectedCard == this.props.cardInfo ? 
+
+    let player = this.props.cardInfo.playerName == window.game.localPlayer().name ? window.game.localPlayer() : window.game.remotePlayer();
+    let cssClass = player.selectedCard == this.props.cardInfo ? 
                    'playing-card active-card' : 'playing-card';
-    let fromIndex = window.game.localPlayer().board.indexOf(this.props.cardInfo);    
+    let fromIndex = player.board.indexOf(this.props.cardInfo);    
     let cssClassCanAct = !this.props.cardInfo.canAct && fromIndex != -1 ? 
                            'has-attacked-card' : '';
 
-    let cssClassDamage = '';
-    if (this.props.cardInfo.showDamage) {
-      cssClassDamage = "damage-player";
+    let cssPlacementClass = '';
+    if (fromIndex != -1) {
+      cssPlacementClass = "card-slot-" + fromIndex;
     }
-
-    if (this.props.cardInfo.warm) {
-      cssClassDamage = "warm-" + this.props.cardInfo.warm;
-    }
-
 
     let combinedCSS = cssClass + ' ' + 
-                      cssClassDamage + ' ' + 
                       cssClassCanPlay + ' ' + 
+                      cssPlacementClass + ' ' + 
                       cssClassCanAct; 
     return combinedCSS;
   },

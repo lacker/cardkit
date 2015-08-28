@@ -1,7 +1,7 @@
 /* 
    The state of a Spacetime game.
-   It's realtime, but not twitchy, and loosely based
-   on the concept of a CCG like Magic, Pokemon, or Hearthstone.
+   It's realtime, but not twitchy, and similar
+   to card games like Magic, Pokemon, and Hearthstone.
 
    It's also like a PvP version of Plants vs. Zombies.
 
@@ -12,6 +12,9 @@ require("seedrandom")
 
 import { TARGETS } from './cards.js';
 
+// how often the local clock cycles
+const CLOCK_CYCLE_MS = 100;
+
 // The state of a single player.
 class PlayerState {
   constructor(data) {
@@ -20,8 +23,8 @@ class PlayerState {
     this.board = data.board || []
     this.trash = data.trash || []
     this.life = data.life || 30
-    this.mana = data.mana || 0
-    this.maxMana = data.maxMana || 0
+    this.energy = data.energy || 0
+    this.maxEnergy = data.maxEnergy || 0
   }
   
   // Creates a string that, when printed, is a nice way to view the
@@ -31,7 +34,7 @@ class PlayerState {
             hand: ${this.hand}
             board: ${this.board}
             life: ${this.life}
-            mana: ${this.mana}/${this.maxMana}
+            energy: ${this.energy}/${this.maxEnergy}
            `
   }
 
@@ -45,7 +48,6 @@ class PlayerState {
   // Moves a card from board to trash.
   boardToTrash(index) {
     let card = this.getBoard(index)
-    deactivateAttack(card)
     this.board.splice(index, 1)
     this.trash.push(card)
   }
@@ -102,28 +104,43 @@ class GameState {
     // A list of all moves we have ever made on the game state
     this.history = []
 
+    // the time of the main game loop 
+    this.gameTime = 0
+
     // the time (ms) to animate damage effects
     this.damageDuration = 900
 
-    // set this to true for plenty of mana, for testing
+    // set this to true for plenty of energy, for testing
     this.godMode = false
-    
+
+    // animated projectiles whizzing through the game
+    this.bullets = []
+
   }
 
-  // whether the game has started
+  // Whether the game has started.
   started() {
     return this._started
   }
 
-  // The player for the provided name.
-  playerForName(name) {
+  // The player object for the provided name.
+  playerForName(name, isOpponent) {
     let answer = undefined
     this.players.forEach(player => {
-      if (player.name == name) {
+      if (player.name == name && !isOpponent) {
+        answer = player
+      }
+      if (player.name != name && isOpponent) {
         answer = player
       }
     })
     return answer
+  }
+
+  // The opponent player object for the provided name.
+  // Only works for two player games, which Spacetime is.
+  opponentForName(name) {
+    return this.playerForName(name, true)
   }
 
   // A string that can be displayed to debug the game state.
@@ -197,18 +214,71 @@ class GameState {
       this.draw(move.player, move.card)
     } else if (move.op == "tickTime") {
       // the server sends the current time for the client to display
-      this.currentGameSecond = move.time
-      window.client.forceUpdate()
+      if (!this.gameTime) {
+        this.startTime = move.gameTime
+        this.gameTime = move.gameTime
+        setInterval(() => {
+          this.tickLocalTime()
+        }, CLOCK_CYCLE_MS)
+      }
+      this.gameTime = move.gameTime
     } else {
       console.log("ignoring op: " + move.op)
       return false
     }
-
-    this.history.push(move)
+    
+    // client doesn't exist in tests
+    if (window.client) {
+      window.client.forceUpdate()
+    }
+    if (move.op != "tickTime") {
+      this.history.push(move)
+    }
     return true
   }
 
-  // log all moves in the game so far
+  // Tick time locally, and act based on last gameTime sent by server
+  tickLocalTime() {
+    // set currentGameSecond to 10 through 1 based on what second it is in the round
+    this.currentGameSecond = Math.floor(10 - ((this.gameTime - this.startTime) % 10000)/1000)
+    
+    // loop over all cards in play to see if they should act
+    for (let p of this.players) {
+      for (let card of p.board) {
+        this.warmUpAndAttack(card)
+      }
+    }
+    window.client.forceUpdate()
+  }
+
+  // Update the card's opacity and potentially attack
+  warmUpAndAttack(card) {
+    // only creatures attack
+    if (!card.attackRate) {
+      return
+    }
+    // how long the card has been in play
+    let cardTime = this.gameTime - card.creationTime
+    // set this to animate the opacity of a card as it becomes ready to attack again
+    card.warm = (cardTime % card.attackRate) / card.attackRate
+
+    // don't attack if the it's not within 200 ms of the attack time
+    // or if the card hasn't been in play long enough
+    if (cardTime < card.attackRate*(card.attackCount+1)) {
+      return
+    }
+    card.attackCount++
+
+    // attack a creature if one is targeted
+    // otherwise attack the opponent
+    if (card.attackTarget && this.attackCreature(card)) {
+    } else {
+      // card is set to attack a player
+      this.faceForCard(card, card.attacker)
+    }
+  }
+
+  // Log all moves in the game so far.
   logHistory() {
     console.log("" + this.history.length + " moves in history.")
     for (let move of this.history) {
@@ -216,7 +286,7 @@ class GameState {
     }
   }
 
-  // seed the game and start giving players cards/energy
+  // Seed the game and start giving players cards/energy.
   startGame(players, seed) {
     this.rng = new Math.seedrandom(seed)
     if (players[0] == this.name) {
@@ -231,8 +301,8 @@ class GameState {
     this.refreshPlayers()
   }
 
-  // at the end of a combat or a damage spell,
-  // kill anything that died
+  // At the end of a combat or a damage spell,
+  // kill anything that died.
   resolveDamage() {
 
     for (var i = 0; i < this.players.length; i++) {
@@ -255,7 +325,6 @@ class GameState {
         if (card == player.selectedCard) {
           player.selectedCard = null;
         }
-        deactivateAttack(card)
       }
       player.board = player.board.filter(c => cardsToRemove.indexOf(c) < 0)
 
@@ -272,7 +341,6 @@ class GameState {
       this.winner = this.localPlayer().name
     }
     if (this.winner != null && this.declaredWinner == false) {
-      console.log(this.winner + " wins!")
       alert(this.winner + " wins!")
       this.declaredWinner = true
       if (this.localPlayer().life <= 0) {
@@ -280,15 +348,6 @@ class GameState {
       } else if (this.remotePlayer().life <= 0) {
         window.track("human wins")
       }      
-      // stop all cards from attacking
-      for (var i = 0; i < this.players.length; i++) {
-        var player = this.players[i]
-        for (var j = 0; j < player.board.length; j++) {
-          var card = player.board[j]
-          deactivateAttack(card)
-        }
-      }
-
     }
   }
 
@@ -304,9 +363,14 @@ class GameState {
       opponent = this.localPlayer()
     }
     if (!actingPlayer.selectedCard) {
+      if (index >= actingPlayer.hand.length) {
+        console.log("computer tried to click a card not there")
+        return
+      }
       this.setSelectedCard(index, containerType, actingPlayer)
       return;
     }
+
     let card;
     if (containerType == "board") {
       if (actingPlayer.name == selectingPlayerName) {
@@ -372,20 +436,15 @@ class GameState {
       player.selectedCard = card;
     } else if (containerType == "hand") { 
       let card = player.getHand(index);
-      if (player.mana >= card.cost) {
+      if (player.energy >= card.cost) {
         player.selectedCard = card
       }
     }
   }
 
   // select the opponent to cast a spell or target with attack
-  selectOpponent(player) {
-    let actingPlayer
-    if (player == this.localPlayer().name) {
-      actingPlayer = this.localPlayer()
-    } else {
-      actingPlayer = this.remotePlayer()
-    }
+  selectOpponent(playerName) {
+    let actingPlayer = this.playerForName(playerName)
 
     if (!actingPlayer.selectedCard) {
       return;
@@ -401,7 +460,7 @@ class GameState {
   }    
 
   selectTargetForAttack(from, to, player) {
-    let opponent = this.localPlayer().name == player.name ? this.remotePlayer() : this.localPlayer()
+    let opponent = this.opponentForName(player.name)
     let attacker = player.getBoard(from)
     let defender = opponent.getBoard(to)
     attacker.attackTarget = defender   
@@ -409,11 +468,11 @@ class GameState {
 
   // from and to are indices into board
   attack(from, to, player) {
-    let opponent = this.localPlayer().name == player.name ? this.remotePlayer() : this.localPlayer()
+    let opponent = this.opponentForName(player.name)
     let attacker = player.getBoard(from)
     let defender = opponent.getBoard(to)
-    this.showCardDamage(attacker)
-    this.showCardDamage(defender)
+    this.showCardDamage(attacker, to, player)
+    this.showCardDamage(defender, null, null)
     attacker.defense -= defender.attack
     defender.defense -= attacker.attack
     attacker.canAct = false;
@@ -421,7 +480,7 @@ class GameState {
   }
 
   // Plays a card from the hand.
-  // Throws if there's not enough mana.
+  // Throws if there's not enough energy.
   // from is an index of the hand
   play(from, player) {
     let card = player.getHand(from)
@@ -430,20 +489,21 @@ class GameState {
       // but the card needs a target, so nothing happens.
       return;
     }
-    if (player.mana < card.cost) {
+    if (player.energy < card.cost) {
       player.selectedCard = null
-      // throw `need ${card.cost} mana but only have ${player.mana}`
+      // throw `need ${card.cost} energy but only have ${player.energy}`
     }
-    player.mana -= card.cost      
+    player.energy -= card.cost      
 
     // move the card to the appropriate container
     if (card.permanent) {
       player.handToBoard(from)
+      card.creationTime = Date.now()
     } else {
       player.handToTrash(from)
     }
 
-    // Finally, play any abilities the card has.
+    // Finally, play any abilities the card has.    
 
     // for permanents that attack on a loop
     if (card.attackRate) {
@@ -454,34 +514,11 @@ class GameState {
           break;
         }
       }
-      
-      card.warm = 0
-
-      card.warmLoop = setInterval(() => {
-        card.warm += 1
-        window.client.forceUpdate()
-      } ,card.attackRate/10);
-      
-      card.attackLoop = setInterval(() => {
-        // card is set to attack a creatiure
-        if (card.attackTarget && this.attackCreature(card)) {
-        } else {
-          // card is set to attack a player
-          this.faceForCard(card, card.attacker)
-        }
-        card.warm = 0
-        window.client.forceUpdate()
-      } ,card.attackRate);
-    } 
+    }
 
     // kill permanents
     if (card.kill) { 
-      let actingPlayer
-      if (player == this.localPlayer()) {
-        actingPlayer = this.remotePlayer()
-      } else {
-        actingPlayer = this.localPlayer()
-      }
+      let actingPlayer = this.opponentForName(player.name)
 
       // kill a random opponent permanent
       if (card.randomTarget && 
@@ -503,25 +540,14 @@ class GameState {
       }
     }
 
-    // let all permanents act again
-    if (card.refreshPlayers) { 
-      this.refreshPlayers()
-    }
-
   }
 
   // have a card attack its attack target
   // if its still in play
   // returns true if the attack is legal and therefore occurs
   attackCreature (card) {
-    let cardOwner, opponent
-    if (card.playerName == this.localPlayer().name) {
-      cardOwner = this.localPlayer()
-      opponent = this.remotePlayer()
-    } else {
-      cardOwner = this.remotePlayer()
-      opponent = this.localPlayer()
-    }
+    let cardOwner = this.playerForName(card.playerName)
+    let opponent = this.opponentForName(card.playerName)
 
     let from = -1, to = -1
 
@@ -542,7 +568,6 @@ class GameState {
         break;
       }
     }
-
     if (from >= 0 && to >= 0) {
       this.attack(from, to, cardOwner)
       return true
@@ -553,12 +578,12 @@ class GameState {
 
 
   // Plays a card from the hand, onto a target.
-  // Throws if there's not enough mana.
+  // Throws if there's not enough energy.
   // from is an index of the hand
   playOn(from, to, player) {
     let card = player.getHand(from)
-    if (player.mana < card.cost) {
-      throw `need ${card.cost} mana but only have ${player.mana}`
+    if (player.energy < card.cost) {
+      throw `need ${card.cost} energy but only have ${player.energy}`
     }
     player.handToTrash(from)
 
@@ -569,13 +594,13 @@ class GameState {
   }
 
   // Plays a card from the hand, onto a player.
-  // Throws if there's not enough mana.
+  // Throws if there's not enough energy.
   // from is an index of the hand
   playFace(from, player) {
-    let opponent = this.localPlayer().name == player.name ? this.remotePlayer() : this.localPlayer()
+    let opponent = this.opponentForName(player.name)
     let card = player.getHand(from)
-    if (player.mana < card.cost) {
-      throw `need ${card.cost} mana but only have ${player.mana}`
+    if (player.energy < card.cost) {
+      throw `need ${card.cost} energy but only have ${player.energy}`
     }
     player.handToTrash(from)
 
@@ -588,13 +613,8 @@ class GameState {
 
   // for direct damage spells
   damage(to, amount, player) {
-    let actingPlayer
-    if (player == this.localPlayer()) {
-      actingPlayer = this.remotePlayer()
-    } else {
-      actingPlayer = this.localPlayer()
-    }
-    let target = actingPlayer.getBoard(to)
+    let opponent = this.opponentForName(player.name)
+    let target = opponent.getBoard(to)
     target.defense -= amount
     this.resolveDamage()
   }
@@ -606,28 +626,48 @@ class GameState {
   }
 
   faceForCard(card, player) {
-    let opponent = this.localPlayer().name == player.name ? this.remotePlayer() : this.localPlayer()
+    let opponent = this.opponentForName(player.name)
     opponent.life -= card.attack
-
     card.canAct = false
     player.selectedCard = null;
     this.resolveDamage()
-
     this.showCardDamage(card)
     this.showPlayerDamage(opponent)
-  }
-
-  showCardDamage(card) {
-    // opponent damage animation
-    card.showDamage = true
-    card.damageAnimation = setInterval(() => {
-      card.showDamage = null;
+    let bulletDict = {player, 
+                      startIndex: player.board.indexOf(card)} 
+    this.bullets.push(bulletDict)
+    bulletDict.damageAnimation = setInterval(() => {
+      for (var i =0; i < this.bullets.length; i++) {
+        if (this.bullets[i] === bulletDict) {
+          this.bullets.splice(i,1);
+          break;
+        }
+      }
       window.client.forceUpdate()
     }, this.damageDuration) 
+
+  }
+
+  showCardDamage(card, index, player) {
+    if (index >= 0 && player) {
+      let bulletDict = {player, 
+                        startIndex: player.board.indexOf(card), 
+                        attackIndex: index} 
+      this.bullets.push(bulletDict)
+      // remove the bullet after attack;
+      bulletDict.damageAnimation = setInterval(() => {
+        for (var i =0; i < this.bullets.length; i++) {
+          if (this.bullets[i] === bulletDict) {
+            this.bullets.splice(i,1);
+            break;
+          }
+        }
+        window.client.forceUpdate()
+      }, this.damageDuration) 
+    }
   }
 
   showPlayerDamage(player) {
-    // card damage animation
     player.showDamage = true
     player.damageAnimation = setInterval(() => {
       player.showDamage = null;
@@ -636,7 +676,6 @@ class GameState {
     
   }
 
-  // this is only used in testing right now
   draw(player, card) {
     for (var i = 0; i < this.players.length; i++) {
       var p = this.players[i]
@@ -647,48 +686,41 @@ class GameState {
     }
   }
 
-  // let all cards act, give everyone a mana, and restore everyone's mana
+  // let all cards act, give everyone a energy, and restore everyone's energy
   refreshPlayers() {
-    this.localPlayer().maxMana = Math.min(1 + this.localPlayer().maxMana, 10)
-    this.remotePlayer().maxMana = Math.min(1 + this.remotePlayer().maxMana, 10)
-
-    if (this.godMode) {
-      this.localPlayer().maxMana = 99;
-      this.remotePlayer().maxMana = 99;
+    for (let p of this.players) {
+      p.maxEnergy = Math.min(1 + p.maxEnergy, 10)
+      if (this.godMode) {
+        p.maxEnergy = 99;
+      }
+      p.energy = p.maxEnergy
+      if (p.board.length) {
+        for (let i = 0; i < p.board.length; i++) {
+          let card = p.board[i];
+          card.canAct = true;
+        }      
+      }
     }
-
-    this.localPlayer().mana = this.localPlayer().maxMana
-    this.remotePlayer().mana = this.remotePlayer().maxMana
-
     this.selectedCard = null;
-    if (this.localPlayer().board.length) {
-      for (let i = 0; i < this.localPlayer().board.length; i++) {
-        let card = this.localPlayer().board[i];
-        card.canAct = true;
-      }      
-    }
-    if (this.remotePlayer().board.length) {
-      for (let i = 0; i < this.remotePlayer().board.length; i++) {
-        let card = this.remotePlayer().board[i];
-        card.canAct = true;
-      }      
-    }
   }
 
   resign(move) {
-    let player = this.localPlayer().name == move.player ? this.localPlayer() : this.remotePlayer()
-    player.life = 0
+    this.playerForName(move.player).life = 0
     this.resolveDamage()
   }
 
-}
-
-// stop a card from attacking
-function deactivateAttack(card) {
-  if (card.attackLoop) {
-    clearInterval(card.attackLoop)
-    clearInterval(card.warmLoop)
+  inPlay(card) {
+    for (let p of this.players) {
+      for (let c of p.board) {
+        if (card == c) {
+          return true
+        }
+      }
+    }
+    return false
   }
+
+
 }
 
 module.exports = GameState;

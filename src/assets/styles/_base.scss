@@ -5,16 +5,19 @@ $palette-three: #ADF5FF;
 $palette-four: #0075A2;
 $palette-five: #481620;
 
-$default-padding: 1vw;
-$default-horizontal-padding: 1vw;
-$default-vertical-padding: 1vh;
-$card-height: 13vh;
-$card-width: 9vw;
+$default-padding: 10px;
+$default-horizontal-padding: 10px;
+$default-vertical-padding: 10px;
+$game-width: 1024px;
+$game-height: 768px;
+$card-height: 110px;
+$card-width: 80px;
 $in-play-width: $card-width * 7; 
 $in-play-height: $card-height*2 + $default-vertical-padding*4; 
 $default-corner-radius: 6px;
-$medium-button-width: 10vw;
+$medium-button-width: 80px;
 
+$player-height: 120px;
 
 /* 
    styles that override general globals
@@ -23,8 +26,6 @@ $medium-button-width: 10vw;
 body {
   padding: 0;
   margin: 0;
-}
-
-h2 {
-  font-size: 2vh;
-}
+  width:1024px;
+  height:768px;
+ }
