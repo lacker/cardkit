@@ -42,7 +42,9 @@ let Bullet = Animate.extend(class Bullet extends React.Component {
 
   // return the y coordinate for where the bullet starts
   startTop() {
-    if (this.props.info.player == window.game.localPlayer()) {
+    console.log(this.props.info)
+    console.log(window.game)
+    if (this.props.info.player == window.game.localPlayer) {
       return Util.gameHeight / 2 + Util.cardHeight / 2
     }
     return Util.gameHeight / 2 - Util.cardHeight / 2
@@ -52,14 +54,14 @@ let Bullet = Animate.extend(class Bullet extends React.Component {
   endTop() {
     // this branch means an in-play permanent is being attacked
     if (this.props.info.attackIndex >= 0) {
-      if (this.props.info.player == window.game.localPlayer()) {
+      if (this.props.info.player == window.game.localPlayer) {
         return Util.gameHeight / 2 - Util.cardHeight / 2
       } else {
         return Util.gameHeight / 2 + Util.cardHeight / 2
       }
     }
     // attack the top (remote) player
-    if (this.props.info.player == window.game.localPlayer()) {
+    if (this.props.info.player == window.game.localPlayer) {
         return Util.playerHeight/2
     }
     // attack the bottom (local) player

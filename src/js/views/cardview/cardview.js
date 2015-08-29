@@ -22,6 +22,7 @@ export default class Card extends Component{
 
     const localCard = game.localPlayer.selectedCard;
 
+
     let classes = classNames(
       'card',
       {'card--disabled': this.props.disabled},
