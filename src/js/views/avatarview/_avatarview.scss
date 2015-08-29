@@ -3,11 +3,12 @@
 // the representation of the player
 .avatar {
   padding: 10px;
-  padding-top: 0; 
+  border-radius: 5px;
   margin: 45px 0;
-  width: 120px;
+  width: 100px;
   height: 80px;
-  background-color: rgba(245,245,245,1);
+  background-color: rgb(245,245,245);
+  text-align: center;
 
   // life and mana
   &__stats {
@@ -16,12 +17,34 @@
 
   // life of player
   &__life {
-    color:black;
+    
   }
 
   &__name {
-
+    font-weight: bold;
   }
 
+  &--damage {
+    transform-origin: 50% 20%;
+    animation-name: damage-player;
+    animation-duration: 900ms;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+  }
 }
 
+@keyframes damage-player {
+    0% {
+        background-color: Yellow;
+        opacity:1;
+    }
+    22% {
+        background-color: Yellow;
+    }
+    77% {
+        background-color: Red;
+    }
+    100% {
+        background-color: #777;
+    }
+}
