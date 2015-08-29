@@ -68,7 +68,7 @@ export default class Card extends Component{
       <div className={classes} onClick={this.selectCard}>
         <div className="card__title"> 
           <span className="card__name">{this.props.cardInfo.name}</span>
-          <span className="card__mana">{this.props.cardInfo.cost}</span>
+          <span className="card__energy">{this.props.cardInfo.cost}</span>
         </div>
         <div className="card__body"> 
           {cardBody}
