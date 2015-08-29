@@ -53,6 +53,17 @@ export default class Card extends Component{
         </div>
     );
 
+    let divStyle = {
+      opacity: this.props.cardInfo.warm + .2
+    }
+
+    if (!window.game.inPlay(this.props.cardInfo)) {
+      divStyle = {
+        opacity: 1
+      }
+    }
+
+
     return (
       <div className={classes} onClick={this.selectCard}>
         <div className="card__title"> 
