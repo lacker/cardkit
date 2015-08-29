@@ -13,6 +13,7 @@ export default class Card extends Component{
       name: PropTypes.string.isRequired,
       cost: PropTypes.number.isRequired,
       permanent: PropTypes.bool.isRequired,
+      description: PropTypes.arrayOf(PropTypes.string),
     })
   }
 

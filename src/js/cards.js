@@ -18,8 +18,7 @@ export const DEFAULT_ATTACK_RATE = 3000;
      randomTarget   - BOOL           whether the target(s) are chosen randomly
      damage         - INT            deals damage to target(s)
      kill           - BOOL           kills permanents when used
-     description    - STRING         what the card does (TODO: this should actually be auto-genned)
-     flavor         - STRING         text just for fun 
+     description    - STRING ARRAY   what the card does (TODO: this should actually be auto-genned)
 
    A typical card that stays in play when used will have at least: 
      cost, permanent=true, attack, defense, attackRate

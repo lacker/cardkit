@@ -1,8 +1,18 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import './_avatarview.scss';
 
 export default class Avatar extends Component {
+  static propTypes = {
+    onClick: PropTypes.func,
+    player: PropTypes.shape({
+      showDamage: PropTypes.bool,
+      life: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+      mana: PropTypes.number.isRequired,
+    }),
+  }
+
 	render() {
 		const classes = classNames(
 			'avatar',

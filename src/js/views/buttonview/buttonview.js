@@ -4,7 +4,7 @@ import './_buttonview.scss';
 export default class Button extends Component {
 	static propTypes = {
     onClick: PropTypes.func,
-    label: PropTypes.string,
+    label: PropTypes.string.isRequired,
   }
 
   render() {
