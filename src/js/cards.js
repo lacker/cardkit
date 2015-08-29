@@ -19,7 +19,7 @@ export const DEFAULT_ATTACK_RATE = 3000;
      damage         - INT            deals damage to target(s)
      kill           - BOOL           kills permanents when used
      description    - STRING         what the card does (TODO: this should actually be auto-genned)
-     flavor         - STRING         text just for fun 
+     flavor         - STRING         text just for fun
 
    A typical card that stays in play when used will have at least: 
      cost, permanent=true, attack, defense, attackRate
@@ -97,7 +97,7 @@ export const CARDS = {
 // Define a couple of simple decks.
 // The current computer player always gets Weenie.
 // The human player always gets Control.
-export var DECKS = [
+export const DECKS = [
   {
     name: "Weenie",
     cards: ["BiBot"],

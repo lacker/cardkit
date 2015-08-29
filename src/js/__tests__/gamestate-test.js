@@ -57,12 +57,12 @@ describe("GameState", function() {
 
     // draw the simplest permanent
     state.draw({name:"bob"}, {cost:0, permanent: true})
-    expect(state.localPlayer().hand.length).toEqual(1)
+    expect(state.localPlayer.hand.length).toEqual(1)
 
     // play last card drawn
     state.selectCard(0, "hand", "bob")
     state.selectCard(0, "hand", "bob")
-    expect(state.localPlayer().board.length).toEqual(1)
+    expect(state.localPlayer.board.length).toEqual(1)
 
     // go to next turn
     state.makeMove({op: "refreshPlayers"})
@@ -75,8 +75,8 @@ describe("GameState", function() {
     state.selectCard(0, "hand", "eve")
 
     // permanent leaves board and goes to trash
-    expect(state.remotePlayer().board.length).toEqual(0)
-    expect(state.remotePlayer().trash.length).toEqual(1)
+    expect(state.remotePlayer.board.length).toEqual(0)
+    expect(state.remotePlayer.trash.length).toEqual(1)
 
   })
 
@@ -105,11 +105,11 @@ describe("GameState", function() {
 
     // permanent leaves board and goes to trash
     // bob
-    expect(state.localPlayer().board.length).toEqual(0)
-    expect(state.localPlayer().trash.length).toEqual(1)
+    expect(state.localPlayer.board.length).toEqual(0)
+    expect(state.localPlayer.trash.length).toEqual(1)
     // eve
-    expect(state.remotePlayer().board.length).toEqual(0)
-    expect(state.remotePlayer().trash.length).toEqual(1)
+    expect(state.remotePlayer.board.length).toEqual(0)
+    expect(state.remotePlayer.trash.length).toEqual(1)
   })
 
   /* it("two creatures die when colliding", function() {
@@ -138,10 +138,10 @@ describe("GameState", function() {
     state.selectCard(0, "opponentBoard", "eve")
 
     // both permanents leave board and go to trash
-    expect(state.localPlayer().board.length).toEqual(0)
-    expect(state.localPlayer().trash.length).toEqual(1)
-    expect(state.remotePlayer().board.length).toEqual(0)
-    expect(state.remotePlayer().trash.length).toEqual(1)
+    expect(state.localPlayer.board.length).toEqual(0)
+    expect(state.localPlayer.trash.length).toEqual(1)
+    expect(state.remotePlayer.board.length).toEqual(0)
+    expect(state.remotePlayer.trash.length).toEqual(1)
 
   })*/
 

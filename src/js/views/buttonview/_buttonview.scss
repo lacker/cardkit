@@ -1,0 +1,24 @@
+@import "../../../assets/styles/base";
+
+.st-btn {
+	background-color: $palette-five;
+	border-radius: $default-corner-radius;
+	margin: 10px;
+	cursor: pointer;
+
+	&:focus {
+		outline: none;
+	}
+
+	&:active {
+		outline: none;
+		background-color: $palette-one;
+	}
+
+	&__label {
+		color: white;
+		font-weight: bold;
+		font-size: 1.5em;
+		padding: 5px;
+	}
+}

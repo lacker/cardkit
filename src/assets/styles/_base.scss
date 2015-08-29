@@ -5,13 +5,13 @@ $palette-three: #ADF5FF;
 $palette-four: #0075A2;
 $palette-five: #481620;
 
-$default-padding: 1vw;
-$default-horizontal-padding: 1vw;
-$default-vertical-padding: 1vh;
-$card-height: 13vh;
-$card-width: 9vw;
-$in-play-width: $card-width * 7; 
-$in-play-height: $card-height*2 + $default-vertical-padding*4; 
+$default-padding: 5px;
+$default-horizontal-padding: 5px;
+$default-vertical-padding: 5px;
+$default-card-height: 150px;
+$default-card-width: 100px;
+$in-play-width: $default-card-width * 7; 
+$in-play-height: $default-card-height*2;
 $default-corner-radius: 6px;
 $medium-button-width: 10vw;
 

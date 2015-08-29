@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import Client from "../../client";
 import GameState from "../../gamestate";
+import Button from '../buttonview/buttonview';
 import "./_lobbyview.scss";
 import { galaxyShadowImg } from '../../../assets/img';
 import * as Util from '../../util';
@@ -34,20 +35,14 @@ export default class LobbyView extends Component {
     const block = this.props.name,
     elm = Util.buildElementClasses(block, [
       'heading',
-      'basic-btn',
-      'float-right',
       'home-img'
     ]);
 
     return (
       <div className={block}>
         <h1 className={elm.heading}>Welcome to Spacetime</h1>
-        <button className={elm.basicBtn} onClick={this.playCampaign}>
-          Campaign 1: BiBot Attack
-        </button>
-        <button className={elm.basicBtn} onClick={this.showRules}>
-          How to Play
-        </button>
+        <Button onClick={this.playCampaign} label='Campaign' />
+        <Button onClick={this.showRules} label='How to Play' />
         <p>
           The BiBot factory has been hacked, and you must go reclaim it. <br />
           The hacker is churning out bibots as fast as possible, all set to KILL.
