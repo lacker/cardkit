@@ -16,16 +16,18 @@
 
   &__play-area {
     @include game-piece;
+    background-color: black;
+    border-radius: 15px;
     width: 80%;
     margin: 0 15px;
   }
 
   &__hand {
     border: 1px solid;
-    background-color: rgba(245,245,245,1);
     height: 150px;
     margin: 20px auto;
     position: relative;
+    background: repeating-linear-gradient(0deg, #E6E6E6,#fff 1px,black 3px,transparent 20px)
   }
 
   &__info {

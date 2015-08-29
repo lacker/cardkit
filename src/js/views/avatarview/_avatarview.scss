@@ -9,6 +9,8 @@
   height: 80px;
   background-color: rgb(245,245,245);
   text-align: center;
+  box-shadow: 0 0 4px 2px white;
+  border: 1px solid black;
 
   // life and mana
   &__stats {
