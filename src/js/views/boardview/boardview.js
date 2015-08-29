@@ -28,7 +28,11 @@ export default class GameBoard extends Component {
           <Card cardInfo={cardInfo} player={opponent} key={i} />),
 
       homeCards = homePlayer.board.map((cardInfo, i) =>
-          <Card cardInfo={cardInfo} player={homePlayer} key={i} />);
+          <Card
+            cardInfo={cardInfo}
+            used={homePlayer.board.indexOf(this.props.cardInfo) !== -1}
+            key={i}
+          />);
 
 		return(
       <div className='game-board'>

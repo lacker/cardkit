@@ -23,9 +23,9 @@ export default class Card extends Component{
 
     let classes = classNames(
       'card',
-      {'card--disabled': this.props.cardInfo.cost > this.props.player.mana},
+      {'card--disabled': this.props.disabled},
       {'card--active': (localCard && localCard.guid == this.props.cardInfo.guid)},
-      {'card--used': !this.props.cardInfo.canAct && (game.localPlayer.board.indexOf(this.props.cardInfo) !== -1)},
+      {'card--used': !this.props.cardInfo.canAct && this.props.used},
       {'card--damaged': this.props.cardInfo.showDamage},
       this.getWarmClass(),
     );

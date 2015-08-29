@@ -1,6 +1,6 @@
 // React view of a GameState
 import React, { Component } from 'react';
-import Player from '../playerview/playerview';
+import Hand from '../handview/handview';
 import Card from '../cardview/cardview';
 import GameBoard from '../boardview/boardview';
 import classNames from 'classnames';
@@ -19,11 +19,11 @@ export default class GameView extends Component {
       return (
           <div className="game-container">
 
-            <Player playerState={opponent} />
+            <Hand playerState={opponent} />
 
             <GameBoard />
 
-            <Player playerState={homePlayer} />
+            <Hand playerState={homePlayer} />
 
           </div>
           
