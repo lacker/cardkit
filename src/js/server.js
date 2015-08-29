@@ -20,7 +20,7 @@
 
 // some JSON definitions for cards and decks
 import { CARDS, DECKS } from './cards';
-import { makeGuid } from './util';
+import { makeId } from './util';
 
 // for shuffling
 require("seedrandom")
@@ -242,7 +242,7 @@ class Connection {
   cardCopy(player) {
     let cardName = choice(player.deck.cards)
     let card = CARDS[cardName]
-    card.guid = makeGuid()
+    card.guid = makeId()
 
     // Make a copy so that we can edit this card        
     let copy = {}     

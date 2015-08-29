@@ -20,7 +20,7 @@ export function buildElementClasses (block, elements) {
 	return bemClasses;
 }
 
-export function makeGuid() {
+export function makeId() {
   function s4() {
     return Math.floor((1 + Math.random()) * 0x10000)
       .toString(16)
