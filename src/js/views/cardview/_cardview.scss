@@ -2,8 +2,6 @@
 
 // cards in play and in hand
 .card {
-  $this: &;
-
   background-color: $palette-three; 
   width: $default-card-width;
   height: $default-card-height;
