@@ -28,8 +28,7 @@ export default class Card extends Component{
       {'card--disabled': this.props.disabled},
       {'card--active': (localCard && localCard.guid == this.props.cardInfo.guid)},
       {'card--used': !this.props.cardInfo.canAct && this.props.used},
-      {'card--damaged': this.props.cardInfo.showDamage},
-      this.getWarmClass(),
+      {'card--damaged': this.props.cardInfo.showDamage}
     );
 
     let cardBody = this.props.cardInfo.permanent ?
@@ -64,9 +63,8 @@ export default class Card extends Component{
       }
     }
 
-
     return (
-      <div className={classes} onClick={this.selectCard}>
+      <div className={classes} onClick={this.selectCard} style={divStyle}>
         <div className="card__title"> 
           <span className="card__name">{this.props.cardInfo.name}</span>
           <span className="card__energy">{this.props.cardInfo.cost}</span>
@@ -79,16 +77,6 @@ export default class Card extends Component{
   
   }
 
-  getWarmClass () {
-    let warmClass;
-
-    if (this.props.cardInfo.warm) {
-      warmClass = "warm-" + this.props.cardInfo.warm;
-    }
-
-    return warmClass;
-  }
-  
   // select cards in local player's hand or board
   selectCard = () => {
     let boardIndex = game.localPlayer.board.indexOf(this.props.cardInfo);

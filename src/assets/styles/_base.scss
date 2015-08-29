@@ -5,9 +5,9 @@ $palette-three: #ADF5FF;
 $palette-four: #0075A2;
 $palette-five: #481620;
 
-$default-padding: 10px;
-$default-horizontal-padding: 10px;
-$default-vertical-padding: 10px;
+$default-padding: 5px;
+$default-horizontal-padding: 5px;
+$default-vertical-padding: 5px;
 $game-width: 1024px;
 $game-height: 768px;
 $card-height: 110px;
@@ -26,6 +26,6 @@ $player-height: 120px;
 body {
   padding: 0;
   margin: 0;
-  width:1024px;
-  height:768px;
+  width: $game-width;
+  height: $game-height;
  }
