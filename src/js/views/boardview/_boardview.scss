@@ -2,8 +2,9 @@
 
 .game-board {
 
-  width: 85%;
+  width: 95%;
   margin: auto;
+  text-align: center;
 
   @mixin game-piece {
     display: inline-block;
@@ -18,7 +19,7 @@
     @include game-piece;
     background-color: black;
     border-radius: 15px;
-    width: 80%;
+    width: 75%;
     margin: 0 15px;
   }
 
