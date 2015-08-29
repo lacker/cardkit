@@ -13,7 +13,8 @@ export default class Card extends Component{
       name: PropTypes.string.isRequired,
       cost: PropTypes.number.isRequired,
       permanent: PropTypes.bool.isRequired,
-      description: PropTypes.arrayOf(PropTypes.string),
+      description: PropTypes.string,
+      flavor: PropTypes.string,
     })
   }
 
@@ -44,10 +45,10 @@ export default class Card extends Component{
     ) : (
         <div>
           <div className="card__main-info">
-            {this.props.cardInfo.description[0]}
+            {this.props.cardInfo.description}
           </div>
           <div className="card__sub-info">
-            {this.props.cardInfo.description[1]}
+            {this.props.cardInfo.flavor}
           </div>
         </div>
     );

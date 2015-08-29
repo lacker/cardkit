@@ -18,7 +18,8 @@ export const DEFAULT_ATTACK_RATE = 3000;
      randomTarget   - BOOL           whether the target(s) are chosen randomly
      damage         - INT            deals damage to target(s)
      kill           - BOOL           kills permanents when used
-     description    - STRING ARRAY   what the card does (TODO: this should actually be auto-genned)
+     description    - STRING         what the card does (TODO: this should actually be auto-genned)
+     flavor         - STRING         text just for fun
 
    A typical card that stays in play when used will have at least: 
      cost, permanent=true, attack, defense, attackRate
@@ -70,7 +71,7 @@ export const CARDS = {
     target: TARGETS.ANY_PERMANENT,
     targetCount: 1,
     randomTarget: false,
-    description: ["Deal 3 damage to a creature or player."],
+    description: "Deal 3 damage to a creature or player.",
     damage: 3,
   },
   "Errant Blast": {
@@ -79,7 +80,7 @@ export const CARDS = {
     target: TARGETS.OPPONENT_PERMANENT,
     targetCount: 1,
     randomTarget: true,
-    description: ["Kill one of your opponent's fleet at random."],
+    description: "Kill one of your opponent's fleet at random.",
     kill: true,
   },
   EMP: {
@@ -87,7 +88,8 @@ export const CARDS = {
     permanent: false,
     target: TARGETS.ANY_PERMANENT,
     targetCount: TARGETS.ALL_PERMANENTS,
-    description: ["Destroy all cards in play.", "Watch that basket."],
+    description: "Destroy all cards in play.",
+    flavor: "Watch that basket.",
     kill: true,
   },
 }
