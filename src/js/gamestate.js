@@ -22,7 +22,7 @@ class PlayerState {
     this.hand = data.hand || []
     this.board = data.board || []
     this.trash = data.trash || []
-    this.life = data.life || 30
+    this.life = data.life || 10
     this.energy = data.energy || 0
     this.maxEnergy = data.maxEnergy || 0
   }

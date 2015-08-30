@@ -24,17 +24,15 @@ export default class Card extends Component{
     let player = window.game.playerForName(this.props.cardInfo.playerName)
     let fromIndex = player.board.indexOf(this.props.cardInfo);  
     let cssPlacementClass
-    let map = new Map()
     if (fromIndex != -1) {
       cssPlacementClass = "card-slot-" + fromIndex;
-      map.set(cssPlacementClass, true);
     }
     let classes = classNames(
       'card',
       {'card--disabled': this.props.disabled},
       {'card--active': (localCard && localCard.guid == this.props.cardInfo.guid)},
       {'card--used': !this.props.cardInfo.canAct && this.props.used},
-      map,
+      cssPlacementClass,
       {'card--damaged': this.props.cardInfo.showDamage}
     );
     let cardBody = this.props.cardInfo.permanent ?
