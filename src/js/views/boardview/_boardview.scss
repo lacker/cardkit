@@ -2,9 +2,8 @@
 
 .game-board {
 
-  width: 95%;
-  margin: auto;
-  text-align: center;
+  width: $game-width;
+  background-color: red;
 
   @mixin game-piece {
     display: inline-block;
