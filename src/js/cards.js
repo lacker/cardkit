@@ -16,6 +16,7 @@ export class Card {
     this.playerName = player.name
     this.attackCount = 0
     this.warm = .2
+    card.guid = Util.makeId()
   }
 }
  
@@ -66,17 +67,17 @@ export const TARGETS = {
 // Legal cards for Spacetime.
 export const CARDS = {
   BiBot: {
-    cost: 2,
+    cost: 1,
     permanent: true,
-    attack: 2,
-    defense: 2,
+    attack: 1,
+    defense: 1,
     attackRate: DEFAULT_ATTACK_RATE,
   },
-  TriBot: {
-    cost: 3,
+  BetterBot: {
+    cost: 1,
     permanent: true,
-    attack: 3,
-    defense: 3,
+    attack: 1,
+    defense: 2,
     attackRate: DEFAULT_ATTACK_RATE,
   },
   QuadBot: {
@@ -125,6 +126,6 @@ export const DECKS = [
   },
   {
     name: "Control",
-    cards: ["EMP", "QuadBot", "TriBot"],
+    cards: ["BetterBot"],
   },
 ]

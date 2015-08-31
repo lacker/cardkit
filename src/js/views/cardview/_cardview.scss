@@ -131,42 +131,37 @@
 
 .card-slot-0 {
   position: absolute;
-  left: $game-width/2 - $card-width / 2;
+  left: $game-width*.75/2 - $card-width / 2 - 15;
 }
 
 .card-slot-1 {
   position: absolute;
-  left: $game-width/2 - $card-width / 2 - $card-width;
+  left: $game-width*.75/2 - $card-width / 2 - $card-width - 30;
 }
 
 .card-slot-2 {
   position: absolute;
-  left: $game-width/2 - $card-width / 2 + $card-width;
+  left: $game-width*.75/2 - $card-width / 2 + $card-width;
 }
 
 .card-slot-3 {
   position: absolute;
-  left: $game-width/2 - $card-width / 2 - $card-width * 2;
+  left: $game-width*.75/2 - $card-width / 2 - $card-width * 2 - 45;
 }
 
 .card-slot-4 {
   position: absolute;
-  left: $game-width/2 - $card-width / 2 + $card-width * 2;
+  left: $game-width*.75/2 - $card-width / 2 + $card-width * 2 - $default-padding + 20;
 }
 
 .card-slot-5 {
   position: absolute;
-  left: $game-width/2 - $card-width / 2 - $card-width * 3;
+  left: $game-width*.75/2 - $card-width / 2 - $card-width * 3 - $default-padding - 60;
 }
 
 .card-slot-6 {
   position: absolute;
-  left: $game-width/2 - $card-width / 2 + $card-width * 3;
-}
-
-.card-slot-7 {
-  position: absolute;
-  left: $game-width/2 - $card-width / 2 - $card-width * 4;
+  left: $game-width*.75/2 - $card-width / 2 + $card-width * 3 - $default-padding + 35;
 }
 
 .ship-sprite {

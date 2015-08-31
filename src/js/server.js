@@ -20,7 +20,6 @@
 
 // some JSON definitions for cards and decks
 import { CARDS, DECKS, Card } from './cards';
-import { makeId } from './util';
 
 import * as Util from './util';
 
@@ -32,7 +31,7 @@ const WebSocketServer = require("ws").Server
 let wss = new WebSocketServer({port: 9090})
 
 // the number of cards each player starts with 
-export const STARTING_HAND_SIZE = 3;
+export const STARTING_HAND_SIZE = 4;
 
 // when a turn passes, each player draws and adds energy
 // this is the time (milliseconds) it takes for the turn to tick

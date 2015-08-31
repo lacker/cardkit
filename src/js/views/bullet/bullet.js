@@ -42,8 +42,6 @@ let Bullet = Animate.extend(class Bullet extends React.Component {
 
   // return the y coordinate for where the bullet starts
   startTop() {
-    console.log(this.props.info)
-    console.log(window.game)
     if (this.props.info.player == window.game.localPlayer) {
       return Util.gameHeight / 2 + Util.cardHeight / 2
     }
@@ -62,18 +60,19 @@ let Bullet = Animate.extend(class Bullet extends React.Component {
     }
     // attack the top (remote) player
     if (this.props.info.player == window.game.localPlayer) {
-        return Util.playerHeight/2
+        return 300
     }
     // attack the bottom (local) player
-    return Util.gameHeight - Util.playerHeight/2
+    return 400
   }
 
   // return the x coordinate for where the bullet lands
   endLeft() {
     if (this.props.info.attackIndex >= 0) {
+      console.log(this.leftForIndex(this.props.info.attackIndex))
       return this.leftForIndex(this.props.info.attackIndex)
     } else {
-      return Util.gameWidth/2 - Util.cardWidth/2
+      return 100  // middle of avatar of player
     }
   }
 
@@ -81,21 +80,19 @@ let Bullet = Animate.extend(class Bullet extends React.Component {
   leftForIndex(index) {
     switch (index) {
       case 0:
-        return Util.gameWidth/2 - Util.cardWidth/2
+        return Util.gameWidth*.75 - Util.cardWidth/2 - 15
       case 1:
-        return Util.gameWidth/2 - Util.cardWidth/2 - Util.cardWidth
+        return Util.gameWidth*.75 - Util.cardWidth/2 - Util.cardWidth - 30
       case 2:
-        return Util.gameWidth/2 - Util.cardWidth/2 + Util.cardWidth
+        return Util.gameWidth*.75 - Util.cardWidth/2 + Util.cardWidth
       case 3:
-        return Util.gameWidth/2 - Util.cardWidth/2 - Util.cardWidth * 2
+        return Util.gameWidth*.75 - Util.cardWidth/2 - Util.cardWidth * 2 - 45
       case 4:
-        return Util.gameWidth/2 - Util.cardWidth/2 + Util.cardWidth * 2
+        return Util.gameWidth*.75 - Util.cardWidth/2 + Util.cardWidth * 2 + 20
       case 5:
-        return Util.gameWidth/2 - Util.cardWidth/2 - Util.cardWidth * 3
+        return Util.gameWidth*.75 - Util.cardWidth/2 - Util.cardWidth * 3 - 60
       case 6:
-        return Util.gameWidth/2 - Util.cardWidth/2 + Util.cardWidth * 3
-      case 7:
-        return Util.gameWidth/2 - Util.cardWidth/2 - Util.cardWidth * 4
+        return Util.gameWidth*.75 - Util.cardWidth/2 + Util.cardWidth * 3 + 35
     }
   }
 

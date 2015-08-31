@@ -1,9 +1,9 @@
 @import "../../../assets/styles/base";
 
 .game-board {
-
+  
   width: $game-width;
-  background-color: red;
+  margin: 0 auto;
 
   @mixin game-piece {
     display: inline-block;
