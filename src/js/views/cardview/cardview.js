@@ -3,6 +3,7 @@ import React, { Component, PropTypes } from "react";
 import classNames from 'classnames';
 import "./_cardview.scss";
 import { shieldImg, swordsImg } from '../../../assets/img'
+import * as Util from '../../util';
 
 export default class Card extends Component{
 
@@ -16,6 +17,53 @@ export default class Card extends Component{
       description: PropTypes.string,
       flavor: PropTypes.string,
     })
+  }
+
+  // starting or ending left pixel position given an index
+  leftForIndex(index) {
+    switch (index) {
+      case 0:
+        return Util.gameWidth*.75 - Util.cardWidth/2 - 15
+      case 1:
+        return Util.gameWidth*.75 - Util.cardWidth/2 - Util.cardWidth - 30
+      case 2:
+        return Util.gameWidth*.75 - Util.cardWidth/2 + Util.cardWidth
+      case 3:
+        return Util.gameWidth*.75 - Util.cardWidth/2 - Util.cardWidth * 2 - 45
+      case 4:
+        return Util.gameWidth*.75 - Util.cardWidth/2 + Util.cardWidth * 2 + 20
+      case 5:
+        return Util.gameWidth*.75 - Util.cardWidth/2 - Util.cardWidth * 3 - 60
+      case 6:
+        return Util.gameWidth*.75 - Util.cardWidth/2 + Util.cardWidth * 3 + 35
+    }
+  }
+
+
+  // return the y coordinate for where the bullet starts
+  startTop() {
+    if (this.props.cardInfo.playerName == window.game.localPlayer.name) {
+      return Util.gameHeight / 2 + Util.cardHeight / 2
+    }
+    return Util.gameHeight / 2 - Util.cardHeight / 2
+  }
+
+
+  endTop() {
+    // this branch means an in-play permanent is being attacked
+    if (this.props.cardInfo.attackTarget) {
+      if (this.props.cardInfo.playerName == window.game.localPlayer.name) {
+        return Util.gameHeight / 2 - Util.cardHeight / 2
+      } else {
+        return Util.gameHeight / 2 + Util.cardHeight / 2
+      }
+    }
+    // attack the top (remote) player
+    if (this.props.cardInfo.playerName == window.game.localPlayer.name) {
+        return 150
+    }
+    // attack the bottom (local) player
+    return 500
   }
 
   render() {
@@ -56,16 +104,54 @@ export default class Card extends Component{
           </div>
         </div>
     );
+    let warmNumber = this.props.cardInfo.warm + .2
+    if (!window.game.inPlay(this.props.cardInfo)) {
+      warmNumber = 0
+    }
+
+
 
     let divStyle = {
-      opacity: this.props.cardInfo.warm + .2
+      boxShadow: "0 0 100px rgba(255,0,0," + warmNumber + ")"
     }
 
-    if (!window.game.inPlay(this.props.cardInfo)) {
+    if (window.game.inPlay(this.props.cardInfo)) {
       divStyle = {
-        opacity: 1
+        height:60,
+        borderRadius:60,
+        boxShadow: "0 0 80px rgba(255,0,0," + warmNumber + ")"
       }
     }
+
+    if (fromIndex >= 0 && 
+        window.game.inPlay(this.props.cardInfo.attackTarget)) {
+ 
+       let x1 = this.leftForIndex(fromIndex)
+       let y1 = this.startTop()
+        
+       let opp = window.game.opponentForName(this.props.cardInfo.playerName)
+       let toIndex = opp.board.indexOf(this.props.cardInfo.attackTarget);  
+
+       let x2 = this.leftForIndex(toIndex)
+       let y2 = this.endTop()
+       let slopeDegrees = Math.atan2((y2-y1) , (x2-x1)) * (180/Math.PI)
+       divStyle.transform = 'rotate('+slopeDegrees+'deg)'; 
+    } else {
+       let x1 = this.leftForIndex(fromIndex)
+       let y1 = this.startTop()
+        
+       let opp = window.game.opponentForName(this.props.cardInfo.playerName)
+       let toIndex = opp.board.indexOf(this.props.cardInfo.attackTarget);  
+
+       let x2 = 100
+       let y2 = this.endTop()
+
+       let slope = (y2-y1) / (x2-x1)
+       let slopeDegrees = Math.atan2((y2-y1) , (x2-x1)) * (180/Math.PI)
+       divStyle.transform = 'rotate('+slopeDegrees+'deg)'; 
+
+    }
+
 
     if (window.game.inPlay(this.props.cardInfo)) {
       let new_classes = classNames(

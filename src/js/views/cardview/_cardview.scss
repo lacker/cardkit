@@ -10,10 +10,8 @@
   display: inline-block;
   border: 1px solid;
   border-color:black;
-  box-shadow: $default-padding*1.5 $default-padding*1.5 $default-padding*3 0 rgba(22,22,22,1);
   cursor: pointer;
   transition: all 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
-  box-shadow: 0 1px 1px rgba(0,0,0,0.3);
   transform: translateY(0) scale(0.95, 0.95);
   text-align: left;
   vertical-align: middle;
@@ -170,5 +168,5 @@
   width:  64px; 
   height: 29px;
   z-index:99999;
-  transform: rotate(90deg);
+  
 }
