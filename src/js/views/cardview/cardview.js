@@ -24,17 +24,15 @@ export default class Card extends Component{
     let player = window.game.playerForName(this.props.cardInfo.playerName)
     let fromIndex = player.board.indexOf(this.props.cardInfo);  
     let cssPlacementClass
-    let map = new Map()
     if (fromIndex != -1) {
       cssPlacementClass = "card-slot-" + fromIndex;
-      map.set(cssPlacementClass, true);
     }
     let classes = classNames(
       'card',
       {'card--disabled': this.props.disabled},
       {'card--active': (localCard && localCard.guid == this.props.cardInfo.guid)},
       {'card--used': !this.props.cardInfo.canAct && this.props.used},
-      map,
+      cssPlacementClass,
       {'card--damaged': this.props.cardInfo.showDamage}
     );
     let cardBody = this.props.cardInfo.permanent ?
@@ -69,7 +67,29 @@ export default class Card extends Component{
       }
     }
 
+    if (window.game.inPlay(this.props.cardInfo)) {
+      let new_classes = classNames(
+      'card',
+      {'card--disabled': this.props.disabled},
+      {'card--active': (localCard && localCard.guid == this.props.cardInfo.guid)},
+      {'card--used': !this.props.cardInfo.canAct && this.props.used},
+      cssPlacementClass,
+      {'card--hiddenCard': true},
+      {'card--damaged': this.props.cardInfo.showDamage}
+    );
+
+      return (
+
+      <div className={new_classes} onClick={this.selectCard} style={divStyle}>
+        <div className="ship-sprite"> 
+        </div>
+      </div>
+      )
+
+    }
+// http://gamedevelopment.tutsplus.com/articles/enjoy-these-totally-free-space-based-shoot-em-up-sprites--gamedev-2368
     return (
+
       <div className={classes} onClick={this.selectCard} style={divStyle}>
         <div className="card__title"> 
           <span className="card__name">{this.props.cardInfo.name}</span>

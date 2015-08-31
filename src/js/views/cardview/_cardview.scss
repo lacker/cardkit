@@ -96,7 +96,14 @@
     animation-timing-function: ease-in-out;
   }
 
+  &--hiddenCard {
+    background-color: rgba(0,0,0,0) !important; 
+    border: rgba(0,0,0,0) !important;
+  }
+
 }
+
+
 
 @keyframes damage {
     0% {
@@ -162,3 +169,11 @@
   left: $game-width/2 - $card-width / 2 - $card-width * 4;
 }
 
+.ship-sprite {
+  /* 0, 29, 58, 87*/
+  background: url('/../../images/ship-sprite-64x29.png') 0 0;
+  width:  64px; 
+  height: 29px;
+  z-index:99999;
+  transform: rotate(90deg);
+}
