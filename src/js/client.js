@@ -26,6 +26,7 @@ class Client {
   }
 
   makeSocket() {
+    clearInterval(this.computerLoop)
     let url = document.URL.replace("http", "ws").replace(/\/$/, "").replace(":8080", "") + ":9090"
     console.log(`connecting to ${url}`)
     // TODO: needs a more aggressive timeout
@@ -157,7 +158,7 @@ class Client {
   // Whenever the socket closes we just make a new one
   handleClose() {
     console.log("the socket closed")
-    
+    clearInterval(this.computerLoop)
     // Wait 2 seconds to reconnect
     setTimeout(() => this.makeSocket(), 2000)
   }

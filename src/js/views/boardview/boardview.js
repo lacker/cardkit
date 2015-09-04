@@ -4,15 +4,22 @@ import Card from '../cardview/cardview';
 import Avatar from '../avatarview/avatarview';
 import Button from '../buttonview/buttonview';
 import Bullet from "../bullet/bullet";
+import Client from "../../client"
+import GameState from "../../gamestate"
 import './_boardview.scss';
 
 export default class GameBoard extends Component {
 
-  resign() {
-    alert('You have resigned!');
-    window.client.makeLocalMove({"op":"resign"});
+  returnToLobby() {
+    window.client.makeLocalMove({"op":"resign"})
+    clearInterval(window.game.localTimeLoop)
+    clearInterval(window.client.computerLoop)
+    let rootPointer = window.client.root
+    window.game = new GameState({name: window.name})
+    window.client = new Client(window.name, window.game)
+    window.client.root = rootPointer;
+    window.client.root.forceUpdate()
   }
-
   selectOpponent() {
     let selectMove = {
       "op":"selectOpponent"
@@ -50,7 +57,7 @@ export default class GameBoard extends Component {
         </div>
         <div className='game-board__info'>
           <span className='game-board__timer'>{currentTime}</span>
-          <Button onClick={this.resign} label='Resign' />
+          <Button onClick={this.returnToLobby} label='Resign' />
         </div>
       </div>
 		  

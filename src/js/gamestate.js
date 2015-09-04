@@ -217,7 +217,7 @@ class GameState {
       if (!this.gameTime) {
         this.startTime = move.gameTime
         this.gameTime = move.gameTime
-        setInterval(() => {
+        this.localTimeLoop = setInterval(() => {
           this.tickLocalTime()
         }, CLOCK_CYCLE_MS)
       }
