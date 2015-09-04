@@ -9,7 +9,7 @@ export default class Hand extends Component {
       <Card 
       	cardInfo={cardInfo}
       	player={this.props.playerState}
-        disabled={cardInfo.cost > this.props.playerState.mana}
+        disabled={cardInfo.cost > this.props.playerState.energy}
       	key={i}
       />);
     return (

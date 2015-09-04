@@ -19,8 +19,9 @@
 // and if the same key ever goes to multiple values, the server logs an error.
 
 // some JSON definitions for cards and decks
-import { CARDS, DECKS } from './cards';
-import { makeId } from './util';
+import { CARDS, DECKS, Card } from './cards';
+
+import * as Util from './util';
 
 // for shuffling
 require("seedrandom")
@@ -30,16 +31,11 @@ const WebSocketServer = require("ws").Server
 let wss = new WebSocketServer({port: 9090})
 
 // the number of cards each player starts with 
-export const STARTING_HAND_SIZE = 3;
+export const STARTING_HAND_SIZE = 4;
 
-// when a turn passes, each player draws and adds mana
+// when a turn passes, each player draws and adds energy
 // this is the time (milliseconds) it takes for the turn to tick
 export const DRAW_MS = 10000;
-
-// random card from deck
-function choice(list) {
-  return list[Math.floor(Math.random() * list.length)]
-}
 
 class Connection {
   constructor(ws) {
@@ -66,8 +62,8 @@ class Connection {
       Connection.drawLoops = new Map()
       // Connection.timeLoops maps each gameID to a timeLoop
       Connection.timeLoops = new Map()
-      // Connection.currentGameSeconds maps each gameID to a currentGameSecond
-      Connection.currentGameSeconds = new Map()
+      // Connection.gameTime maps each gameID to a gameTime in millis
+      Connection.gameTime = new Map()
 
       // Connection.checkSync maps generic keys to generic
       // values. Clients can use this to check for synchronization
@@ -119,7 +115,7 @@ class Connection {
       }
     } else if (message.op == "register") {
       this.name = message.name
-      this.deck = choice(DECKS)
+      this.deck = Util.choice(DECKS)
       if (message.hasComputerOpponent) {
         this.deck = DECKS[1] // always get the control deck against the computer, who gets bibots
 
@@ -147,8 +143,6 @@ class Connection {
   endGame(gameID) {
     clearInterval(Connection.timeLoops.get(gameID))
     clearInterval(Connection.drawLoops.get(gameID))
-    // might not need this
-    Connection.currentGameSeconds.set(gameID, null)
   }
 
   // Deal cards, and start game loop.
@@ -165,10 +159,12 @@ class Connection {
       let cpuPlayer = this.defaultComputerPlayer(gameID)
       Connection.all.set('cpuAddress', cpuPlayer)
     }
-   
+    
     // send the start move
+    // this doesn't get bounced by server, only broadcast to client
     console.log(`starting ${players[0]} vs ${players[1]}. gameID: ${gameID}`)
-    let start = { op: "start", players, gameID}
+    let start = { op: "start", players, gameID }
+
     this.addToMoveListAndBroadcast(start, gameID)
     Connection.waiting.clear()
     
@@ -177,7 +173,7 @@ class Connection {
       this.everyoneDraws(gameID)
     }
     
-    // Players draw and receive mana occasionally.
+    // Players draw and receive energy occasionally.
     // Some cards played trigger on timers.
     this.startGameLoop(gameID)
 
@@ -192,7 +188,7 @@ class Connection {
     }
   }
 
-  // Refresh players mana and draw cards every DRAW_MS.
+  // Refresh players energy and draw cards every DRAW_MS.
   // Update the timer every second or so.
   startGameLoop(gameID) {
 
@@ -201,20 +197,23 @@ class Connection {
       this.everyoneDraws(gameID)
       let message = { op: "refreshPlayers", "player": "no_player", gameID}    
       this.addToMoveListAndBroadcast(message, gameID)
-      Connection.currentGameSeconds.set(gameID, DRAW_MS / 1000)
     }, DRAW_MS);
     Connection.drawLoops.set(gameID, drawLoop)
 
-    // for ticking down whole seconds in game display
-    Connection.currentGameSeconds.set(gameID, DRAW_MS / 1000)
+    // for the main game loop
+    let startTime = Date.now()
+    Connection.gameTime.set(gameID, startTime)
 
-    // tick down time every second
+    // fire a message right away
+    let message = { op: "tickTime", gameTime:startTime, player: "no_player", gameID}
+    this.broadcast(message, gameID)
+
+    // broadcast time as often as possible
     let timeLoop = setInterval(() => {
-      let currentGameSecond = Connection.currentGameSeconds.get(gameID)
-      Connection.currentGameSeconds.set(gameID, --currentGameSecond)
-      let message = { op: "tickTime", time: currentGameSecond, player: "no_player", gameID}
-      this.addToMoveListAndBroadcast(message, gameID)
-    }, 1000);
+      Connection.gameTime.set(gameID, Date.now())
+      let message = { op: "tickTime", gameTime:Connection.gameTime.get(gameID), player: "no_player", gameID}
+      this.broadcast(message, gameID)
+    }, 300);
     Connection.timeLoops.set(gameID, timeLoop)
   }
 
@@ -223,7 +222,7 @@ class Connection {
     let players = Array.from(Connection.all.values())
     for (let player of players) {
       if (player.gameID == gameID) {
-        let card = this.cardCopy(player);
+        let card = new Card(player);
         let message = { op: "draw" , player: {name: player.name}, card, gameID}
         this.addToMoveListAndBroadcast(message, gameID)        
       }
@@ -236,24 +235,6 @@ class Connection {
     move.id = moves.length + 1
     this.broadcast(move, gameID)
     moves.push(move)    
-  }
-
-  // Get a card object to use for a player drawing a card.
-  cardCopy(player) {
-    let cardName = choice(player.deck.cards)
-    let card = CARDS[cardName]
-    card.guid = makeId()
-
-    // Make a copy so that we can edit this card        
-    let copy = {}     
-    copy['name'] = cardName    
-    for (let key in card) {
-      copy[key] = card[key]
-    }
-
-    copy.canAct = false
-    copy.playerName = player.name
-    return copy
   }
 
   // Close the connection and clear timers

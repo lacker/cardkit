@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import Card from '../cardview/cardview';
 import Avatar from '../avatarview/avatarview';
 import Button from '../buttonview/buttonview';
+import Bullet from "../bullet/bullet";
 import './_boardview.scss';
 
 export default class GameBoard extends Component {
@@ -31,10 +32,11 @@ export default class GameBoard extends Component {
           <Card
             cardInfo={cardInfo}
             used={homePlayer.board.indexOf(this.props.cardInfo) !== -1}
-            key={i}
-          />);
+            key={i} />),
+      bullets = window.game.bullets.map((info, i) =>
+                  <Bullet key={i} info={info} />);
 
-		return(
+  	return(
       <div className='game-board'>
         <div className='game-board__avatars'>
           <Avatar player={opponent} onClick={this.selectOpponent} />
@@ -43,6 +45,7 @@ export default class GameBoard extends Component {
             
         <div className='game-board__play-area'>
           <div className='game-board__hand'>{opponentCards}</div>
+          {bullets}
           <div className='game-board__hand'>{homeCards}</div>
         </div>
         <div className='game-board__info'>

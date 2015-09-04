@@ -3,14 +3,14 @@
 // the overall container for the main lobby
 .lobby {
 
-  width: 94vh;
-  height:94vh;
+  width: 94 * $default-padding;
+  height:94 * $default-padding;
   text-align: center; 
   background-color: rgba(0,0,0,.8); 
   margin: 0 auto;
-  border-radius: 1vh;
+  border-radius: $default-padding;
   border: 10px double #000; 
-  border-width: 1.5vh;
+  border-width: 1.5 * $default-padding;
   color:white;
 
   &__home-img {   

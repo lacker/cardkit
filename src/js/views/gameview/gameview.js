@@ -15,11 +15,10 @@ export default class GameView extends Component {
       const homePlayer = window.game.localPlayer,
         opponent = window.game.remotePlayer;
 
+            // <Hand playerState={opponent} />
 
       return (
           <div className="game-container">
-
-            <Hand playerState={opponent} />
 
             <GameBoard />
 

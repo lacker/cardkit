@@ -3,6 +3,7 @@ import React, { Component, PropTypes } from "react";
 import classNames from 'classnames';
 import "./_cardview.scss";
 import { shieldImg, swordsImg } from '../../../assets/img'
+import * as Util from '../../util';
 
 export default class Card extends Component{
 
@@ -18,19 +19,70 @@ export default class Card extends Component{
     })
   }
 
+  // starting or ending left pixel position given an index
+  leftForIndex(index) {
+    switch (index) {
+      case 0:
+        return Util.gameWidth*.75 - Util.cardWidth/2 - 15
+      case 1:
+        return Util.gameWidth*.75 - Util.cardWidth/2 - Util.cardWidth - 30
+      case 2:
+        return Util.gameWidth*.75 - Util.cardWidth/2 + Util.cardWidth
+      case 3:
+        return Util.gameWidth*.75 - Util.cardWidth/2 - Util.cardWidth * 2 - 45
+      case 4:
+        return Util.gameWidth*.75 - Util.cardWidth/2 + Util.cardWidth * 2 + 20
+      case 5:
+        return Util.gameWidth*.75 - Util.cardWidth/2 - Util.cardWidth * 3 - 60
+      case 6:
+        return Util.gameWidth*.75 - Util.cardWidth/2 + Util.cardWidth * 3 + 35
+    }
+  }
+
+
+  // return the y coordinate for where the bullet starts
+  startTop() {
+    if (this.props.cardInfo.playerName == window.game.localPlayer.name) {
+      return Util.gameHeight / 2 + Util.cardHeight / 2
+    }
+    return Util.gameHeight / 2 - Util.cardHeight / 2
+  }
+
+
+  endTop() {
+    // this branch means an in-play permanent is being attacked
+    if (this.props.cardInfo.attackTarget) {
+      if (this.props.cardInfo.playerName == window.game.localPlayer.name) {
+        return Util.gameHeight / 2 - Util.cardHeight / 2
+      } else {
+        return Util.gameHeight / 2 + Util.cardHeight / 2
+      }
+    }
+    // attack the top (remote) player
+    if (this.props.cardInfo.playerName == window.game.localPlayer.name) {
+        return 150
+    }
+    // attack the bottom (local) player
+    return 500
+  }
+
   render() {
 
     const localCard = game.localPlayer.selectedCard;
-
+    let player = window.game.playerForName(this.props.cardInfo.playerName)
+    let fromIndex = player.board.indexOf(this.props.cardInfo);  
+    let cssPlacementClass
+    if (fromIndex != -1) {
+      cssPlacementClass = "card-slot-" + fromIndex;
+    }
     let classes = classNames(
       'card',
       {'card--disabled': this.props.disabled},
       {'card--active': (localCard && localCard.guid == this.props.cardInfo.guid)},
       {'card--used': !this.props.cardInfo.canAct && this.props.used},
-      {'card--damaged': this.props.cardInfo.showDamage},
-      this.getWarmClass(),
+      cssPlacementClass,
+      {'card--damaged': this.props.cardInfo.showDamage}
     );
-
     let cardBody = this.props.cardInfo.permanent ?
       (<div>
         <div className="card__attack-stat">
@@ -52,12 +104,82 @@ export default class Card extends Component{
           </div>
         </div>
     );
+    let warmNumber = this.props.cardInfo.warm + .2
+    if (!window.game.inPlay(this.props.cardInfo)) {
+      warmNumber = 0
+    }
 
+
+
+    let divStyle = {
+      boxShadow: "0 0 100px rgba(255,0,0," + warmNumber + ")"
+    }
+
+    if (window.game.inPlay(this.props.cardInfo)) {
+      divStyle = {
+        height:60,
+        borderRadius:60,
+        boxShadow: "0 0 80px rgba(255,0,0," + warmNumber + ")"
+      }
+    }
+
+    if (fromIndex >= 0 && 
+        window.game.inPlay(this.props.cardInfo.attackTarget)) {
+ 
+       let x1 = this.leftForIndex(fromIndex)
+       let y1 = this.startTop()
+        
+       let opp = window.game.opponentForName(this.props.cardInfo.playerName)
+       let toIndex = opp.board.indexOf(this.props.cardInfo.attackTarget);  
+
+       let x2 = this.leftForIndex(toIndex)
+       let y2 = this.endTop()
+       let slopeDegrees = Math.atan2((y2-y1) , (x2-x1)) * (180/Math.PI)
+       divStyle.transform = 'rotate('+slopeDegrees+'deg)'; 
+    } else {
+       let x1 = this.leftForIndex(fromIndex)
+       let y1 = this.startTop()
+        
+       let opp = window.game.opponentForName(this.props.cardInfo.playerName)
+       let toIndex = opp.board.indexOf(this.props.cardInfo.attackTarget);  
+
+       let x2 = 100
+       let y2 = this.endTop()
+
+       let slope = (y2-y1) / (x2-x1)
+       let slopeDegrees = Math.atan2((y2-y1) , (x2-x1)) * (180/Math.PI)
+       divStyle.transform = 'rotate('+slopeDegrees+'deg)'; 
+
+    }
+
+
+    if (window.game.inPlay(this.props.cardInfo)) {
+      let new_classes = classNames(
+      'card',
+      {'card--disabled': this.props.disabled},
+      {'card--active': (localCard && localCard.guid == this.props.cardInfo.guid)},
+      {'card--used': !this.props.cardInfo.canAct && this.props.used},
+      cssPlacementClass,
+      {'card--hiddenCard': true},
+      {'card--damaged': this.props.cardInfo.showDamage}
+    );
+
+      return (
+
+      <div className={new_classes} onClick={this.selectCard} style={divStyle}>
+        <div className="ship-sprite"> 
+        </div>
+      </div>
+      )
+
+    }
+// http://gamedevelopment.tutsplus.com/articles/enjoy-these-totally-free-space-based-shoot-em-up-sprites--gamedev-2368
     return (
-      <div className={classes} onClick={this.selectCard}>
+
+      <div className={classes} onClick={this.selectCard} style={divStyle}>
         <div className="card__title"> 
           <span className="card__name">{this.props.cardInfo.name}</span>
-          <span className="card__mana">{this.props.cardInfo.cost}</span>
+          <span className="card__energy">{this.props.cardInfo.cost}</span>
         </div>
         <div className="card__body"> 
           {cardBody}
@@ -67,16 +189,6 @@ export default class Card extends Component{
   
   }
 
-  getWarmClass () {
-    let warmClass;
-
-    if (this.props.cardInfo.warm) {
-      warmClass = "warm-" + this.props.cardInfo.warm;
-    }
-
-    return warmClass;
-  }
-  
   // select cards in local player's hand or board
   selectCard = () => {
     let boardIndex = game.localPlayer.board.indexOf(this.props.cardInfo);
