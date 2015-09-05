@@ -48,6 +48,10 @@ export const DEFAULT_ATTACK_RATE = 5000;
 
    A typical card that doesn't stay in play when used will have at least: 
      cost, permanent=false, target, targetCount, description
+
+   For imageName:
+      If the imagename is "better-bot", then you can use images like
+      better-bot.png, better-bot-damaged.png
 */
 
 // Possible values for target property
@@ -66,12 +70,13 @@ export const TARGETS = {
 
 // Legal cards for Spacetime.
 export const CARDS = {
-  BiBot: {
+  Bot: {
     cost: 1,
     permanent: true,
     attack: 1,
     defense: 1,
     attackRate: DEFAULT_ATTACK_RATE,
+    imageName: "bot",
   },
   BetterBot: {
     cost: 1,
@@ -79,22 +84,7 @@ export const CARDS = {
     attack: 1,
     defense: 2,
     attackRate: DEFAULT_ATTACK_RATE,
-  },
-  QuadBot: {
-    cost: 4,
-    permanent: true,
-    attack: 4,
-    defense: 4,
-    attackRate: DEFAULT_ATTACK_RATE,
-  },
-  "Laser Blast": {
-    cost: 2,
-    permanent: false,
-    target: TARGETS.ANY_PERMANENT,
-    targetCount: 1,
-    randomTarget: false,
-    description: "Deal 3 damage to a creature or player.",
-    damage: 3,
+    imageName: "better-bot",
   },
   "Errant Blast": {
     cost: 0,
@@ -114,6 +104,15 @@ export const CARDS = {
     flavor: "Watch that basket.",
     kill: true,
   },
+  "Laser Blast": {  
+    cost: 2,
+    permanent: false,
+    target: TARGETS.ANY_PERMANENT,
+    targetCount: 1,
+    randomTarget: false,
+    description: "Deal 3 damage to a creature or player.",
+    damage: 3,
+  },
 }
 
 // Define a couple of simple decks.
@@ -131,11 +130,11 @@ export const DECKS = [
 export const COMPUTER_DECKS = [
   {
     name: "Weenie",
-    cards: ["BiBot"],
+    cards: ["Bot"],
   },
   {
     name: "WeenieBlast",
-    cards: ["BiBot", "Errant Blast"],
+    cards: ["Bot", "Errant Blast"],
   },
   {
     name: "BetterWeenie",

@@ -134,7 +134,7 @@ export default class Card extends Component{
 
        let x2 = this.leftForIndex(toIndex)
        let y2 = this.endTop()
-       let slopeDegrees = Math.atan2((y2-y1) , (x2-x1)) * (180/Math.PI)
+       let slopeDegrees = Math.atan2((y2-y1) , (x2-x1)) * (180/Math.PI) + 90
        divStyle.transform = 'rotate('+slopeDegrees+'deg)'; 
     } else {
        let x1 = this.leftForIndex(fromIndex)
@@ -147,7 +147,7 @@ export default class Card extends Component{
        let y2 = this.endTop()
 
        let slope = (y2-y1) / (x2-x1)
-       let slopeDegrees = Math.atan2((y2-y1) , (x2-x1)) * (180/Math.PI)
+       let slopeDegrees = Math.atan2((y2-y1) , (x2-x1)) * (180/Math.PI) + 90
        divStyle.transform = 'rotate('+slopeDegrees+'deg)'; 
 
     }
@@ -164,16 +164,19 @@ export default class Card extends Component{
       {'card--damaged': this.props.cardInfo.showDamage}
     );
 
+      let shipStyle = {
+        backgroundImage: 'url(' + '/../../images/' + this.props.cardInfo.imageName + '.png' + ')',
+      };
+
       return (
 
       <div className={new_classes} onClick={this.selectCard} style={divStyle}>
-        <div className="ship-sprite"> 
+        <div className="ship-sprite" style={shipStyle}> 
         </div>
       </div>
       )
 
     }
-// http://gamedevelopment.tutsplus.com/articles/enjoy-these-totally-free-space-based-shoot-em-up-sprites--gamedev-2368
     return (
 
       <div className={classes} onClick={this.selectCard} style={divStyle}>
