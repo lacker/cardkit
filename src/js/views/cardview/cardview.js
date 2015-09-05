@@ -1,5 +1,6 @@
 // React view of a card
 import React, { Component, PropTypes } from "react";
+import { CARDS } from '../../cards';
 import classNames from 'classnames';
 import "./_cardview.scss";
 import { shieldImg, swordsImg } from '../../../assets/img'
@@ -163,9 +164,12 @@ export default class Card extends Component{
       {'card--hiddenCard': true},
       {'card--damaged': this.props.cardInfo.showDamage}
     );
-
+      let imageName = this.props.cardInfo.imageName;
+      if (this.props.cardInfo.defense < CARDS[this.props.cardInfo.name].defense) {
+        imageName += "-damaged"
+      }
       let shipStyle = {
-        backgroundImage: 'url(' + '/../../images/' + this.props.cardInfo.imageName + '.png' + ')',
+          backgroundImage: 'url(' + '/../../images/' + imageName + '.png)',
       };
 
       return (
