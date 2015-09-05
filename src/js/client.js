@@ -68,14 +68,22 @@ class Client {
   }
 
   // Send a looking-for-game message.
-  register(hasComputerOpponent) {
+  register(hasComputerOpponent, level) {
     this.registered = true; 
     if (this.game) {
       console.log("joining game as " + this.name)
-      this.send({op: "register", name: this.name, seeking: !this.game.started(), hasComputerOpponent:hasComputerOpponent})
+      this.send({op: "register", 
+                  name: this.name, 
+                  seeking: !this.game.started(), 
+                  hasComputerOpponent:hasComputerOpponent,
+                  computerLevel: level})
     } else {
       console.log("joining game as " + this.name)
-      this.send({op: "register", name: this.name, seeking: true, hasComputerOpponent})
+      this.send({op: "register", 
+                 name: this.name, 
+                 seeking: true, 
+                 hasComputerOpponent,
+                 computerLevel: level})
     }
 
     // when you register a computer game

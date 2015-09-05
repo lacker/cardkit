@@ -14,8 +14,24 @@
   color:white;
 
   &__home-img {   
-    margin-top:30px;
-    width:50%;
+    display: inline-block;
+    width: 64px;
+    vertical-align: middle;
+    margin-right: 30px;
+  }
+
+}
+
+.lobby_row {
+
+  &__button-cell {
+    width: 30%;
+  }
+   
+  &__description-cell {
+    width: 70%;  
+    text-align: left;
+    padding:20px;
   }
 
 }

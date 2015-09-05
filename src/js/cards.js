@@ -97,7 +97,7 @@ export const CARDS = {
     damage: 3,
   },
   "Errant Blast": {
-    cost: 3,
+    cost: 0,
     permanent: false,
     target: TARGETS.OPPONENT_PERMANENT,
     targetCount: 1,
@@ -117,15 +117,21 @@ export const CARDS = {
 }
 
 // Define a couple of simple decks.
-// The current computer player always gets Weenie.
-// The human player always gets Control.
 export const DECKS = [
-  {
-    name: "Weenie",
-    cards: ["BiBot"],
-  },
   {
     name: "Control",
     cards: ["BetterBot"],
   },
 ]
+
+export const COMPUTER_DECKS = [
+  {
+    name: "Weenie",
+    cards: ["BiBot"],
+  },
+  {
+    name: "WeenieBlast",
+    cards: ["BiBot", "Errant Blast"],
+  }
+]
+

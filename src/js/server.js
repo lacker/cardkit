@@ -19,7 +19,7 @@
 // and if the same key ever goes to multiple values, the server logs an error.
 
 // some JSON definitions for cards and decks
-import { CARDS, DECKS, Card } from './cards';
+import { CARDS, DECKS, COMPUTER_DECKS, Card } from './cards';
 
 import * as Util from './util';
 
@@ -115,11 +115,9 @@ class Connection {
       }
     } else if (message.op == "register") {
       this.name = message.name
-      this.deck = Util.choice(DECKS)
-      if (message.hasComputerOpponent) {
-        this.deck = DECKS[1] // always get the control deck against the computer, who gets bibots
+      this.deck = DECKS[0]
+      this.computerLevel = message.computerLevel
 
-      }
       this.hasComputerOpponent = message.hasComputerOpponent
       if (message.seeking) {
         this.gameID = Math.floor(Math.random() * 1000000)
@@ -184,7 +182,7 @@ class Connection {
     return {
       'name': 'cpu' + gameID,
       'gameID': gameID,
-      'deck': DECKS[0], //the bibot deck
+      'deck': COMPUTER_DECKS[this.computerLevel], //the bibot deck
     }
   }
 
