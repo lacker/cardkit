@@ -4,6 +4,7 @@ import Client from "./client"
 import GameState from "./gamestate"
 import GameView from "./views/gameview/gameview"
 import LobbyView from "./views/lobbyview/lobbyview"
+import StarryView from './views/starryview/starryview';
 
 let App = React.createClass({
   getInitialState() {
@@ -20,6 +21,8 @@ let App = React.createClass({
     window.client.forceUpdate = (() => this.forceUpdate())
     return (
       <div className="app">
+        <StarryView />
+
         { window.client.registered ?
             <GameView state={this.state} />
           : <LobbyView />

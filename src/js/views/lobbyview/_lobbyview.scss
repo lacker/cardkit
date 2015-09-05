@@ -6,12 +6,14 @@
   width: 94 * $default-padding;
   height:94 * $default-padding;
   text-align: center; 
-  background-color: rgba(0,0,0,.8); 
   margin: 0 auto;
   border-radius: $default-padding;
   border: 10px double #000; 
   border-width: 1.5 * $default-padding;
   color:white;
+
+  background-color: $palette-four;
+
 
   &__home-img {   
     display: inline-block;
@@ -26,6 +28,7 @@
 
   &__button-cell {
     width: 30%;
+    padding-right:10px;
   }
    
   &__description-cell {

@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import Hand from '../handview/handview';
 import Card from '../cardview/cardview';
+import StarryView from '../starryview/starryview';
 import GameBoard from '../boardview/boardview';
 import classNames from 'classnames';
 import './_gameview.scss';
@@ -18,7 +19,7 @@ export default class GameView extends Component {
             // <Hand playerState={opponent} />
 
       return (
-          <div className="game-container">
+          <div>
 
             <GameBoard />
 
