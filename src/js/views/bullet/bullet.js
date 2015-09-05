@@ -60,10 +60,10 @@ let Bullet = Animate.extend(class Bullet extends React.Component {
     }
     // attack the top (remote) player
     if (this.props.info.player == window.game.localPlayer) {
-        return 300
+        return 50
     }
     // attack the bottom (local) player
-    return 400
+    return 300
   }
 
   // return the x coordinate for where the bullet lands
