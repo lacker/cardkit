@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import Client from "../../client";
 import GameState from "../../gamestate";
-import * as Campaign from "../../campaign";
 import Button from '../buttonview/buttonview';
+import * as Util from '../../util';
+import * as Campaign from "../../campaign";
 import "./_lobbyview.scss";
 import { galaxyShadowImg } from '../../../assets/img';
-import * as Util from '../../util';
 
 export default class LobbyView extends Component {
 

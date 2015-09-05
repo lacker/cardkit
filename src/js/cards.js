@@ -122,6 +122,10 @@ export const DECKS = [
     name: "Control",
     cards: ["BetterBot"],
   },
+  {
+    name: "Control",
+    cards: ["BetterBot", "BetterBot", "BetterBot", "EMP"],
+  },
 ]
 
 export const COMPUTER_DECKS = [
@@ -132,6 +136,10 @@ export const COMPUTER_DECKS = [
   {
     name: "WeenieBlast",
     cards: ["BiBot", "Errant Blast"],
-  }
+  },
+  {
+    name: "BetterWeenie",
+    cards: ["BetterBot", "Errant Blast"],
+  },
 ]
 

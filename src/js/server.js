@@ -116,8 +116,10 @@ class Connection {
     } else if (message.op == "register") {
       this.name = message.name
       this.deck = DECKS[0]
+      if (message.computerLevel == 2) {
+        this.deck = DECKS[1]
+      }
       this.computerLevel = message.computerLevel
-
       this.hasComputerOpponent = message.hasComputerOpponent
       if (message.seeking) {
         this.gameID = Math.floor(Math.random() * 1000000)
