@@ -12,25 +12,47 @@ let Bullet = Animate.extend(class Bullet extends React.Component {
   // this.startLeft(), this.startTop() to 
   // this.endLeft(), this.endTop()
   setAnimation() {    
-    this.animationName = 'bullet-zing'
+    this.animationName = 'laser'
+    
+    let x1 = this.leftForIndex(this.props.info.startIndex)
+    let x2 = -150
+    if (this.props.info.attackIndex >= 0) {
+      x1 = this.leftForIndex(this.props.info.startIndex) + 180
+      x2 = this.leftForIndex(this.props.info.attackIndex) + 180
+    } 
+    let centerX = (x1 + x2) / 2
+    centerX = centerX + 'px'
+
+    let y1 = this.startTop()
+    let y2 = this.endTop()
+    let centerY = (y1 + y2) / 2
+    centerY = centerY + 'px'
+
+    let angle = Math.atan2((y1-y2),(x1-x2))*(180/Math.PI);
+    let transform = 'rotate('+angle+'deg)'; 
+
+    let distance = Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1))
+    distance = Math.floor(distance) + 'px'
 
     let startStyle = { 
-      borderRadius:'10px', 
-      left: this.leftForIndex(this.props.info.startIndex), 
-      top: this.startTop(), 
-      backgroundColor: '#000', 
-      width: '20px', 
-      height: '20px',
-      position: 'absolute',
+      padding: '0px', 
+      margin: '0px', 
+      height: '2px', 
+      backgroundColor:'red',
+      lineHeight: '1px', 
+      position: 'absolute', 
+      opacity: 1,
       zIndex: '99999', 
+      width: distance, 
+      left: centerX, 
+      top: centerY,
+      transform: transform
     }
 
     let endStyle = { 
-      left: this.endLeft(), 
-      top: this.endTop(), 
-      backgroundColor: '#FFF', 
-    } 
-
+      opacity: 0,
+    }
+  
     Animate.animate.call(this,
       this.animationName, 
       startStyle,
@@ -45,7 +67,7 @@ let Bullet = Animate.extend(class Bullet extends React.Component {
     if (this.props.info.player == window.game.localPlayer) {
       return Util.gameHeight / 2 + Util.cardHeight / 2 - 200
     }
-    return Util.gameHeight / 2 - Util.cardHeight / 2 - 200
+    return Util.gameHeight / 2 - Util.cardHeight / 2 - 250
   }
 
   // return the y coordinate for where the bullet lands
@@ -60,38 +82,29 @@ let Bullet = Animate.extend(class Bullet extends React.Component {
     }
     // attack the top (remote) player
     if (this.props.info.player == window.game.localPlayer) {
-        return 50
+        return 100
     }
     // attack the bottom (local) player
     return 300
-  }
-
-  // return the x coordinate for where the bullet lands
-  endLeft() {
-    if (this.props.info.attackIndex >= 0) {
-      return this.leftForIndex(this.props.info.attackIndex)
-    } else {
-      return 100  // middle of avatar of player
-    }
   }
 
   // starting or ending left pixel position given an index
   leftForIndex(index) {
     switch (index) {
       case 0:
-        return Util.gameWidth*.75 - Util.cardWidth/2 + 60 
+        return Util.gameWidth*.75/2 - Util.cardWidth/2 - 90
       case 1:
-        return Util.gameWidth*.75 - Util.cardWidth/2 - Util.cardWidth + 45
+        return Util.gameWidth*.75/2 - Util.cardWidth/2 - Util.cardWidth - 60
       case 2:
-        return Util.gameWidth*.75 - Util.cardWidth/2 + Util.cardWidth
+        return Util.gameWidth*.75/2 - Util.cardWidth/2 + Util.cardWidth - 60
       case 3:
-        return Util.gameWidth*.75 - Util.cardWidth/2 - Util.cardWidth * 2 + 30
+        return Util.gameWidth*.75/2 - Util.cardWidth/2 - Util.cardWidth * 2 - 60
       case 4:
-        return Util.gameWidth*.75 - Util.cardWidth/2 + Util.cardWidth * 2 + 95
+        return Util.gameWidth*.75/2 - Util.cardWidth/2 + Util.cardWidth * 2 - 60
       case 5:
-        return Util.gameWidth*.75 - Util.cardWidth/2 - Util.cardWidth * 3 + 30
+        return Util.gameWidth*.75/2 - Util.cardWidth/2 - Util.cardWidth * 3 - 60
       case 6:
-        return Util.gameWidth*.75 - Util.cardWidth/2 + Util.cardWidth * 3 + 125
+        return Util.gameWidth*.75/2 - Util.cardWidth/2 + Util.cardWidth * 3 - 60
     }
   }
 
