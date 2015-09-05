@@ -4,16 +4,10 @@
 .lobby {
 
   width: 94 * $default-padding;
-  height:94 * $default-padding;
+  height:100 * $default-padding;
   text-align: center; 
   margin: 0 auto;
-  border-radius: $default-padding;
-  border: 10px double #000; 
-  border-width: 1.5 * $default-padding;
   color:white;
-
-  background-color: $palette-four;
-
 
   &__home-img {   
     display: inline-block;
@@ -27,11 +21,15 @@
 .lobby_row {
 
   &__button-cell {
+    border-radius: $default-padding;
     width: 30%;
     padding-right:10px;
+    background-color: $palette-five;
   }
    
   &__description-cell {
+    border-radius: $default-padding;
+    background-color: $palette-five;
     width: 70%;  
     text-align: left;
     padding:20px;

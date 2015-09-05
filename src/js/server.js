@@ -184,7 +184,7 @@ class Connection {
     return {
       'name': 'cpu' + gameID,
       'gameID': gameID,
-      'deck': COMPUTER_DECKS[this.computerLevel], //the bibot deck
+      'deck': COMPUTER_DECKS[this.computerLevel], //the bot deck
     }
   }
 

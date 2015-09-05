@@ -7,10 +7,10 @@
 
  export const LEVELS = [
    {
-   	 description: "The BiBot factory has been hacked, and you must go reclaim it with your BetterBot army. The hacker is churning out bibots as fast as possible, all set to KILL."
+   	 description: "The Bot factory has been hacked, and you must go reclaim it with your BetterBot army. The hacker is churning out bibots as fast as possible, all set to KILL."
    },
    {
-   	description: "You beat back the first wave of BiBots, but the factory has evolved. Now, your BetterBots are occasionally being struck down by Errant Blasts."
+   	description: "You beat back the first wave of Bots, but the factory has evolved. Now, your BetterBots are occasionally being struck down by Errant Blasts."
    },
    {
    	description: "The factory AI made a big leap, and now it is producing BetterBots too. You'll have to use your EMPs strategically to win."
