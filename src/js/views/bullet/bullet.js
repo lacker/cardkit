@@ -79,19 +79,19 @@ let Bullet = Animate.extend(class Bullet extends React.Component {
   leftForIndex(index) {
     switch (index) {
       case 0:
-        return Util.gameWidth*.75 - Util.cardWidth/2 - 15
+        return Util.gameWidth*.75 - Util.cardWidth/2 + 60 
       case 1:
-        return Util.gameWidth*.75 - Util.cardWidth/2 - Util.cardWidth - 30
+        return Util.gameWidth*.75 - Util.cardWidth/2 - Util.cardWidth + 45
       case 2:
         return Util.gameWidth*.75 - Util.cardWidth/2 + Util.cardWidth
       case 3:
-        return Util.gameWidth*.75 - Util.cardWidth/2 - Util.cardWidth * 2 - 45
+        return Util.gameWidth*.75 - Util.cardWidth/2 - Util.cardWidth * 2 + 30
       case 4:
-        return Util.gameWidth*.75 - Util.cardWidth/2 + Util.cardWidth * 2 + 20
+        return Util.gameWidth*.75 - Util.cardWidth/2 + Util.cardWidth * 2 + 95
       case 5:
-        return Util.gameWidth*.75 - Util.cardWidth/2 - Util.cardWidth * 3 - 60
+        return Util.gameWidth*.75 - Util.cardWidth/2 - Util.cardWidth * 3 + 30
       case 6:
-        return Util.gameWidth*.75 - Util.cardWidth/2 + Util.cardWidth * 3 + 35
+        return Util.gameWidth*.75 - Util.cardWidth/2 + Util.cardWidth * 3 + 125
     }
   }
 
