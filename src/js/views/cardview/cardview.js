@@ -109,18 +109,20 @@ export default class Card extends Component{
     if (!window.game.inPlay(this.props.cardInfo)) {
       warmNumber = 0
     }
-
-
-
-    let divStyle = {
-      boxShadow: "0 0 100px rgba(255,0,0," + warmNumber + ")"
-    }
-
+    let divStyle = {}
     if (window.game.inPlay(this.props.cardInfo)) {
       divStyle = {
         height:60,
         borderRadius:60,
-        boxShadow: "0 0 80px rgba(255,0,0," + warmNumber + ")"
+        borderTopStyle: "solid",
+        borderTopWidth: "10px",
+        borderTopColor: "rgba(255,0,0," + warmNumber + ")"
+      }
+      let maxDefense = CARDS[this.props.cardInfo.name].defense
+      if (maxDefense > 1) {
+        let currentDefense =  this.props.cardInfo.defense
+        let ratio = parseFloat(currentDefense - 1)/(maxDefense-1)
+        divStyle.boxShadow = "0 0 80px rgba(0,255,0," + ratio + ")"
       }
     }
 
