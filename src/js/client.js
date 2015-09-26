@@ -1,8 +1,8 @@
 // This websocket client runs in the browser and talks to the
 // websocket server that's defined in server.js.
 
-// the rate at which the computer opponent plays out cards
-var COMPUTER_PLAY_SPEED = 5000;
+// The rate at which the computer opponent tries to play out cards.
+const COMPUTER_PLAY_SPEED = 2000;
 
 class Client {
   // game is a GameState and should start at the beginning of the game.
@@ -26,6 +26,7 @@ class Client {
   }
 
   makeSocket() {
+    clearInterval(this.computerLoop)
     let url = document.URL.replace("http", "ws").replace(/\/$/, "").replace(":8080", "") + ":9090"
     console.log(`connecting to ${url}`)
     // TODO: needs a more aggressive timeout
@@ -49,6 +50,8 @@ class Client {
 
     if (message.op == "start") {
       this.handleStart(message)
+    } else if (message.op =="tickTime") {
+      this.game.makeMove(message)
     } else if (message.id != this.nextID) {
       console.log("out of order, returning: " + JSON.stringify(message))
       // This is a dupe, or out-of-order. Ignore it
@@ -65,14 +68,22 @@ class Client {
   }
 
   // Send a looking-for-game message.
-  register(hasComputerOpponent) {
+  register(hasComputerOpponent, level) {
     this.registered = true; 
     if (this.game) {
       console.log("joining game as " + this.name)
-      this.send({op: "register", name: this.name, seeking: !this.game.started(), hasComputerOpponent:hasComputerOpponent})
+      this.send({op: "register", 
+                  name: this.name, 
+                  seeking: !this.game.started(), 
+                  hasComputerOpponent:hasComputerOpponent,
+                  computerLevel: level})
     } else {
       console.log("joining game as " + this.name)
-      this.send({op: "register", name: this.name, seeking: true, hasComputerOpponent})
+      this.send({op: "register", 
+                 name: this.name, 
+                 seeking: true, 
+                 hasComputerOpponent,
+                 computerLevel: level})
     }
 
     // when you register a computer game
@@ -155,7 +166,7 @@ class Client {
   // Whenever the socket closes we just make a new one
   handleClose() {
     console.log("the socket closed")
-    
+    clearInterval(this.computerLoop)
     // Wait 2 seconds to reconnect
     setTimeout(() => this.makeSocket(), 2000)
   }

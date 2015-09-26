@@ -1,9 +1,34 @@
+
+import * as Util from './util';
+
+// A card for Spacetime.
+export class Card {
+  constructor(player) {
+    // Get some card info to create a new card
+    let cardName = Util.choice(player.deck.cards)
+    let cardReference = ALL_CARDS[cardName]
+
+    // Clone the card reference's info into this new card
+    this.name = cardName    
+    for (let key in cardReference) {
+      this[key] = cardReference[key]
+    }
+
+    // Set some default properties for the card
+    this.canAct = false
+    this.playerName = player.name
+    this.attackCount = 0
+    this.warm = .2
+    this.guid = Util.makeId()
+  }
+}
+ 
 // Each creature attacks at a certain rate.
 // This is the default rate in milliseconds.
-export const DEFAULT_ATTACK_RATE = 3000;
+export const DEFAULT_ATTACK_RATE = 5000;
 
 /* 
-   CARDS maps names of cards to properties/definitions.
+   ALL_CARDS maps names of cards to properties/definitions.
 
    Cards must have these properties: 
      cost           - INT            (>=0)
@@ -26,6 +51,7 @@ export const DEFAULT_ATTACK_RATE = 3000;
 
    A typical card that doesn't stay in play when used will have at least: 
      cost, permanent=false, target, targetCount, description
+
 */
 
 // Possible values for target property
@@ -43,39 +69,23 @@ export const TARGETS = {
 }
 
 // Legal cards for Spacetime.
-export const CARDS = {
-  BiBot: {
-    cost: 2,
+export const ALL_CARDS = {
+  Bot: {
+    cost: 1,
     permanent: true,
-    attack: 2,
+    attack: 1,
+    defense: 1,
+    attackRate: DEFAULT_ATTACK_RATE,
+  },
+  BetterBot: {
+    cost: 1,
+    permanent: true,
+    attack: 1,
     defense: 2,
     attackRate: DEFAULT_ATTACK_RATE,
   },
-  TriBot: {
-    cost: 3,
-    permanent: true,
-    attack: 3,
-    defense: 3,
-    attackRate: DEFAULT_ATTACK_RATE,
-  },
-  QuadBot: {
-    cost: 4,
-    permanent: true,
-    attack: 4,
-    defense: 4,
-    attackRate: DEFAULT_ATTACK_RATE,
-  },
-  "Laser Blast": {
-    cost: 2,
-    permanent: false,
-    target: TARGETS.ANY_PERMANENT,
-    targetCount: 1,
-    randomTarget: false,
-    description: "Deal 3 damage to a creature or player.",
-    damage: 3,
-  },
   "Errant Blast": {
-    cost: 3,
+    cost: 0,
     permanent: false,
     target: TARGETS.OPPONENT_PERMANENT,
     targetCount: 1,
@@ -92,18 +102,48 @@ export const CARDS = {
     flavor: "Watch that basket.",
     kill: true,
   },
+  "Laser Blast": {  
+    cost: 2,
+    permanent: false,
+    target: TARGETS.ANY_PERMANENT,
+    targetCount: 1,
+    randomTarget: false,
+    description: "Deal 3 damage to a creature or player.",
+    damage: 3,
+  },
 }
 
+// Key card names to images
+export const CARD_IMAGES = {
+  "Bot": "bot",
+  "BetterBot": "bot",
+}
+
+
 // Define a couple of simple decks.
-// The current computer player always gets Weenie.
-// The human player always gets Control.
 export const DECKS = [
   {
-    name: "Weenie",
-    cards: ["BiBot"],
+    name: "Control",
+    cards: ["BetterBot"],
   },
   {
     name: "Control",
-    cards: ["EMP", "QuadBot", "TriBot"],
+    cards: ["BetterBot", "BetterBot", "BetterBot", "EMP"],
   },
 ]
+
+export const COMPUTER_DECKS = [
+  {
+    name: "Weenie",
+    cards: ["Bot"],
+  },
+  {
+    name: "WeenieBlast",
+    cards: ["Bot", "Errant Blast"],
+  },
+  {
+    name: "BetterWeenie",
+    cards: ["BetterBot", "Errant Blast"],
+  },
+]
+

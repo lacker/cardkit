@@ -2,9 +2,10 @@ import React, { Component, PropTypes } from 'react';
 import Client from "../../client";
 import GameState from "../../gamestate";
 import Button from '../buttonview/buttonview';
+import * as Util from '../../util';
+import * as Campaign from "../../campaign";
 import "./_lobbyview.scss";
 import { galaxyShadowImg } from '../../../assets/img';
-import * as Util from '../../util';
 
 export default class LobbyView extends Component {
 
@@ -17,11 +18,6 @@ export default class LobbyView extends Component {
     window.client.forceUpdate();
   }
   
-  playCampaign() {
-    window.client.register(true);
-    window.client.forceUpdate();
-  }
-
   showRules() {
     alert("* You start with 1 card, and 3 energy to play cards. \
           \n\n* Every few seconds, you draw, and get more energy. \
@@ -37,19 +33,63 @@ export default class LobbyView extends Component {
       'heading',
       'home-img'
     ]);
-
     return (
       <div className={block}>
-        <h1 className={elm.heading}>Welcome to Spacetime</h1>
-        <Button onClick={this.playCampaign} label='Campaign' />
-        <Button onClick={this.showRules} label='How to Play' />
-        <p>
-          The BiBot factory has been hacked, and you must go reclaim it. <br />
-          The hacker is churning out bibots as fast as possible, all set to KILL.
-        </p>
-        <img className={elm.homeImg} src={galaxyShadowImg} />
+        <h1 className={elm.heading}>
+          <img className={elm.homeImg} src={galaxyShadowImg} />
+          Welcome to Spacetime
+        </h1>
+        <table>
+          <tbody>
+            {Campaign.LEVELS.map(function(level, index){
+              return <CampaignRow key={index} index={index} level={level} />
+            })}
+              <tr>
+                <td colSpan="2">
+                  <Button onClick={this.showRules} label='How to Play' />
+                </td>
+              </tr>
+          </tbody>
+        </table>
       </div>
     );
   }
+}
 
+// a row in the lobby describing a campaign level
+class CampaignRow extends Component {
+
+  static defaultProps = {
+    name: 'lobby_row'
+  }
+
+  static propTypes = {
+      index: PropTypes.number,
+      levelDescription: PropTypes.string.isRequired,
+  }
+  
+  playCampaign(levelNumber) {
+    window.client.register(true, levelNumber);
+    window.client.forceUpdate();
+  }
+
+  render() {
+      const block = this.props.name,
+        elm = Util.buildElementClasses(block, [
+          'button-cell',
+          'description-cell'
+      ]);
+      let levelNumber = this.props.index + 1
+      let buttonTitle = 'Campaign' + ' ' + levelNumber
+      return (
+        <tr>
+          <td className={elm.descriptionCell}>
+            {this.props.level.description}
+          </td>
+          <td className={elm.buttonCell}>
+            <Button onClick={this.playCampaign.bind(this, this.props.index)} label={buttonTitle} />
+          </td>
+        </tr>
+      );
+  }
 }

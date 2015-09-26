@@ -1,10 +1,9 @@
 @import "../../../assets/styles/base";
 
 .game-board {
-
-  width: 95%;
-  margin: auto;
-  text-align: center;
+  
+  width: $game-width;
+  margin: 0 auto;
 
   @mixin game-piece {
     display: inline-block;

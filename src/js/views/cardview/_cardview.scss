@@ -3,17 +3,15 @@
 // cards in play and in hand
 .card {
   background-color: $palette-three; 
-  width: $default-card-width;
-  height: $default-card-height;
+  width: $card-width;
+  height: $card-height;
   padding: 5px;
   border-radius: $default-corner-radius;
   display: inline-block;
-  margin: 0 3px;
-  border: 1px solid black;
-  box-shadow: 1.5vh 1.5vh 3vh 0vhx rgba(22,22,22,1);
+  border: 1px solid;
+  border-color:black;
   cursor: pointer;
   transition: all 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
-  box-shadow: 0 1px 1px rgba(0,0,0,0.3);
   transform: translateY(0) scale(0.95, 0.95);
   text-align: left;
   vertical-align: middle;
@@ -31,7 +29,7 @@
     float: left;
   }
 
-  &__mana {
+  &__energy {
     float: right;
   }
 
@@ -96,7 +94,14 @@
     animation-timing-function: ease-in-out;
   }
 
+  &--hiddenCard {
+    background-color: rgba(0,0,0,0) !important; 
+    border: rgba(0,0,0,0);
+  }
+
 }
+
+
 
 @keyframes damage {
     0% {
@@ -114,42 +119,54 @@
     }
 }
 
-.warm-1 {
-  opacity:.3
-} 
+.damage-player {
+  transform-origin: 50% 20%;
+  animation-name: damage-player;
+  animation-duration: 900ms;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in-out;
+}
 
-.warm-2 {
-  opacity:.38
-} 
+.card-slot-0 {
+  position: absolute;
+  left: $game-width*.75/2 - $card-width / 2 - 15;
+}
 
-.warm-3 {
-  opacity:.46
-} 
+.card-slot-1 {
+  position: absolute;
+  left: $game-width*.75/2 - $card-width / 2 - $card-width - 30;
+}
 
-.warm-4 {
-  opacity:.52
-} 
+.card-slot-2 {
+  position: absolute;
+  left: $game-width*.75/2 - $card-width / 2 + $card-width;
+}
 
-.warm-5 {
-  opacity:.60
-} 
+.card-slot-3 {
+  position: absolute;
+  left: $game-width*.75/2 - $card-width / 2 - $card-width * 2 - 45;
+}
 
-.warm-6 {
-  opacity:.68
-} 
+.card-slot-4 {
+  position: absolute;
+  left: $game-width*.75/2 - $card-width / 2 + $card-width * 2 - $default-padding + 20;
+}
 
-.warm-7 {
-  opacity:.76
-} 
+.card-slot-5 {
+  position: absolute;
+  left: $game-width*.75/2 - $card-width / 2 - $card-width * 3 - $default-padding - 60;
+}
 
-.warm-8 {
-  opacity:.84
-} 
+.card-slot-6 {
+  position: absolute;
+  left: $game-width*.75/2 - $card-width / 2 + $card-width * 3 - $default-padding + 35;
+}
 
-.warm-9 {
-  opacity:.92
-} 
-
-.warm-10 {
-  opacity:1
-} 
+.ship-sprite {
+  /* 0, 29, 58, 87*/
+  background: url('/../../images/bot.png') 0 0;
+  width:  64px; 
+  height: 64px;
+  z-index: 99999;
+  
+}
