@@ -1,14 +1,23 @@
 // React view of a card
 import React, { Component, PropTypes } from "react";
-import { CARDS } from '../../cards';
+import { ALL_CARDS, CARD_IMAGES } from '../../cards';
 import classNames from 'classnames';
 import "./_cardview.scss";
 import { shieldImg, swordsImg } from '../../../assets/img'
-import * as Util from '../../util';
+import { DragSource } from 'react-dnd';
 
-export default class Card extends Component{
+/**
+ * Implements the drag source contract.
+ */
+const cardSource = {
+  beginDrag(props) {
+    return {
+      text: props.name
+    };
+  }
+};
 
-  static propTypes = {
+  const propTypes = {
     cardInfo: PropTypes.shape({
       canAct: PropTypes.bool.isRequired,
       warm: PropTypes.number,
@@ -17,26 +26,39 @@ export default class Card extends Component{
       permanent: PropTypes.bool.isRequired,
       description: PropTypes.string,
       flavor: PropTypes.string,
-    })
+    }),
+          // Injected by React DnD:
+    connectDragSource: PropTypes.func.isRequired,
+    isDragging: PropTypes.bool.isRequired
+
+  }
+
+
+class Card extends Component {
+
+  componentDidMount() {
+    this.cardWidth = React.findDOMNode(this).offsetWidth;
+    this.cardHeight = React.findDOMNode(this).offsetHeight;
   }
 
   // starting or ending left pixel position given an index
   leftForIndex(index) {
+    let baseWidth = document.body.offsetWidth*.75 - this.cardWidth/2
     switch (index) {
       case 0:
-        return Util.gameWidth*.75 - Util.cardWidth/2 - 15
+        return baseWidth - 15
       case 1:
-        return Util.gameWidth*.75 - Util.cardWidth/2 - Util.cardWidth - 30
+        return baseWidth - this.cardWidth - 30
       case 2:
-        return Util.gameWidth*.75 - Util.cardWidth/2 + Util.cardWidth
+        return baseWidth + this.cardWidth
       case 3:
-        return Util.gameWidth*.75 - Util.cardWidth/2 - Util.cardWidth * 2 - 45
+        return baseWidth - this.cardWidth * 2 - 45
       case 4:
-        return Util.gameWidth*.75 - Util.cardWidth/2 + Util.cardWidth * 2 + 20
+        return baseWidth + this.cardWidth * 2 + 20
       case 5:
-        return Util.gameWidth*.75 - Util.cardWidth/2 - Util.cardWidth * 3 - 60
+        return baseWidth - this.cardWidth * 3 - 60
       case 6:
-        return Util.gameWidth*.75 - Util.cardWidth/2 + Util.cardWidth * 3 + 35
+        return baseWidth + this.cardWidth * 3 + 35
     }
   }
 
@@ -44,9 +66,9 @@ export default class Card extends Component{
   // return the y coordinate for where the bullet starts
   startTop() {
     if (this.props.cardInfo.playerName == window.game.localPlayer.name) {
-      return Util.gameHeight / 2 + Util.cardHeight / 2
+      return document.body.offsetHeight / 2 + this.cardHeight / 2
     }
-    return Util.gameHeight / 2 - Util.cardHeight / 2
+    return document.body.offsetHeight / 2 - this.cardHeight / 2
   }
 
 
@@ -54,9 +76,9 @@ export default class Card extends Component{
     // this branch means an in-play permanent is being attacked
     if (this.props.cardInfo.attackTarget) {
       if (this.props.cardInfo.playerName == window.game.localPlayer.name) {
-        return Util.gameHeight / 2 - Util.cardHeight / 2
+        return document.body.offsetHeight / 2 - this.cardHeight / 2
       } else {
-        return Util.gameHeight / 2 + Util.cardHeight / 2
+        return document.body.offsetHeight / 2 + this.cardHeight / 2
       }
     }
     // attack the top (remote) player
@@ -68,7 +90,7 @@ export default class Card extends Component{
   }
 
   render() {
-
+    const { isDragging, connectDragSource} = this.props;
     const localCard = game.localPlayer.selectedCard;
     let player = window.game.playerForName(this.props.cardInfo.playerName)
     let fromIndex = player.board.indexOf(this.props.cardInfo);  
@@ -118,14 +140,14 @@ export default class Card extends Component{
         borderTopWidth: "10px",
         borderTopColor: "rgba(255,0,0," + warmNumber + ")"
       }
-      let maxDefense = CARDS[this.props.cardInfo.name].defense
+      let maxDefense = ALL_CARDS[this.props.cardInfo.name].defense
       if (maxDefense > 1) {
         let currentDefense =  this.props.cardInfo.defense
         let ratio = parseFloat(currentDefense - 1)/(maxDefense-1)
         divStyle.boxShadow = "0 0 80px rgba(0,255,0," + ratio + ")"
       }
     }
-
+    divStyle.opacity = isDragging ? 0.5 : 1 ;
     if (fromIndex >= 0 && 
         window.game.inPlay(this.props.cardInfo.attackTarget)) {
  
@@ -166,8 +188,8 @@ export default class Card extends Component{
       {'card--hiddenCard': true},
       {'card--damaged': this.props.cardInfo.showDamage}
     );
-      let imageName = this.props.cardInfo.imageName;
-      if (this.props.cardInfo.defense < CARDS[this.props.cardInfo.name].defense) {
+      let imageName = CARD_IMAGES[this.props.cardInfo.name];
+      if (this.props.cardInfo.defense < ALL_CARDS[this.props.cardInfo.name].defense) {
         imageName += "-damaged"
       }
       let shipStyle = {
@@ -183,7 +205,7 @@ export default class Card extends Component{
       )
 
     }
-    return (
+    return connectDragSource(
 
       <div className={classes} onClick={this.selectCard} style={divStyle}>
         <div className="card__title"> 
@@ -233,3 +255,18 @@ export default class Card extends Component{
   }
 
 }
+
+/**
+ * Specifies the props to inject into your component.
+ */
+function collect(connect, monitor) {
+  return {
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging()
+  };
+}
+
+Card.propTypes = propTypes;
+
+// Export the wrapped component:
+export default DragSource("Card", cardSource, collect)(Card);

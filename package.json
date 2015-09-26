@@ -1,4 +1,4 @@
-{ 
+{
   "name": "cardkit",
   "version": "0.0.1",
   "description": "Card game stuff",
@@ -40,15 +40,16 @@
     "babel": "^5.5.6",
     "css-loader": "^0.14.5",
     "csswring": "^3.0.5",
+    "loader-utils": "~0.2.10",
+    "lodash": "^3.10.1",
     "node-sass": "^3.1.2",
     "postcss-loader": "^0.5.0",
+    "react-animate": "^3.0.0",
+    "react-dnd": "^1.1.8",
     "sass-loader": "^2.0.0",
     "seedrandom": "^2.4.0",
     "style-loader": "^0.12.3",
-    "ws": "~0.7.2",
-    "loader-utils": "~0.2.10",
-    "react-animate": "^3.0.0",
-    "lodash": "^3.10.1"
+    "ws": "~0.7.2"
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",

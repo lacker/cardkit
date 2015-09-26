@@ -19,7 +19,7 @@
 // and if the same key ever goes to multiple values, the server logs an error.
 
 // some JSON definitions for cards and decks
-import { CARDS, DECKS, COMPUTER_DECKS, Card } from './cards';
+import { DECKS, COMPUTER_DECKS, Card } from './cards';
 
 import * as Util from './util';
 

@@ -2,9 +2,7 @@
 import React from "react";
 
 // https://github.com/elierotenberg/react-animate
-import Animate from '../../../../node_modules/react-animate';
-
-import * as Util from '../../util';
+import Animate from 'react-animate';
 
 let Bullet = Animate.extend(class Bullet extends React.Component {
 
@@ -65,9 +63,9 @@ let Bullet = Animate.extend(class Bullet extends React.Component {
   // return the y coordinate for where the bullet starts
   startTop() {
     if (this.props.info.player == window.game.localPlayer) {
-      return Util.gameHeight / 2 + Util.cardHeight / 2 - 200
+      return document.body.offsetHeight / 2 + this.cardHeight / 2 - 200
     }
-    return Util.gameHeight / 2 - Util.cardHeight / 2 - 250
+    return document.body.offsetHeight / 2 - this.cardHeight / 2 - 250
   }
 
   // return the y coordinate for where the bullet lands
@@ -75,9 +73,9 @@ let Bullet = Animate.extend(class Bullet extends React.Component {
     // this branch means an in-play permanent is being attacked
     if (this.props.info.attackIndex >= 0) {
       if (this.props.info.player == window.game.localPlayer) {
-        return Util.gameHeight / 2 - Util.cardHeight / 2 - 200
+        return document.body.offsetHeight / 2 - this.cardHeight / 2 - 200
       } else {
-        return Util.gameHeight / 2 + Util.cardHeight / 2 - 200
+        return document.body.offsetHeight / 2 + this.cardHeight / 2 - 200
       }
     }
     // attack the top (remote) player
@@ -90,25 +88,34 @@ let Bullet = Animate.extend(class Bullet extends React.Component {
 
   // starting or ending left pixel position given an index
   leftForIndex(index) {
+    let baseWidth = document.body.offsetWidth*.75/2 - this.cardWidth/2
     switch (index) {
       case 0:
-        return Util.gameWidth*.75/2 - Util.cardWidth/2 - 90
+        return baseWidth - 90
       case 1:
-        return Util.gameWidth*.75/2 - Util.cardWidth/2 - Util.cardWidth - 60
+        return baseWidth - this.cardWidth - 60
       case 2:
-        return Util.gameWidth*.75/2 - Util.cardWidth/2 + Util.cardWidth - 60
+        return baseWidth + this.cardWidth - 60
       case 3:
-        return Util.gameWidth*.75/2 - Util.cardWidth/2 - Util.cardWidth * 2 - 60
+        return baseWidth - this.cardWidth * 2 - 60
       case 4:
-        return Util.gameWidth*.75/2 - Util.cardWidth/2 + Util.cardWidth * 2 - 60
+        return baseWidth + this.cardWidth * 2 - 60
       case 5:
-        return Util.gameWidth*.75/2 - Util.cardWidth/2 - Util.cardWidth * 3 - 60
+        return baseWidth - this.cardWidth * 3 - 60
       case 6:
-        return Util.gameWidth*.75/2 - Util.cardWidth/2 + Util.cardWidth * 3 - 60
+        return baseWidth + this.cardWidth * 3 - 60
     }
   }
 
+  componentDidMount() {
+    // this.cardWidth = React.findDOMNode(this.props.cardInfo).offsetWidth;
+    // this.cardHeight = React.findDOMNode(this.props.cardInfo).offsetHeight;
+  }
+
   render() {
+    this.cardWidth = 92
+    this.cardHeight = 120
+
     if (!this.animationName) {
       this.setAnimation()
     }

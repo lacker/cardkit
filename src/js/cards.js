@@ -1,22 +1,25 @@
+
 import * as Util from './util';
 
 // A card for Spacetime.
 export class Card {
   constructor(player) {
-    // Get a card to use for a player drawing a card.
+    // Get some card info to create a new card
     let cardName = Util.choice(player.deck.cards)
-    let card = CARDS[cardName]
+    let cardReference = ALL_CARDS[cardName]
 
+    // Clone the card reference's info into this new card
     this.name = cardName    
-    for (let key in card) {
-      this[key] = card[key]
+    for (let key in cardReference) {
+      this[key] = cardReference[key]
     }
 
+    // Set some default properties for the card
     this.canAct = false
     this.playerName = player.name
     this.attackCount = 0
     this.warm = .2
-    card.guid = Util.makeId()
+    this.guid = Util.makeId()
   }
 }
  
@@ -25,7 +28,7 @@ export class Card {
 export const DEFAULT_ATTACK_RATE = 5000;
 
 /* 
-   CARDS maps names of cards to properties/definitions.
+   ALL_CARDS maps names of cards to properties/definitions.
 
    Cards must have these properties: 
      cost           - INT            (>=0)
@@ -49,9 +52,6 @@ export const DEFAULT_ATTACK_RATE = 5000;
    A typical card that doesn't stay in play when used will have at least: 
      cost, permanent=false, target, targetCount, description
 
-   For imageName:
-      If the imagename is "better-bot", then you can use images like
-      better-bot.png, better-bot-damaged.png
 */
 
 // Possible values for target property
@@ -69,14 +69,13 @@ export const TARGETS = {
 }
 
 // Legal cards for Spacetime.
-export const CARDS = {
+export const ALL_CARDS = {
   Bot: {
     cost: 1,
     permanent: true,
     attack: 1,
     defense: 1,
     attackRate: DEFAULT_ATTACK_RATE,
-    imageName: "bot",
   },
   BetterBot: {
     cost: 1,
@@ -84,7 +83,6 @@ export const CARDS = {
     attack: 1,
     defense: 2,
     attackRate: DEFAULT_ATTACK_RATE,
-    imageName: "better-bot",
   },
   "Errant Blast": {
     cost: 0,
@@ -114,6 +112,13 @@ export const CARDS = {
     damage: 3,
   },
 }
+
+// Key card names to images
+export const CARD_IMAGES = {
+  "Bot": "bot",
+  "BetterBot": "bot",
+}
+
 
 // Define a couple of simple decks.
 export const DECKS = [

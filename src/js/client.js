@@ -2,7 +2,7 @@
 // websocket server that's defined in server.js.
 
 // The rate at which the computer opponent tries to play out cards.
-var COMPUTER_PLAY_SPEED = 2000;
+const COMPUTER_PLAY_SPEED = 2000;
 
 class Client {
   // game is a GameState and should start at the beginning of the game.

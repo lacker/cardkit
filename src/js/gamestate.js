@@ -498,6 +498,7 @@ class GameState {
     // move the card to the appropriate container
     if (card.permanent) {
       player.handToBoard(from)
+      // MOVE THIS TO SERVER
       card.creationTime = Date.now()
     } else {
       player.handToTrash(from)
@@ -633,17 +634,16 @@ class GameState {
     this.resolveDamage()
     this.showCardDamage(card)
     this.showPlayerDamage(opponent)
-    let bulletDict = {player, 
-                      startIndex: player.board.indexOf(card)} 
-    this.bullets.push(bulletDict)
-    bulletDict.damageAnimation = setInterval(() => {
+    let bullet = {player, 
+                  startIndex: player.board.indexOf(card)} 
+    this.bullets.push(bullet)
+    bullet.damageAnimation = setInterval(() => {
       for (var i =0; i < this.bullets.length; i++) {
-        if (this.bullets[i] === bulletDict) {
+        if (this.bullets[i] === bullet) {
           this.bullets.splice(i,1);
           break;
         }
       }
-      window.client.forceUpdate()
     }, this.damageDuration) 
 
   }
@@ -678,9 +678,9 @@ class GameState {
 
   draw(player, card) {
     for (var i = 0; i < this.players.length; i++) {
-      var p = this.players[i]
-      if (p.name == player.name) {
-        p.hand.push(card) 
+      var playerToCheck  = this.players[i]
+      if (playerToCheck.name == player.name) {
+        playerToCheck.hand.push(card) 
         break;   
       }
     }

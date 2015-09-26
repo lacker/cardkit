@@ -8,6 +8,11 @@ import classNames from 'classnames';
 import './_gameview.scss';
 
 
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd/modules/backends/HTML5';
+
+
+@DragDropContext(HTML5Backend)
 export default class GameView extends Component {
     render() {
 

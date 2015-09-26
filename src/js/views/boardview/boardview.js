@@ -20,6 +20,7 @@ export default class GameBoard extends Component {
     window.client.root = rootPointer;
     window.client.root.forceUpdate()
   }
+  
   selectOpponent() {
     let selectMove = {
       "op":"selectOpponent"

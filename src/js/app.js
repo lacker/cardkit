@@ -19,9 +19,9 @@ let App = React.createClass({
   render() {
     
     window.client.forceUpdate = (() => this.forceUpdate())
+        // <StarryView />
     return (
       <div className="app">
-        <StarryView />
 
         { window.client.registered ?
             <GameView state={this.state} />
