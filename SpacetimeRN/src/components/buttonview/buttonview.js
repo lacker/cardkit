@@ -25,9 +25,11 @@ let styles = StyleSheet.create({
 export default class Button extends Component {
   render() {
 		return(
-      <TouchableHighlight onPress={this.action} style={styles.buttonBG}>
-        <Text onClick={this.props.onClick} style={styles.buttonText}>{this.props.label}</Text>
-      </TouchableHighlight>
+      <View style={this.props.style}>
+        <TouchableHighlight onPress={this.action} style={styles.buttonBG}>
+          <Text onClick={this.props.onClick} style={styles.buttonText}>{this.props.label}</Text>
+        </TouchableHighlight>
+      </View>
 		);
 	}
 }

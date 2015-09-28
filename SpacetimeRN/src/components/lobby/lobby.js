@@ -16,8 +16,13 @@ let styles = StyleSheet.create({
     flex: 1 // 100% height
   },
   campaignTable: {
-    backgroundColor:'#f66',
+    backgroundColor:'#66f',
     flexDirection:'row',
+    opacity:.8,
+    borderRadius:6,
+    overflow:'hidden',
+    borderColor: 'white',
+    borderWidth: 1
   },
   descriptionText: {
     fontSize: 12,
@@ -32,12 +37,12 @@ let styles = StyleSheet.create({
   },
   campaignBox: {
     width:160, 
-    height:200,
+    height:170,
     flex: 1,
-
   },
   campaignButton: {
-    bottom: 0,
+    height:30,
+    bottom: 10,
     left:0,
     right:0,
     position:'absolute',
