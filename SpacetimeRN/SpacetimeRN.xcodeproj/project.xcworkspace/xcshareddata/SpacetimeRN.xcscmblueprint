@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "BEA34059C6B31C0155F8C58492F870C11562EA0A",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "BEA34059C6B31C0155F8C58492F870C11562EA0A" : 0,
+    "D4FB4285E84F344A4A0DD36243C06E37C26A184E" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "534593D6-296D-4E35-B409-5C9743F2D3DA",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "BEA34059C6B31C0155F8C58492F870C11562EA0A" : "cardkit\/",
+    "D4FB4285E84F344A4A0DD36243C06E37C26A184E" : "cardkit\/SpacetimeRN\/node_modules\/react-native-svg\/SVGKit\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "SpacetimeRN",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "SpacetimeRN\/SpacetimeRN.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:lacker\/cardkit.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "BEA34059C6B31C0155F8C58492F870C11562EA0A"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:SVGKit\/SVGKit.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "D4FB4285E84F344A4A0DD36243C06E37C26A184E"
+    }
+  ]
+}

@@ -1,0 +1,172 @@
+@import "../../../assets/styles/base";
+
+// cards in play and in hand
+.card {
+  background-color: $palette-three; 
+  width: $card-width;
+  height: $card-height;
+  padding: 5px;
+  border-radius: $default-corner-radius;
+  display: inline-block;
+  border: 1px solid;
+  border-color:black;
+  cursor: pointer;
+  transition: all 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+  transform: translateY(0) scale(0.95, 0.95);
+  text-align: left;
+  vertical-align: middle;
+
+  &:hover {
+    box-shadow: 0 11px 18px rgba(0,0,0,0.2);
+    transform: translateY(-20px) scale(1, 1);
+  }
+
+  &__title {
+    height: 10%;
+  }
+
+  &__name {
+    float: left;
+  }
+
+  &__energy {
+    float: right;
+  }
+
+  &__body {
+    height: 90%;
+    position: relative;
+  }
+
+  &__icon {
+    display: inline-block;
+    float: left;
+    width: 24px;
+  }
+
+  @mixin stats {
+    position: absolute;
+    bottom: 0;
+  }
+
+  &__attack-stat {
+    @include stats;
+    left: 0;
+  }
+
+  &__defense-stat {
+    @include stats;
+    right: 0; 
+  }
+
+  &__main-info {
+    margin: 10px auto;
+  }
+
+  &__sub-info {
+    margin: 10px auto;
+    font-size: 0.8em;
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    color: grey;
+    &:hover {
+      transform: translateY(0px);
+      box-shadow: none;
+    }
+  }
+
+  &--active {
+    background-color: $palette-two; 
+  }
+
+  &--used {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--damaged {
+    transform-origin: 50% 20%;
+    animation-name: damage;
+    animation-duration: 900ms;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+  }
+
+  &--hiddenCard {
+    background-color: rgba(0,0,0,0) !important; 
+    border: rgba(0,0,0,0);
+  }
+
+}
+
+
+
+@keyframes damage {
+    0% {
+        background-color: Yellow;
+        opacity:1;
+    }
+    22% {
+        background-color: Yellow;
+    }
+    77% {
+        background-color: Red;
+    }
+    100% {
+        background-color: #777;
+    }
+}
+
+.damage-player {
+  transform-origin: 50% 20%;
+  animation-name: damage-player;
+  animation-duration: 900ms;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in-out;
+}
+
+.card-slot-0 {
+  position: absolute;
+  left: $game-width*.75/2 - $card-width / 2 - 15;
+}
+
+.card-slot-1 {
+  position: absolute;
+  left: $game-width*.75/2 - $card-width / 2 - $card-width - 30;
+}
+
+.card-slot-2 {
+  position: absolute;
+  left: $game-width*.75/2 - $card-width / 2 + $card-width;
+}
+
+.card-slot-3 {
+  position: absolute;
+  left: $game-width*.75/2 - $card-width / 2 - $card-width * 2 - 45;
+}
+
+.card-slot-4 {
+  position: absolute;
+  left: $game-width*.75/2 - $card-width / 2 + $card-width * 2 - $default-padding + 20;
+}
+
+.card-slot-5 {
+  position: absolute;
+  left: $game-width*.75/2 - $card-width / 2 - $card-width * 3 - $default-padding - 60;
+}
+
+.card-slot-6 {
+  position: absolute;
+  left: $game-width*.75/2 - $card-width / 2 + $card-width * 3 - $default-padding + 35;
+}
+
+.ship-sprite {
+  /* 0, 29, 58, 87*/
+  background: url('/../../images/bot.png') 0 0;
+  width:  64px; 
+  height: 64px;
+  z-index: 99999;
+  
+}

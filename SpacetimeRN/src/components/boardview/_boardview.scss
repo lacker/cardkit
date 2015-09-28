@@ -1,0 +1,49 @@
+@import "../../../assets/styles/base";
+
+.game-board {
+  
+  width: $game-width;
+  margin: 0 auto;
+
+  @mixin game-piece {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  &__avatars {
+    @include game-piece;
+  }
+
+  &__play-area {
+    @include game-piece;
+    background-color: black;
+    border-radius: 15px;
+    width: 75%;
+    margin: 0 15px;
+  }
+
+  &__hand {
+    border: 1px solid;
+    height: 150px;
+    margin: 20px auto;
+    position: relative;
+    background: repeating-linear-gradient(0deg, #E6E6E6,#fff 1px,black 3px,transparent 20px)
+  }
+
+  &__info {
+    @include game-piece;
+  }
+
+  &__timer {
+    width: 100px;
+    height: 40px;
+    font-size: 1.5em;
+    line-height: 1.5em;
+    background-color: black;
+    color: white;
+    text-align: center;
+    display: block;
+    margin: 20px auto;
+    box-shadow: 0 0 4px 1px white;
+  }
+}

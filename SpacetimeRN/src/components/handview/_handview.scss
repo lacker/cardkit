@@ -1,0 +1,8 @@
+@import "../../../assets/styles/base";
+
+// where a player's unplayed cards go
+.hand-container {
+  text-align: center;
+  padding: 25px;
+  height: $card-height;
+}

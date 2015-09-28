@@ -1,0 +1,38 @@
+@import "../../../assets/styles/base";
+
+// the overall container for the main lobby
+.lobby {
+
+  width: 94 * $default-padding;
+  height:100 * $default-padding;
+  text-align: center; 
+  margin: 0 auto;
+  color:white;
+
+  &__home-img {   
+    display: inline-block;
+    width: 64px;
+    vertical-align: middle;
+    margin-right: 30px;
+  }
+
+}
+
+.lobby_row {
+
+  &__button-cell {
+    border-radius: $default-padding;
+    width: 30%;
+    padding-right:10px;
+    background-color: $palette-five;
+  }
+   
+  &__description-cell {
+    border-radius: $default-padding;
+    background-color: $palette-five;
+    width: 70%;  
+    text-align: left;
+    padding:20px;
+  }
+
+}

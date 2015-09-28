@@ -1,0 +1,52 @@
+@import "../../../assets/styles/base";
+
+// the representation of the player
+.avatar {
+  padding: 10px;
+  border-radius: 5px;
+  margin: 45px 0;
+  width: 100px;
+  height: 100px;
+  background-color: rgb(245,245,245);
+  text-align: center;
+  box-shadow: 0 0 4px 2px white;
+  border: 1px solid black;
+
+  // life and energy
+  &__stats {
+    color:black;
+  }
+
+  // life of player
+  &__life {
+    
+  }
+
+  &__name {
+    font-weight: bold;
+  }
+
+  &--damage {
+    transform-origin: 50% 20%;
+    animation-name: damage-player;
+    animation-duration: 900ms;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+  }
+}
+
+@keyframes damage-player {
+    0% {
+        background-color: Yellow;
+        opacity:1;
+    }
+    22% {
+        background-color: Yellow;
+    }
+    77% {
+        background-color: Red;
+    }
+    100% {
+        background-color: #777;
+    }
+}

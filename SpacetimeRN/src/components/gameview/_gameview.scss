@@ -1,0 +1,10 @@
+@import "../../../assets/styles/base";
+
+// the overall container with all elements
+.game-container {
+  background-color: $palette-four; 
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  overflow: hidden;
+}
